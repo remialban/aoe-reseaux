@@ -57,6 +57,7 @@ class Building :
         return self.__building_percent >=100
 
     def remove_health_point(self, value : int):
+        assert value >= 0, value
         self.__health_points -= value
 
     # def update() :
