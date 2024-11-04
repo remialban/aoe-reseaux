@@ -1,7 +1,6 @@
-from core import units
 from core.buildings import Building
 from core.resource import Resource
-
+from core.units import Unit
 
 
 class Map:
@@ -11,7 +10,7 @@ class Map:
         self.__height: int = height
         # Lists to store buildings, units, and resources on the map
         self.buildings: set[Building] = set()
-        self.units: set[units] = set()
+        self.units: set[Unit] = set()
         self.resources: set[Resource] = set()
 
 
@@ -41,7 +40,7 @@ class Map:
         if unit in self.units:
             self.units.remove(unit)
 
-    def get_units(self, player: object = None) -> set:
+    def get_units(self, player: object = None) -> set[Unit]:
         # Return all units, or filter by player if specified
         if player:
             return {unit for unit in self.units if unit.player == player}
