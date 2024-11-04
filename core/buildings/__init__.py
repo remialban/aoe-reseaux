@@ -1,4 +1,3 @@
-from core.map import Map
 from core.players import Player
 from core.position import Position
 from core.resource import Resource
@@ -9,7 +8,6 @@ class Building :
     __build_time : float
     __height : int
     __health_points : int
-    __map : Map
     __player : Player
     __position : Position
     __width : int
@@ -62,8 +60,6 @@ class Building :
         assert value >= 0, value
         self.__health_points -= value
 
-    def get_map(self)->Map:
-        return self.__map
 
     def get_player(self)->Player:
         return self.__player

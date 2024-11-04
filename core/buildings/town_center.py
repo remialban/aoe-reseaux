@@ -7,6 +7,7 @@ from core.resource import Resource
 class TownCenter(Building):
 
 
-    def __init__(self, build_time :float, height :int, health_point : int, position : Position, width :int, walkable : bool, cost_resource : Resource):
-        super().__init__(build_time, height, health_point, position, width, walkable, cost_resource)
+    def __init__(self, position : Position):
+        resource_cost = Resource(350,0,0)
+        super().__init__(150, 4, 1000, position, 4, False, resource_cost)
 
