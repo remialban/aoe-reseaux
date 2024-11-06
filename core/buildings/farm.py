@@ -1,4 +1,5 @@
 from core.buildings import Building
+from core.players import Player
 from core.position import Position
 from core.resource import Resource
 
@@ -7,10 +8,10 @@ from core.resource import Resource
 class Farm(Building):
     resources : Resource
 
-    def __init__(self, position : Position):
+    def __init__(self, position : Position, player : Player):
         self.resources = Resource(0,0,300) #
         resource_cost = Resource(60,0,0)
-        super().__init__(10, 2, 100, position, 2, True, resource_cost)
+        super().__init__(10, 2, 100, position, 2, True, resource_cost,player)
 
 
 

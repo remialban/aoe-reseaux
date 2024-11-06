@@ -1,23 +1,26 @@
 import pytest
 
 from core.buildings import Building
+from core.players import Player
 from core.position import Position
 from core.resource import Resource
 @pytest.fixture
 def my_house()->Building:
     my_pos = Position(45, 80)
     my_cost = Resource(135, 0, 0)
-    return  Building(100, 4, 200, my_pos, 4, False, my_cost)
+    my_player = Player("Philip", "red")
+    return  Building(100, 4, 200, my_pos, 4, False, my_cost,my_player)
 
 def test_correct_width_and_height():
+    my_player = Player("Philip", "red")
     my_pos = Position(45, 80)
     my_cost = Resource(135, 0, 0)
     with pytest.raises(AssertionError):
-        b = Building(100, 4, 200, my_pos, -4, False, my_cost)
+        b = Building(100, 4, 200, my_pos, -4, False, my_cost,my_player)
     with pytest.raises(AssertionError):
-        b= Building(100, -4, 200, my_pos, -4, False, my_cost)
+        b= Building(100, -4, 200, my_pos, -4, False, my_cost,my_player)
     with pytest.raises(AssertionError):
-        b = Building(100, -4, 200, my_pos, 4, False, my_cost)
+        b = Building(100, -4, 200, my_pos, 4, False, my_cost,my_player)
 
 def test_get_build_time(my_house: Building):
     assert my_house.get_build_time() == 100
@@ -57,7 +60,13 @@ def test_remove_health_point_overkill(my_house: Building):  # the amount of heal
     my_house.remove_health_point(357)
     assert my_house.get_health_point()==-157
 
+def test_remove_health_point_negative_hit(my_house: Building):  # verifying that it is impossible to hit a building for a negative damage value
+    with pytest.raises(AssertionError):
+        my_house.remove_health_point(-57)
 
+def test_get_player(my_house : Building):
+    assert my_house.get_player().get_name() == "Philip"
+    assert my_house.get_player().get_color() == "red"
 
 
 
