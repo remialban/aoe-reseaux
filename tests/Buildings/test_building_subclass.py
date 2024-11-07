@@ -8,13 +8,18 @@ from core.buildings.house import House
 from core.buildings.keep import Keep
 from core.buildings.stable import Stable
 from core.buildings.town_center import TownCenter
+from core.players import Player
 from core.position import Position
 
 
 
 def test_farm_creation():
     p = Position(5, 6)
-    f = Farm(p)
+    play = Player("Philip", "red")
+    f = Farm(p, play)
+
+    assert f.get_player().get_name() == "Philip"
+    assert f.get_player().get_color() == "red"
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 2
@@ -32,7 +37,10 @@ def test_farm_creation():
 
 def test_archery_range_creation():
     p = Position(5, 6)
-    f = ArcheryRange(p)
+    play = Player("Philip", "red")
+    f = ArcheryRange(p,play)
+    assert f.get_player().get_name() == "Philip"
+    assert f.get_player().get_color() == "red"
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 3
@@ -45,7 +53,10 @@ def test_archery_range_creation():
 
 def test_barrack_creation():
     p = Position(5, 6)
-    f = Barracks(p)
+    play = Player("Philip", "red")
+    f = Barracks(p,play)
+    assert f.get_player().get_name() == "Philip"
+    assert f.get_player().get_color() == "red"
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 3
@@ -57,7 +68,10 @@ def test_barrack_creation():
 
 def test_stable_creation():
     p = Position(5, 6)
-    f = Stable(p)
+    play = Player("Philip", "red")
+    f = Stable(p,play)
+    assert f.get_player().get_name() == "Philip"
+    assert f.get_player().get_color() == "red"
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 3
@@ -69,7 +83,10 @@ def test_stable_creation():
 
 def test_camp_creation():
     p = Position(5, 6)
-    f = Camp(p)
+    play = Player("Philip", "red")
+    f = Camp(p,play)
+    assert f.get_player().get_name() == "Philip"
+    assert f.get_player().get_color() == "red"
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 2
@@ -81,7 +98,10 @@ def test_camp_creation():
 
 def test_house_creation():
     p = Position(5, 6)
-    f = House(p)
+    play = Player("Philip", "red")
+    f = House(p,play)
+    assert f.get_player().get_name() == "Philip"
+    assert f.get_player().get_color() == "red"
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 2
@@ -93,7 +113,10 @@ def test_house_creation():
 
 def test_town_center_creation():
     p = Position(5, 6)
-    f = TownCenter(p)
+    play = Player("Philip", "red")
+    f = TownCenter(p,play)
+    assert f.get_player().get_name() == "Philip"
+    assert f.get_player().get_color() == "red"
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 4
@@ -105,7 +128,10 @@ def test_town_center_creation():
 
 def test_keep_creation():
     p = Position(5, 6)
-    f = Keep(p)
+    play = Player("Philip", "red")
+    f = Keep(p,play)
+    assert f.get_player().get_name() == "Philip"
+    assert f.get_player().get_color() == "red"
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 1

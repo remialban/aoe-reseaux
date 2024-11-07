@@ -17,7 +17,7 @@ class Building :
 
 
 
-    def __init__(self, build_time :float, height :int, health_point : int, position : Position, width :int, walkable : bool, cost_resource : Resource) :
+    def __init__(self, build_time :float, height :int, health_point : int, position : Position, width :int, walkable : bool, cost_resource : Resource, player : Player) :
         self.__building_percent =  0
         assert width >0 and height >0
         self.__build_time = build_time
@@ -27,6 +27,7 @@ class Building :
         self.__width = width
         self.__walkable = walkable
         self.__cost_resource = cost_resource
+        self.__player = player
 
 
     def get_building_percent(self) -> float:
