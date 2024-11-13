@@ -1,5 +1,4 @@
 import pytest
-
 from core.buildings.archery_range import ArcheryRange
 from core.buildings.barracks import Barracks
 from core.buildings.camp import Camp
@@ -126,6 +125,10 @@ def test_town_center_creation():
     assert f.get_cost_resource().get_wood() == 350
     assert f.is_walkable() == False
 
+
+
+
+
 def test_keep_creation():
     p = Position(5, 6)
     play = Player("Philip", "red")
@@ -141,8 +144,9 @@ def test_keep_creation():
     assert f.get_cost_resource().get_gold() == 125
     assert f.get_cost_resource().get_wood() == 35
     assert f.is_walkable() == False
-
-
+    assert f.get_damage() == 4
+    assert f.get_range() == 4
+    assert f.get_attack_speed() ==1
 
 
 

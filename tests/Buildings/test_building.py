@@ -32,7 +32,7 @@ def test_get_height(my_house: Building):
     assert my_house.get_height() == 4
 
 def test_get_health_point(my_house: Building):
-    assert my_house.get_health_point() == 200
+    assert my_house.get_health_points() == 200
 
 def test_get_width(my_house: Building):
     assert my_house.get_width() == 4
@@ -53,16 +53,16 @@ def test_get_cost_resource(my_house: Building):
     assert my_house.get_cost_resource().get_gold() == 0
 
 def test_remove_health_point_gentle_hit(my_house: Building):  # the amount of health point removed is less than the total
-    my_house.remove_health_point(57)
-    assert my_house.get_health_point()==143
+    my_house.remove_health_points(57)
+    assert my_house.get_health_points() == 143
 
 def test_remove_health_point_overkill(my_house: Building):  # the amount of health point removed is more than the total
-    my_house.remove_health_point(357)
-    assert my_house.get_health_point()==-157
+    my_house.remove_health_points(357)
+    assert my_house.get_health_points() == -157
 
 def test_remove_health_point_negative_hit(my_house: Building):  # verifying that it is impossible to hit a building for a negative damage value
     with pytest.raises(AssertionError):
-        my_house.remove_health_point(-57)
+        my_house.remove_health_points(-57)
 
 def test_get_player(my_house : Building):
     assert my_house.get_player().get_name() == "Philip"
