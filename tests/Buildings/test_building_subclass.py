@@ -23,7 +23,7 @@ def test_farm_creation():
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 2
-    assert f.get_health_point() == 100
+    assert f.get_health_points() == 100
     assert f.get_build_time() == 10
     assert f.get_cost_resource().get_food() == f.get_cost_resource().get_gold() == 0
     assert f.get_cost_resource().get_wood() == 60
@@ -44,7 +44,7 @@ def test_archery_range_creation():
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 3
-    assert f.get_health_point() == 500
+    assert f.get_health_points() == 500
     assert f.get_build_time() == 50
     assert f.get_cost_resource().get_food() == f.get_cost_resource().get_gold() == 0
     assert f.get_cost_resource().get_wood() == 175
@@ -60,7 +60,7 @@ def test_barrack_creation():
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 3
-    assert f.get_health_point() == 500
+    assert f.get_health_points() == 500
     assert f.get_build_time() == 50
     assert f.get_cost_resource().get_food() == f.get_cost_resource().get_gold() == 0
     assert f.get_cost_resource().get_wood() == 175
@@ -75,7 +75,7 @@ def test_stable_creation():
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 3
-    assert f.get_health_point() == 500
+    assert f.get_health_points() == 500
     assert f.get_build_time() == 50
     assert f.get_cost_resource().get_food() == f.get_cost_resource().get_gold() == 0
     assert f.get_cost_resource().get_wood() == 175
@@ -90,7 +90,7 @@ def test_camp_creation():
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 2
-    assert f.get_health_point() == 200
+    assert f.get_health_points() == 200
     assert f.get_build_time() == 25
     assert f.get_cost_resource().get_food() == f.get_cost_resource().get_gold() == 0
     assert f.get_cost_resource().get_wood() == 100
@@ -105,7 +105,7 @@ def test_house_creation():
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 2
-    assert f.get_health_point() == 200
+    assert f.get_health_points() == 200
     assert f.get_build_time() == 25
     assert f.get_cost_resource().get_food() == f.get_cost_resource().get_gold() == 0
     assert f.get_cost_resource().get_wood() == 25
@@ -120,7 +120,7 @@ def test_town_center_creation():
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 4
-    assert f.get_health_point() == 1000
+    assert f.get_health_points() == 1000
     assert f.get_build_time() == 150
     assert f.get_cost_resource().get_food() == f.get_cost_resource().get_gold() == 0
     assert f.get_cost_resource().get_wood() == 350
@@ -135,7 +135,7 @@ def test_keep_creation():
     assert f.get_position().get_x() == p.get_x()
     assert f.get_position().get_y() == p.get_y()
     assert f.get_width() == f.get_height() == 1
-    assert f.get_health_point() == 800
+    assert f.get_health_points() == 800
     assert f.get_build_time() == 80
     assert f.get_cost_resource().get_food() == 0
     assert f.get_cost_resource().get_gold() == 125

@@ -39,7 +39,7 @@ class Building :
     def get_height(self) -> int:
         return self.__height
 
-    def get_health_point(self) -> int:
+    def get_health_points(self) -> int:
         return self.__health_points
 
     def get_position(self) -> Position :
@@ -57,7 +57,7 @@ class Building :
     def is_built(self)->bool:
         return self.__building_percent >=100
 
-    def remove_health_point(self, value : int):
+    def remove_health_points(self, value : int):
         assert value >= 0, value
         self.__health_points -= value
 
