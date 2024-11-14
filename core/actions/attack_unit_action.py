@@ -18,6 +18,6 @@ class AttackUnitAction(Action):
     def do_action(self)->bool:
         if (math.sqrt((self.__attacked_unit.get_position().get_x() - self.__attacking_unit.get_position().get_x())*(self.__attacked_unit.get_position().get_x() - self.__attacking_unit.get_position().get_x()) +(self.__attacked_unit.get_position().get_y() -self.__attacking_unit.get_position().get_y())*(self.__attacked_unit.get_position().get_y() -self.__attacking_unit.get_position().get_y()) )<= self.__attacking_unit.range):
             if ((self.get_new_time() - self.get_old_time()) > timedelta(seconds=self.__attacking_unit.attack_speed)):
-                self.__attacked_unit.remove_health_points(self.__attacking_unit.damage)
+                self.__attacked_unit.remove_health_points(self.__attacking_unit.get_damage())
 
         return True
