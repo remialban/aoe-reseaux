@@ -29,8 +29,8 @@ class UIManager:
 
     @staticmethod
     def change_ui(name: UIList|None):
-        old_ui: UI = UIManager.__current_ui.cleanup()
-        UIManager.__current_ui = UIManager.__uis[name]
+        old_ui: UI = UIManager.__current_ui
+        UIManager.__current_ui = UIManager.__uis.get(name, None)
 
         if UIManager.__current_ui is not None:
             UIManager.__current_ui.setup()
@@ -44,7 +44,10 @@ class UIManager:
     @staticmethod
     def loop():
         while UIManager.__current_ui is not None:
-            UIManager.__current_ui.loop()
+            try:
+                UIManager.__current_ui.loop()
+            except UIException as e:
+                e.get_ui().cleanup()
 
     @staticmethod
     def get_name():
