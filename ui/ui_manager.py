@@ -26,6 +26,7 @@ class UIManager:
         UIManager.__uis[name] = ui
         if UIManager.__current_ui is None:
             UIManager.__current_ui = ui
+            UIManager.__current_ui.setup()
 
     @staticmethod
     def change_ui(name: UIList|None):
@@ -51,15 +52,15 @@ class UIManager:
 
     @staticmethod
     def get_name():
-        return datetime.now().strftime("backup_%Y-%m-%d %H:%M:%S")
+        return datetime.now().strftime("backup_%Y-%m-%d_%H_%M_%S")
 
     @staticmethod
-    def get_game(self):
+    def get_game() -> Game:
         return UIManager.__game
 
     @staticmethod
     def load_game(filename: str):
-        file = open(filename, "rb")
+        file = open(f"backups/{filename}", "rb")
         UIManager.__game = pickle.load(file)
         file.close()
 
@@ -70,8 +71,13 @@ class UIManager:
                 os.remove(filename)
             else:
                 raise Exception("File already exists and is not a file")
-
-        file = open(filename, "wb")
+        new_filename = f"backups/{filename}"
+        file = open(new_filename, "wb")
         pickle.dump(UIManager.__game, file)
         file.close()
 
+    @staticmethod
+    def get_backups():
+        if not os.path.exists("backups"):
+            os.mkdir("backups")
+        return [f for f in os.listdir("backups") if os.path.isfile(f"backups/{f}") and f.startswith("backup_")]
