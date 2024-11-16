@@ -2,6 +2,8 @@ import curses
 
 from ui.cli.enum import Screens
 from ui.cli.screens import Screen
+from ui.enums import UIList
+from ui.ui_manager import UIManager
 
 
 class ScreenManager:
@@ -28,7 +30,8 @@ class ScreenManager:
         while ScreenManager.__current_screen is not None:
             key = window.getch()
             if key != -1:
+                if key == curses.KEY_F12:
+                    UIManager.change_ui(UIList.GUI)
                 ScreenManager.__current_screen.on_key(key)
             ScreenManager.__current_screen.update()
             window.refresh()
-            window.timeout(10000)
