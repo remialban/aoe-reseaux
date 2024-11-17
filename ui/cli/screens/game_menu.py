@@ -1,5 +1,4 @@
 import curses
-from time import sleep
 
 from ui.cli import Screen, ScreenManager, Screens
 from ui.ui_manager import UIManager
@@ -42,5 +41,5 @@ class GameMenu(Screen):
                     self._window.addstr(1, 1, f"Error: {e}")
                     self.message = "Erreur lors de la sauvegarde"
             elif self.__current_choice == 2:
-                UIManager.stop()
+                ScreenManager.change_screen(Screens.MENU)
 
