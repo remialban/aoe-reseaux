@@ -1,9 +1,9 @@
-import curses
+import unicurses as curses
 from abc import abstractmethod
 
 
 class Screen:
-    def __init__(self, window: curses.window):
+    def __init__(self, window):
         self._window = window
 
     @abstractmethod

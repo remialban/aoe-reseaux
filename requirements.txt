@@ -1,2 +1,3 @@
 pygame==2.6.1
 pytest==8.3.3
+Uni-Curses==3.1.2
