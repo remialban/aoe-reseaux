@@ -32,7 +32,7 @@ class GameMenu(Screen):
             self.message = ""
         # Check if key is the enter key of the keyboard or the enter key of the keypad
         elif key in (ord("\n"), 459):
-            if self.__cadurrent_choice == 0:
+            if self.__current_choice == 0:
                 ScreenManager.change_screen(Screens.GAME)
             elif self.__current_choice == 1:
                 try:
