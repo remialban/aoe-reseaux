@@ -23,12 +23,10 @@ class MoveAction(Action):
         self.__unit = unit
         self.__new_position = new_position
 
-        print(
-            f"Initializing MoveAction with unit at {self.__unit.get_position()} targeting {self.__new_position}"
-        )
+        # print(f"Initializing MoveAction with unit at {self.__unit.get_position()} targeting {self.__new_position}")
 
         self.__path = self._find_path()
-        print(f"Initial path found: {self.__path}")
+        # print(f"Initial path found: {self.__path}")
 
         self.__current_step = 0
         super().__init__()
@@ -37,25 +35,25 @@ class MoveAction(Action):
         self.before_action()
 
         if not self.__path:
-            print("No path found. Action cannot be performed.")
+            # print("No path found. Action cannot be performed.")
             return False
 
         time_per_step = 1 / self.__unit.movement_speed
         elapsed_time = (self.get_new_time() - self.get_old_time()).total_seconds()
 
-        print(f"Elapsed time: {elapsed_time}, Time per step: {time_per_step}")
+        # print(f"Elapsed time: {elapsed_time}, Time per step: {time_per_step}")
 
         if elapsed_time >= time_per_step:
             self.__current_step += 1
 
             if self.__current_step >= len(self.__path):
-                print("Unit has reached the destination.")
+                # print("Unit has reached the destination.")
                 self.__unit.change_position(self.__new_position)
                 return True
 
             else:
                 next_position = self.__path[self.__current_step]
-                print(f"Moving to next position: {next_position}")
+                # print(f"Moving to next position: {next_position}")
                 self.__unit.change_position(next_position)
                 self.after_action()
 
@@ -65,7 +63,7 @@ class MoveAction(Action):
         start = self.__unit.get_position()
         goal = self.__new_position
 
-        print(f"Finding path from {start} to {goal}")
+        # print(f"Finding path from {start} to {goal}")
 
         open_set = [(0, start)]
         came_from = {}
@@ -74,10 +72,10 @@ class MoveAction(Action):
 
         while open_set:
             current = heapq.heappop(open_set)[1]
-            print(f"Current position in pathfinding: {current}")
+            # print(f"Current position in pathfinding: {current}")
 
             if current == goal:
-                print("Goal reached during pathfinding.")
+                # print("Goal reached during pathfinding.")
                 return self._reconstruct_path(came_from, current)
 
             for neighbor in self._get_neighbors(current):
@@ -90,16 +88,14 @@ class MoveAction(Action):
                         neighbor, goal
                     )
                     heapq.heappush(open_set, (f_score[neighbor], neighbor))
-                    print(
-                        f"Neighbor {neighbor} added to open set with f_score {f_score[neighbor]}"
-                    )
+                    # print(f"Neighbor {neighbor} added to open set with f_score {f_score[neighbor]}")
 
-        print("Pathfinding failed. No valid path found.")
+        # print("Pathfinding failed. No valid path found.")
         return None
 
     def _heuristic(self, a: Position, b: Position):
         heuristic_value = abs(a.get_x() - b.get_x()) + abs(a.get_y() - b.get_y())
-        print(f"Heuristic from {a} to {b}: {heuristic_value}")
+        # print(f"Heuristic from {a} to {b}: {heuristic_value}")
         return heuristic_value
 
     def _get_neighbors(self, position: Position):
@@ -114,7 +110,7 @@ class MoveAction(Action):
 
                 if self._is_valid_position(new_pos):
                     neighbors.append(new_pos)
-                    print(f"Valid neighbor found: {new_pos}")
+                    # print(f"Valid neighbor found: {new_pos}")
 
         return neighbors
 
@@ -123,7 +119,7 @@ class MoveAction(Action):
             0 <= position.get_x() < self.__map_width
             and 0 <= position.get_y() < self.__map_height
         ):
-            print(f"Position {position} is out of map bounds.")
+            # print(f"Position {position} is out of map bounds.")
             return False
 
         for building in self.__buildings:
@@ -136,12 +132,10 @@ class MoveAction(Action):
                     <= position.get_y()
                     < building.get_position().get_y() + building.get_height()
                 ):
-                    print(
-                        f"Position {position} collides with building at {building.get_position()}."
-                    )
+                    # print(f"Position {position} collides with building at {building.get_position()}.")
                     return False
 
-        print(f"Position {position} is valid.")
+        # print(f"Position {position} is valid.")
         return True
 
     def _reconstruct_path(self, came_from, current) -> List[Position]:
@@ -152,6 +146,6 @@ class MoveAction(Action):
             path.append(current)
 
         reconstructed_path = path[::-1]
-        print(f"Reconstructed path: {reconstructed_path}")
+        # print(f"Reconstructed path: {reconstructed_path}")
 
         return reconstructed_path
