@@ -1,4 +1,4 @@
-
+from core.actions import Action
 from core.map import Map
 from core.players import Player
 from core.players.ai import AI
@@ -7,17 +7,26 @@ from core.buildings import Building
 
 class Game:
 
+    __actions : set[Action]
+
     def __init__(self, players: set[Player], map: Map):
         if len(players) < 2:
             raise ValueError("A game must have at least two players.")
         self.__players = players
         self.__map = map
+        self.__actions = set()
 
     def get_map(self) -> Map:
         return self.__map
 
     def get_players(self) -> set[Player]:
         return self.__players
+
+    def add_action(self,action : Action):
+        self.__actions.add(action)
+
+    def remove_action(self, action : Action):
+        self.__actions.remove(action)
 
     """
       def create_unit(self, type: str, building: Building) -> Unit:
