@@ -1,6 +1,7 @@
 
 from core.map import Map
 from core.players import Player
+from core.players.ai import AI
 from core.units import Unit
 from core.buildings import Building
 
@@ -26,3 +27,10 @@ class Game:
               raise ValueError(f"Unknown unit type: {type}")
           return unit
     """
+    def party(self):
+        for p in self.__players :
+            if isinstance(p,AI):
+                p.play()
+
+
+
