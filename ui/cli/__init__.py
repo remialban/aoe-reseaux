@@ -14,8 +14,8 @@ class CLI(UI):
     def setup(self):
         pass
 
-    def run(self, window):
-        curses.initscr()
+    def run(self):
+        window = curses.initscr()
         curses.curs_set(0)
         curses.keypad(window, True)
         curses.nodelay(window, 1)
@@ -31,7 +31,7 @@ class CLI(UI):
         ScreenManager.loop(window)
 
     def loop(self):
-        curses.wrapper(self.run)
+        self.run()
 
     def cleanup(self):
         pass

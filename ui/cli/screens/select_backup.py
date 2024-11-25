@@ -7,12 +7,13 @@ from ui.ui_manager import UIManager
 class SelectBackup(Screen):
     def __init__(self, window):
         super().__init__(window)
-        self.__choices = UIManager.get_backups()
-        self.__choices.sort(reverse=True)
         self.__current_choice = 0
         self.__offset = 0
 
     def update(self):
+        self.__choices = UIManager.get_backups()
+        self.__choices.sort(reverse=True)
+
         # Show the list of backups with offset (camera) and the height of the window
         curses.clear()
         curses.refresh()
@@ -35,7 +36,8 @@ class SelectBackup(Screen):
             self.__current_choice += 1
             if self.__current_choice >= self.__offset + height - 2:
                 self.__offset += 1
-        elif key == ord("\n"):
+        # Check if key is the enter key of the keyboard or the enter key of the keypad
+        elif key in (ord("\n"), 459):
             UIManager.load_game(self.__choices[self.__current_choice])
             ScreenManager.change_screen(Screens.GAME)
         elif key == 27:
