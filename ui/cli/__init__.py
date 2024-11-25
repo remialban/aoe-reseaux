@@ -1,4 +1,4 @@
-import curses
+import unicurses as curses
 
 from ui import UI
 from ui.cli.enum import Screens
@@ -14,12 +14,13 @@ class CLI(UI):
     def setup(self):
         pass
 
-    def run(self, window: curses.window):
-        curses.initscr()
+    def run(self):
+        window = curses.initscr()
         curses.curs_set(0)
-        window.nodelay(1)
-        window.timeout(500)
-
+        curses.keypad(window, True)
+        curses.nodelay(window, 1)
+        curses.timeout(500)
+        curses.start_color()
 
         ScreenManager.add_screen(Screens.MENU, MainMenu(window))
         ScreenManager.add_screen(Screens.GAME, GameScreen(window))
@@ -30,7 +31,7 @@ class CLI(UI):
         ScreenManager.loop(window)
 
     def loop(self):
-        curses.wrapper(self.run)
+        self.run()
 
     def cleanup(self):
-        pass
+        curses.endwin()

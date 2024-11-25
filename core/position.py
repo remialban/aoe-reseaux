@@ -1,6 +1,6 @@
 class Position:
     __x: float
-    __x: float
+    __y: float
 
     def __init__(self, x: float, y: float):
         self.__x = x
@@ -17,3 +17,22 @@ class Position:
 
     def set_y(self, y: float) -> None:
         self.__y = y
+
+    def __lt__(self, other):
+        if not isinstance(other, Position):
+            return NotImplemented
+        return (self.__x, self.__y) < (other.__x, other.__y)
+
+    def __eq__(self, other):
+        if not isinstance(other, Position):
+            return NotImplemented
+        return self.__x == other.__x and self.__y == other.__y
+
+    def __hash__(self):
+        return hash((self.__x, self.__y))
+
+    def __str__(self):
+        return f"({self.__x}, {self.__y})"
+
+    def __repr__(self):
+        return f"({self.__x}, {self.__y})"
