@@ -37,9 +37,24 @@ class Game:
           return unit
     """
     def party(self):
-        for p in self.__players :
-            if isinstance(p,AI):
-                p.play()
+
+        while True:
+            finished_actions : set[Action]= set()
+
+            for p in self.__players :
+                if isinstance(p,AI):
+                    p.play()
+            for a in self.__actions :
+                if a.do_action():
+                    finished_actions.add(a)
+
+            for fa in finished_actions :
+                self.__actions.remove(fa)
+
+
+
+
+
 
 
 
