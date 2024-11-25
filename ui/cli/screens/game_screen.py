@@ -1,4 +1,4 @@
-import curses
+import unicurses as curses
 
 from core.buildings.archery_range import ArcheryRange
 from core.buildings.barracks import Barracks
@@ -61,11 +61,10 @@ class GameScreen(Screen):
         curses.init_pair(5, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
         curses.init_pair(6, curses.COLOR_CYAN, curses.COLOR_BLACK)
         curses.init_pair(7, curses.COLOR_WHITE, curses.COLOR_BLACK)
-
         self.__camera = [0, 0]
 
     def check_if_position_in_camera(self, x, y):
-        height, width = self._window.getmaxyx()
+        height, width = curses.getmaxyx(self._window)
         # use self.__camera to check if the position is in the camera
         return 0 <= y - self.__camera[1] + 1 < height and 0 <= x - self.__camera[0] + 1 < width
 
@@ -74,38 +73,38 @@ class GameScreen(Screen):
 
 
     def update(self):
-        self._window.clear()
+        curses.clear()
         game = UIManager.get_game()
 
-        height, width = self._window.getmaxyx()
+        height, width = curses.getmaxyx(self._window)
 
         # Show Left border
         for i in range(UIManager.get_game().get_map().get_height() + 2):
             x = 0
             if self.check_if_position_in_camera(x-1, i-1):
                 new_coordonates = self.new_coordonates(x-1, i-1)
-                self._window.addstr(new_coordonates[1], new_coordonates[0], "#")
+                curses.mvaddstr(new_coordonates[1], new_coordonates[0], "#")
 
         # Show bottom border
         for i in range(UIManager.get_game().get_map().get_width() + 2):
             y = UIManager.get_game().get_map().get_height()
             if self.check_if_position_in_camera(i-1, y):
                 new_coordonates = self.new_coordonates(i-1, y)
-                self._window.addstr(new_coordonates[1], new_coordonates[0], "#")
+                curses.mvaddstr(new_coordonates[1], new_coordonates[0], "#")
 
         # Show right border
         for i in range(UIManager.get_game().get_map().get_height() + 1):
             x = UIManager.get_game().get_map().get_width()
             if self.check_if_position_in_camera(x, i-1):
                 new_coordonates = self.new_coordonates(x, i-1)
-                self._window.addstr(new_coordonates[1], new_coordonates[0], "#")
+                curses.mvaddstr(new_coordonates[1], new_coordonates[0], "#")
 
         # Show top border
         for i in range(UIManager.get_game().get_map().get_width() + 2):
             y = 0
             if self.check_if_position_in_camera(i - 1, y - 1):
                 new_coordonates = self.new_coordonates(i - 1, y - 1)
-                self._window.addstr(new_coordonates[1], new_coordonates[0], "#")
+                curses.mvaddstr(new_coordonates[1], new_coordonates[0], "#")
 
         # Show buildings
         for building in game.get_map().get_buildings():
@@ -115,21 +114,20 @@ class GameScreen(Screen):
                     new_y = building.get_position().get_y() + j
                     new_coordonates = self.new_coordonates(new_x, new_y)
                     if self.check_if_position_in_camera(new_x, new_y):
-                        self._window.addstr(new_coordonates[1], new_coordonates[0], GameScreen.BUILDING_REPRESENTATION.get(type(building), "B"), curses.color_pair(GameScreen.COLORS.get(building.get_player().get_color(), 0)))
-
+                        curses.mvaddstr(new_coordonates[1], new_coordonates[0], GameScreen.BUILDING_REPRESENTATION.get(type(building), "B"), curses.color_pair(GameScreen.COLORS.get(building.get_player().get_color(), 0)))
         # Show resources points
         for resource in game.get_map().get_resources():
             x, y = resource.get_position().get_x(), resource.get_position().get_y()
             if self.check_if_position_in_camera(x, y):
                 new_coordonates = self.new_coordonates(x, y)
-                self._window.addstr(new_coordonates[1], new_coordonates[0], GameScreen.SOURCE_POINT_REPRESENTATION.get(type(resource), "R"), curses.color_pair(7))
+                curses.mvaddstr(new_coordonates[1], new_coordonates[0], GameScreen.SOURCE_POINT_REPRESENTATION.get(type(resource), "R"), curses.color_pair(7))
 
                 # Show units
                 for unit in game.get_map().get_units():
                     x, y = unit.get_position().get_x(), unit.get_position().get_y()
                     if self.check_if_position_in_camera(x, y):
                         new_coordonates = self.new_coordonates(x, y)
-                        self._window.addstr(new_coordonates[1], new_coordonates[0],
+                        curses.mvaddstr(new_coordonates[1], new_coordonates[0],
                                             GameScreen.UNIT_REPRESENTATION.get(type(unit), "u"),
                                             curses.color_pair(GameScreen.COLORS.get(unit.get_player().get_color(), 0)))
 
