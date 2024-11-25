@@ -2,7 +2,6 @@ class Unit:
     def __init__(
         self,
         player,
-        map,
         position,
         attack_speed: float,
         health_points: int,
@@ -14,7 +13,6 @@ class Unit:
         self.attack_speed = attack_speed
         self.damage = damage
         self.health_points = health_points
-        self.map = map
         self.movement_speed = movement_speed
         self.player = player
         self.position = position
