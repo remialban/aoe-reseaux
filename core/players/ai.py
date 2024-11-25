@@ -1,14 +1,9 @@
-for b in self.buildings:
+from core.players import Player
 
-    list_positions: set[tuple[int]]= set()
 
-    for i in range(b.get_height()):
-        for j in range(b.get_width()):
-            list_positions.add((b.get_position().get_x() + i, b.get_position().get_y() + j))
+class AI(Player) :
 
-    for i in range(building.get_width()):
-        for j in range(building.get_width()):
-            if (building.get_position().get_x() + i, building.get_position().get_y() + j) in list_positions:
-                return False
+    def play(self):
+        print(self.name + " is playing.\n" )
 
-    return True
+
