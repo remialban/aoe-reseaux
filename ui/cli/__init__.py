@@ -33,4 +33,4 @@ class CLI(UI):
         curses.wrapper(self.run)
 
     def cleanup(self):
-        pass
+        curses.endwin()
