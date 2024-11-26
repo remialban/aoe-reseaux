@@ -1,5 +1,6 @@
 import unicurses as curses
 
+from core import Player, Map, Game
 from ui.cli import Screen, GameMenu, ScreenManager, Screens
 from ui.ui_manager import UIManager
 
@@ -29,7 +30,16 @@ class MainMenu(Screen):
         # Check if key is the enter key of the keyboard or the enter key of the keypad
         elif key in (ord("\n"), 459):
             if self.__current_choice == 0:
-                pass
+                player1 = Player("Alice", "RED")
+                player2 = Player("Bob", "GREEN")
+
+                map = Map(100, 100)
+
+                game = Game({player1, player2}, map)
+
+                UIManager.set_game(game)
+                ScreenManager.change_screen(Screens.GAME)
+
             elif self.__current_choice == 1:
                 ScreenManager.change_screen(Screens.SELECT_BACKUP)
             elif self.__current_choice == 2:
