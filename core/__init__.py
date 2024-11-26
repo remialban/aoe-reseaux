@@ -38,18 +38,17 @@ class Game:
     """
     def party(self):
 
-        while True:
-            finished_actions : set[Action]= set()
+        finished_actions : set[Action]= set()
 
-            for p in self.__players :
-                if isinstance(p,AI):
-                    p.play()
-            for a in self.__actions :
-                if a.do_action():
-                    finished_actions.add(a)
+        for p in self.__players :
+            if isinstance(p,AI):
+                p.play()
+        for a in self.__actions :
+            if a.do_action():
+                finished_actions.add(a)
 
-            for fa in finished_actions :
-                self.__actions.remove(fa)
+        for fa in finished_actions :
+            self.__actions.remove(fa)
 
 
 
