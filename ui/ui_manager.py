@@ -59,6 +59,10 @@ class UIManager:
         return UIManager.__game
 
     @staticmethod
+    def set_game(game: Game):
+        UIManager.__game = game
+
+    @staticmethod
     def load_game(filename: str):
         file = open(f"backups/{filename}", "rb")
         UIManager.__game = pickle.load(file)
