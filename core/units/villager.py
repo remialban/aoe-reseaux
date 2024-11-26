@@ -5,28 +5,23 @@ class Villager(Unit):
     def __init__(
         self,
         player,
-        map,
         position,
-        attack_speed: float,
-        health_points: int,
-        damage: int,
-        movement_speed: float,
-        range: float,
-        training_time: float,
-        max_stock: int,
+
     ):
         super().__init__(
             player,
-            map,
             position,
-            attack_speed,
-            health_points,
-            damage,
-            movement_speed,
-            range,
-            training_time,
+            1,
+            25,
+            2,
+            1,
+            1,
+            1,
+
         )
-        self.max_stock = max_stock
+
+        self.max_stock = 25
+        self.collect_speed = 25
         self.stock = {}
 
     def build(self, building):
