@@ -42,3 +42,8 @@ class Villager(Unit):
         print(
             f"Villager from {self.player.name} collected {amount} of {resource_type}."
         )
+    def get_max_stock(self):
+        return self.max_stock
+
+    def get_stock(self):
+        return self.stock
