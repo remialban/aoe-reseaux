@@ -122,14 +122,14 @@ class GameScreen(Screen):
                 new_coordonates = self.new_coordonates(x, y)
                 curses.mvaddstr(new_coordonates[1], new_coordonates[0], GameScreen.SOURCE_POINT_REPRESENTATION.get(type(resource), "R"), curses.color_pair(7))
 
-                # Show units
-                for unit in game.get_map().get_units():
-                    x, y = unit.get_position().get_x(), unit.get_position().get_y()
-                    if self.check_if_position_in_camera(x, y):
-                        new_coordonates = self.new_coordonates(x, y)
-                        curses.mvaddstr(new_coordonates[1], new_coordonates[0],
-                                            GameScreen.UNIT_REPRESENTATION.get(type(unit), "u"),
-                                            curses.color_pair(GameScreen.COLORS.get(unit.get_player().get_color(), 0)))
+        # Show units
+        for unit in game.get_map().get_units():
+            x, y = unit.get_position().get_x(), unit.get_position().get_y()
+            if self.check_if_position_in_camera(x, y):
+                new_coordonates = self.new_coordonates(x, y)
+                curses.mvaddstr(new_coordonates[1], new_coordonates[0],
+                                    GameScreen.UNIT_REPRESENTATION.get(type(unit), "u"),
+                                    curses.color_pair(GameScreen.COLORS.get(unit.get_player().get_color(), 0)))
 
     def on_key(self, key):
         if key in (curses.KEY_UP, ord('z')) and self.__camera[1] > 0:
