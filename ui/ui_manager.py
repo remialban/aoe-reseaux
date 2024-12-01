@@ -1,5 +1,7 @@
 import os.path
 
+from jinja2 import Environment, FileSystemLoader
+
 from core import Game
 from ui import UI
 from ui.enums import UIList
@@ -85,3 +87,43 @@ class UIManager:
         if not os.path.exists("backups"):
             os.mkdir("backups")
         return [f for f in os.listdir("backups") if os.path.isfile(f"backups/{f}") and f.startswith("backup_")]
+
+    @staticmethod
+    def render_html():
+        env = Environment(loader=FileSystemLoader('templates'))
+        template = env.get_template('template.html')
+
+        players = sorted(list(UIManager.__game.get_players()), key= lambda obj: obj.get_color())
+        tab = []
+        for player in players:
+            dictionnaire = {}
+            units =  list(UIManager.__game.get_map().get_units(player))
+            dictionnaire["units"] = sorted(units, key= lambda obj: str(type(obj)))
+
+            buildings = list(UIManager.__game.get_map().get_buildings(player))
+            dictionnaire["buildings"] = sorted(buildings, key= lambda obj: str(type(obj)))
+
+            units_classes = {type(unit).__name__ for unit in units}
+            units_stats = {}
+            for unit_class in units_classes:
+                units_stats[unit_class] = len([unit for unit in units if type(unit).__name__ == unit_class])
+
+            dictionnaire["stats"] = {
+                "units_number": len(units),
+                "buildings_number": len(buildings),
+                "units_stats": units_stats
+
+            }
+            tab.append(dictionnaire)
+
+        data = {
+            "game": UIManager.__game,
+            "players": players,
+            "units": [unit for unit in UIManager.__game.get_players()],
+            "entities": tab,
+            "stats": units_stats
+        }
+
+        rendered_html = template.render(data)
+        with open("game.html", "w") as file:
+            file.write(rendered_html)

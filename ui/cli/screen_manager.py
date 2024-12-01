@@ -32,6 +32,8 @@ class ScreenManager:
             if key != -1:
                 if key == curses.KEY_F(12):
                     UIManager.change_ui(UIList.GUI)
+                elif key == curses.KEY_F(1) and UIManager.get_game() is not None:
+                    UIManager.render_html()
                 ScreenManager.__current_screen.on_key(key)
             ScreenManager.__current_screen.update()
             curses.refresh()
