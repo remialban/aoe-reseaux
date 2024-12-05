@@ -1,6 +1,7 @@
 import unicurses as curses
 
 from core import Player, Map, Game
+from core.map import Modes
 from ui.cli import Screen, GameMenu, ScreenManager, Screens
 from ui.ui_manager import UIManager
 
@@ -30,10 +31,11 @@ class MainMenu(Screen):
         # Check if key is the enter key of the keyboard or the enter key of the keypad
         elif key in (ord("\n"), 459):
             if self.__current_choice == 0:
-                player1 = Player("Alice", "RED")
+                player1 = Player("Soufiane", "RED")
                 player2 = Player("Bob", "GREEN")
+                player3 = Player("Rémi", "MAGENTA")
 
-                map = Map(100, 100)
+                map = Map(100, 100, Modes.GOLD_RUSH, {player1, player2})
 
                 game = Game({player1, player2}, map)
 

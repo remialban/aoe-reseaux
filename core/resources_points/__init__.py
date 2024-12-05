@@ -15,6 +15,9 @@ class ResourcePoint:
         self.__position = position
         self.__resources = resource
 
+    def get_resources(self) -> Resource:
+        return self.__resources
+
     def get_position(self) ->Position:
         return self.__position
 
