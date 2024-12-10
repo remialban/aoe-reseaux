@@ -12,6 +12,7 @@ class Archer(Unit):
             position,
             attack_speed=1,
             health_points=30,
+            max_health_points=30,
             damage=4,
             movement_speed=1,
             range=4,
