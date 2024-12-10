@@ -11,12 +11,13 @@ class Villager(Unit):
         super().__init__(
             player,
             position,
-            1,
-            25,
-            2,
-            1,
-            1,
-            1,
+            attack_speed=1,
+            health_points=25,
+            max_health_points=25,
+            dammage=2,
+            mouvement_speed=1,
+            range=1,
+            training_time=25,
 
         )
 
