@@ -7,7 +7,7 @@ from core.actions.attack_unit_action import AttackUnitAction
 from core.actions.attack_unit_by_building_action import AttackUnitByBuildingAction
 from core.buildings import Building
 from core.buildings.keep import Keep
-from core.map import Map
+from core.map import Map, Modes
 from core.players import Player
 from core.position import Position
 from core.resource import Resource
@@ -128,12 +128,14 @@ def test_before_and_after_action_attack_unit_by_building(my_attack_unit_by_build
     assert (my_attack_unit_by_building_action.get_new_time() - my_attack_unit_by_building_action.get_old_time() ) < timedelta(seconds = 2)
 
 def test_do_action_attack_unit_by_building_sufficient_range():
-    my_map= Map(120,120)
-    my_pos = Position(45, 80)
+
+    mode = Modes(3)
+    my_pos = Position(43, 80)
     my_other_pos = Position(47, 80)
     my_player = Player("Leopold", "red")
     my_other_player = Player("Querza","blue")
-    my_other_unit = Unit(my_player, my_map, my_pos, 2, 100, 20, 11.2,3,15)
+    my_map = Map(120, 120, mode, {my_player, my_other_player})
+    my_other_unit = Unit(my_player, my_pos, 2, 100, 20, 11.2,3,15)
     my_keep = Keep(my_other_pos, my_other_player)
     aubba = AttackUnitByBuildingAction(my_keep, my_other_unit)
     aubba.do_action()
