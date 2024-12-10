@@ -23,7 +23,7 @@ class Building :
         assert width >0 and height >0
         self.__build_time = build_time
         self.__height = height
-        self.__health_points = health_point
+        self.__health_points = health_points
         self.__max_health_points = max_health_points
         self.__position = position
         self.__width = width
@@ -44,6 +44,9 @@ class Building :
     def get_health_points(self) -> int:
         return self.__health_points
 
+    def get_max_health_points(self) -> int:
+        return self.__max_health_points
+          
     def get_position(self) -> Position :
         return self.__position
 
