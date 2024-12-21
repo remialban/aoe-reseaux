@@ -14,7 +14,7 @@ class Villager(Unit):
             attack_speed=1,
             health_points=25,
             max_health_points=25,
-            dammage=2,
+            damage=2,
             mouvement_speed=1,
             range=1,
             training_time=25,
