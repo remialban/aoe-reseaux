@@ -21,6 +21,9 @@ class Unit:
         self.range = range
         self.training_time = training_time
 
+    def get_max_health_points(self):
+        return self.max_health_points
+
     def attack_unit(self, unit):
         """Attacks another unit."""
         unit.remove_health_points(self.damage)
