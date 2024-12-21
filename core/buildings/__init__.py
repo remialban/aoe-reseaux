@@ -23,8 +23,8 @@ class Building :
         assert width >0 and height >0
         self.__build_time = build_time
         self.__height = height
-        self.__health_points = health_points
-        self.__max_health_points = max_health_points
+        self.__health_points = health_point
+        self.__max_health_points = health_point
         self.__position = position
         self.__width = width
         self.__walkable = walkable
