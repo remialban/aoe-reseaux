@@ -41,7 +41,7 @@ class Unit:
     def get_health_points(self):
         return self.health_points
 
-     def get_max_health_points(self):
+    def get_max_health_points(self):
         return self.max_health_points
 
     def get_position(self):
