@@ -8,6 +8,7 @@ class Building :
     __build_time : float
     __height : int
     __health_points : int
+    __max_health_points : int
     __player : Player
     __position : Position
     __width : int
@@ -23,6 +24,7 @@ class Building :
         self.__build_time = build_time
         self.__height = height
         self.__health_points = health_point
+        self.__max_health_points = health_point
         self.__position = position
         self.__width = width
         self.__walkable = walkable
@@ -42,6 +44,9 @@ class Building :
     def get_health_points(self) -> int:
         return self.__health_points
 
+    def get_max_health_points(self) -> int:
+        return self.__max_health_points
+          
     def get_position(self) -> Position :
         return self.__position
 

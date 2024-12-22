@@ -5,6 +5,7 @@ class Unit:
         position,
         attack_speed: float,
         health_points: int,
+        max_health_points: int,
         damage: int,
         movement_speed: float,
         range: float,
@@ -13,11 +14,15 @@ class Unit:
         self.attack_speed = attack_speed
         self.damage = damage
         self.health_points = health_points
+        self.max_health_points = max_health_points
         self.movement_speed = movement_speed
         self.player = player
         self.position = position
         self.range = range
         self.training_time = training_time
+
+    def get_max_health_points(self):
+        return self.max_health_points
 
     def attack_unit(self, unit):
         """Attacks another unit."""
@@ -35,6 +40,9 @@ class Unit:
 
     def get_health_points(self):
         return self.health_points
+
+    def get_max_health_points(self):
+        return self.max_health_points
 
     def get_position(self):
         return self.position

@@ -12,6 +12,7 @@ class Horseman(Unit):
             position,
             attack_speed=1,
             health_points=45,
+            max_health_points=45,
             damage=4,
             movement_speed=1.2,
             range=0.38,

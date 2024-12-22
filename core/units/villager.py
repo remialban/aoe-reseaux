@@ -11,12 +11,13 @@ class Villager(Unit):
         super().__init__(
             player,
             position,
-            1,
-            25,
-            2,
-            1,
-            1,
-            1,
+            attack_speed=1,
+            health_points=25,
+            max_health_points=25,
+            damage=2,
+            movement_speed=1,
+            range=1,
+            training_time=25,
 
         )
 
@@ -37,3 +38,8 @@ class Villager(Unit):
         print(
             f"Villager from {self.player.name} collected {amount} of {resource_type}."
         )
+    def get_max_stock(self):
+        return self.max_stock
+
+    def get_stock(self):
+        return self.stock
