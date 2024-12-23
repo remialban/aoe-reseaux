@@ -8,6 +8,7 @@ from core.buildings import Building
 class Game:
 
     __actions : set[Action]
+    __paused : bool
 
     def __init__(self, players: set[Player], map: Map):
         if len(players) < 2:
@@ -15,6 +16,7 @@ class Game:
         self.__players = players
         self.__map = map
         self.__actions = set()
+        self.__paused = False
 
     def get_map(self) -> Map:
         return self.__map
@@ -28,6 +30,17 @@ class Game:
     def remove_action(self, action : Action):
         self.__actions.remove(action)
 
+    def pause(self):
+        self.__paused = True
+        for a in self.__actions :
+            a.save_time_delta()
+
+    def resume(self):
+        for a in self.__actions :
+            a.before_action()
+            a.set_old_time(a.get_new_time() - a.get_saved_time_delta())
+        self.__paused = False
+
     """
       def create_unit(self, type: str, building: Building) -> Unit:
           if type == "Villager":
@@ -38,17 +51,20 @@ class Game:
     """
     def party(self):
 
-        finished_actions : set[Action]= set()
+        if not self.__paused:
+            finished_actions : set[Action]= set()
 
-        for p in self.__players :
-            if isinstance(p,AI):
-                p.play()
-        for a in self.__actions :
-            if a.do_action():
-                finished_actions.add(a)
+            for p in self.__players :
+                 if isinstance(p,AI):
+                    p.play()
+            for a in self.__actions :
+                if a.do_action():
+                    finished_actions.add(a)
 
-        for fa in finished_actions :
-            self.__actions.remove(fa)
+            for fa in finished_actions :
+                self.__actions.remove(fa)
+
+            self.__map.clean()
 
         self.__map.clean()
 

@@ -6,6 +6,7 @@ class Action(ABC) :
 
     __old_time : datetime
     __new_time : datetime
+    __saved_time_delta : timedelta
     @abstractmethod
     def do_action(self)->bool:
         pass
@@ -25,3 +26,13 @@ class Action(ABC) :
 
     def get_new_time(self):
         return self.__new_time
+
+    def save_time_delta(self):
+        self.__saved_time_delta = self.__new_time - self.__old_time
+
+    def get_saved_time_delta(self):
+        return self.__saved_time_delta
+
+    def set_old_time(self, t : datetime):
+        self.__old_time = t
+
