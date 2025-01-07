@@ -50,6 +50,7 @@ class Game:
         for fa in finished_actions :
             self.__actions.remove(fa)
 
+        self.__map.clean()
 
 
 
