@@ -64,8 +64,6 @@ class UIManager:
                 print("ccccccc")
             except UIException as e:
                 e.get_ui().cleanup()
-            except e:
-                exit()
 
     @staticmethod
     def get_name():
