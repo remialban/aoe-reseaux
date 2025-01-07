@@ -365,7 +365,10 @@ class Map:
     def get_resources(self) -> set:
         return self.resources_points
 
-    def clean(self, tmp_buildings: list[Building] = [], tmp_units: list[Unit] = [],tmp_resources: list[ResourcePoint] = []) -> None:
+    def clean(self) -> None:
+        tmp_buildings: list[Building] = []
+        tmp_units: list[Unit] = []
+        tmp_resources: list[ResourcePoint] = []
         for building in self.buildings:
             if building.get_health_points() <= 0:
                 tmp_buildings.append(building)
