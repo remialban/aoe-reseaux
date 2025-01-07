@@ -21,7 +21,7 @@ class Villager(Unit):
 
         )
 
-        self.max_stock = 25
+        self.max_stock = 20
         self.collect_speed = 25
         self.stock = {}
 
