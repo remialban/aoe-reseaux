@@ -1,3 +1,4 @@
+from core import Action
 from core.buildings.farm import Farm
 from core.resource import Resource
 from core.resources_points import ResourcePoint
@@ -7,13 +8,14 @@ from core.units.villager import Villager
 
 
 
-class Collect_Action:
+class Collect_Action(Action):
 
     __villager : Villager
     __collected : ResourcePoint
     __void :Resource
 
-    def __init__(self,villager : Villager ,collected : ResourcePoint or Farm):
+    def __init__(self, villager: Villager, collected: ResourcePoint or Farm):
+        super().__init__()
         self.__villager = villager
         self.__collected = collected
         self.__void =Resource(0,0,0)
@@ -25,7 +27,7 @@ class Collect_Action:
             elif key == "food":
                 self.__void.add_food(self.__villager.get_stock()["food"])
 
-    def do_action_collect(self):
+    def do_action(self):
 
         if isinstance(self.__collected, ResourcePoint):
 
