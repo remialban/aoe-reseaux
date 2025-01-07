@@ -5,8 +5,9 @@ from ui.ui_manager import UIManager
 
 
 def main():
-    UIManager.add_ui(UIList.GUI, GUI())
     UIManager.add_ui(UIList.CLI, CLI())
+
+    UIManager.add_ui(UIList.GUI, GUI())
 
     UIManager.loop()
 
