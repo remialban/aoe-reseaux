@@ -39,6 +39,10 @@ class UIManager:
             UIManager.__current_ui.setup()
 
     @staticmethod
+    def get_current_ui() -> UI:
+        return UIManager.__current_ui
+
+    @staticmethod
     def change_ui(name: UIList|None):
         old_ui: UI = UIManager.__current_ui
         UIManager.__current_ui = UIManager.__uis.get(name, None)
@@ -57,8 +61,11 @@ class UIManager:
         while UIManager.__current_ui is not None:
             try:
                 UIManager.__current_ui.loop()
+                print("ccccccc")
             except UIException as e:
                 e.get_ui().cleanup()
+            except e:
+                exit()
 
     @staticmethod
     def get_name():
