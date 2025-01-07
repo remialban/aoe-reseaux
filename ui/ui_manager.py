@@ -61,7 +61,6 @@ class UIManager:
         while UIManager.__current_ui is not None:
             try:
                 UIManager.__current_ui.loop()
-                print("ccccccc")
             except UIException as e:
                 e.get_ui().cleanup()
 

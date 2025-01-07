@@ -159,5 +159,5 @@ class NewGameMenu:
 
     def back_to_main_menu(self):
         self.cleanup()
-        #MenuTkinter(self.window).setup()
+        MenuTkinter(self.master)
 
