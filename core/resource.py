@@ -1,9 +1,9 @@
 class Resource:
-    __wood: int
-    __gold: int
-    __food: int
+    __wood: float
+    __gold: float
+    __food: float
 
-    def __init__(self, wood: int, gold: int, food: int):
+    def __init__(self, wood: float, gold: float, food: float):
         assert wood >= 0,"wood:"+ str(wood)
         assert gold >= 0,"gold:" + str(gold)
         assert food >= 0,"food:" + str(food)
@@ -11,13 +11,13 @@ class Resource:
         self.__gold = gold
         self.__food = food
 
-    def get_wood(self) -> int:
+    def get_wood(self) -> float:
         return self.__wood
     
-    def get_gold(self) -> int:
+    def get_gold(self) -> float:
         return self.__gold
     
-    def get_food(self) -> int:
+    def get_food(self) -> float:
         return self.__food
     
     def add_wood(self,value : float) :

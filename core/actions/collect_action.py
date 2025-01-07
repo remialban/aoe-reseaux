@@ -32,18 +32,18 @@ class Collect_Action(Action):
         if isinstance(self.__collected, ResourcePoint):
 
             if isinstance(self.__collected,Mine) :
-                self.__collected.collect(10, self.__villager.get_max_stock(), self.__void)
-                self.__villager.collect_resources("gold", 10)
+                self.__collected.collect(0.46666666666666666666667, self.__villager.get_max_stock(), self.__void)
+                self.__villager.collect_resources("gold", 0.46666666666666666666667)
                 return 7
 
             elif isinstance(self.__collected,Wood):
-                self.__collected.collect(10, self.__villager.get_max_stock(), self.__void)
-                self.__villager.collect_resources("wood", 10)
+                self.__collected.collect(0.46666666666666666666667, self.__villager.get_max_stock(), self.__void)
+                self.__villager.collect_resources("wood", 0.46666666666666666666667)
                 return 5
 
         elif isinstance(self.__collected,Farm):
-            self.__collected.collect(10)
-            self.__villager.collect_resources("food", 10)
+            self.__collected.collect(0.46666666666666666666667)
+            self.__villager.collect_resources("food", 0.46666666666666666666667)
             return 2
 
         else:
