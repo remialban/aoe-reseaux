@@ -114,20 +114,20 @@ class GameScreen(Screen):
                     new_y = building.get_position().get_y() + j
                     new_coordonates = self.new_coordonates(new_x, new_y)
                     if self.check_if_position_in_camera(new_x, new_y):
-                        curses.mvaddstr(new_coordonates[1], new_coordonates[0], GameScreen.BUILDING_REPRESENTATION.get(type(building), "B"), curses.color_pair(GameScreen.COLORS.get(building.get_player().get_color(), 0)))
+                        curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]), GameScreen.BUILDING_REPRESENTATION.get(type(building), "B"), curses.color_pair(GameScreen.COLORS.get(building.get_player().get_color(), 0)))
         # Show resources points
         for resource in game.get_map().get_resources():
             x, y = resource.get_position().get_x(), resource.get_position().get_y()
             if self.check_if_position_in_camera(x, y):
                 new_coordonates = self.new_coordonates(x, y)
-                curses.mvaddstr(new_coordonates[1], new_coordonates[0], GameScreen.SOURCE_POINT_REPRESENTATION.get(type(resource), "R"), curses.color_pair(7))
+                curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]), GameScreen.SOURCE_POINT_REPRESENTATION.get(type(resource), "R"), curses.color_pair(7))
 
         # Show units
         for unit in game.get_map().get_units():
             x, y = unit.get_position().get_x(), unit.get_position().get_y()
             if self.check_if_position_in_camera(x, y):
                 new_coordonates = self.new_coordonates(x, y)
-                curses.mvaddstr(new_coordonates[1], new_coordonates[0],
+                curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]),
                                     GameScreen.UNIT_REPRESENTATION.get(type(unit), "u"),
                                     curses.color_pair(GameScreen.COLORS.get(unit.get_player().get_color(), 0)))
 
