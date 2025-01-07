@@ -8,7 +8,6 @@ from ui.gui.screen_manager import ScreenManager, Screens
 from ui.gui.screens.map import MapScreen
 from ui.gui.utils.camera import Camera
 from ui.gui.maps.big_map.big_map import BigMap
-from ui.gui.screens.main_menu import MenuTkinter
 
 
 # Launch a pygame window
