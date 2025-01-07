@@ -1,121 +1,217 @@
-from core.players import Player
+from core.actions import AttackBuildingAction, AttackUnitAction, MoveAction, CollectAction
+from core.actions import BuildAction, TrainAction
 from core.units.villager import Villager
 from core.units.archer import Archer
-from core.units.swordsman import Swordsman
 from core.units.horse_man import Horseman
-from core.actions.collect_action import Collect_Action
-from core.actions.move_action import MoveAction
-from core.actions.attack_unit_action import AttackUnitAction
-from core.actions.attack_building_action import AttackBuildingAction
-from core.map import Map
-from core.buildings import Building, Barracks, Stable, ArcheryRange
-from core.resources_points import ResourcePoint
-from core.position import Position
+from core.units.swordsman import Swordsman
+from core.buildings import Keep, Farm, TownCenter, Barracks, Stable, ArcheryRange, House
 
 
-class AI(Player):
-    def __init__(self, name, color, resource):
-        super().__init__(name, color, resource)
+class AI:
+    def __init__(self, name, strategy="balanced"):
+        self.name = name
+        self.strategy = strategy  # Can be "defensive", "aggressive", or "balanced"
 
-    def play(self, game_map: Map):
-        """
-        Perform all possible actions for the AI player during a turn.
-        """
-        units = game_map.get_units(self)
-        buildings = game_map.get_buildings(self)
-        resources = game_map.get_resources()
+    def play(self, game_state):
+        if self.strategy == "defensive":
+            self.defensive_strategy(game_state)
+        elif self.strategy == "aggressive":
+            self.aggressive_strategy(game_state)
+        elif self.strategy == "balanced":
+            self.balanced_strategy(game_state)
 
-        self.gather_resources(units, resources)
-        self.build_structures(game_map)
-        self.train_units(buildings)
-        self.attack_enemies(units, game_map)
+    def defensive_strategy(self, game_state):
+        """Focuses on defense: builds defensive structures and trains defensive units."""
+        for building in game_state.get_buildings(self):
+            if isinstance(building, TownCenter):
+                self.train_unit(Villager, building, game_state)
 
-    def gather_resources(self, units, resources):
-        """Assign villagers to gather resources."""
-        for unit in units:
-            if isinstance(unit, Villager):
-                nearest_resource = self.find_nearest_resource(unit, resources)
-                if nearest_resource:
-                    collect_action = Collect_Action(unit, nearest_resource)
-                    collect_action.do_action_collect()
+        if self.needs_defense(game_state):
+            self.build_structure(Keep, game_state)
 
-    def build_structures(self, game_map):
-        """Build new structures if resources allow."""
-        if self.has_enough_resources({"wood": 50}):
-            position = self.find_empty_position(game_map)
-            if position:
-                self.subtract_resources({"wood": 50})
-                self.add_building(Barracks(position))
+        self.manage_economy(game_state)
 
-    def train_units(self, buildings):
-        """Train units if resources allow."""
-        for building in buildings:
-            if isinstance(building, (Barracks, Stable, ArcheryRange)):
-                if self.has_enough_resources({"food": 50, "gold": 20}):
-                    self.subtract_resources({"food": 50, "gold": 20})
-                    self.add_unit(Swordsman(building.get_position()))
+    def aggressive_strategy(self, game_state):
+        """Focuses on attacking: trains attack units and launches attacks."""
+        for building in game_state.get_buildings(self):
+            if isinstance(building, Barracks):
+                self.train_unit(Swordsman, building, game_state)
+            elif isinstance(building, ArcheryRange):
+                self.train_unit(Archer, building, game_state)
+            elif isinstance(building, Stable):
+                self.train_unit(Horseman, building, game_state)
 
-    def attack_enemies(self, units, game_map):
-        """Command units to attack enemies."""
-        for unit in units:
-            if isinstance(unit, (Archer, Swordsman, Horseman)):
-                target = self.find_nearest_enemy(unit, game_map)
-                if target:
-                    self.perform_attack(unit, target)
+        self.launch_attack(game_state)
+        self.manage_economy(game_state)
 
-    def perform_attack(self, unit, target):
-        """Execute an attack action."""
-        if isinstance(target, Building):
-            attack_action = AttackBuildingAction(unit, target)
+    def balanced_strategy(self, game_state):
+        """Balances between attack and defense based on the situation."""
+        if self.needs_defense(game_state):
+            self.defensive_strategy(game_state)
         else:
-            attack_action = AttackUnitAction(unit, target)
-        attack_action.do_action()
+            self.aggressive_strategy(game_state)
 
-    def find_nearest_resource(self, unit, resources):
-        """Find the nearest resource point to the unit."""
-        unit_position = unit.get_position()
+    def train_unit(self, unit_type, building, game_state):
+        """Trains a unit of the given type at the specified building."""
+        if self.can_train(building, unit_type):
+            action = TrainAction(self, building, unit_type)
+            if self.has_resources_for(unit_type):
+                game_state.add_action(action)
+                self.deduct_resources_for(unit_type)
+
+    def can_train(self, building, unit_type):
+        """Determines if a building can train a specific unit type."""
+        return (
+            building.is_training_ready() and unit_type in building.get_trainable_units()
+        )
+
+    def build_structure(self, structure_type, game_state):
+        """Builds a structure of the given type if resources allow."""
+        if self.has_resources_for(structure_type):
+            action = BuildAction(self, structure_type)
+            game_state.add_action(action)
+            self.deduct_resources_for(structure_type)
+
+    def manage_economy(self, game_state):
+        """Ensures sufficient resources by building Farms and Houses as needed."""
+        if self.needs_more_houses(game_state):
+            self.build_structure(House, game_state)
+
+        if self.needs_more_food(game_state):
+            self.build_structure(Farm, game_state)
+
+        self.collect_resources(game_state)
+
+    def needs_more_houses(self, game_state):
+        """Checks if the AI needs more Houses to support population growth."""
+        current_population = game_state.get_current_population(self)
+        max_population = game_state.get_max_population(self)
+        return current_population >= max_population
+
+    def needs_more_food(self, game_state):
+        """Checks if the AI needs more Farms to sustain food production."""
+        return self.get_resources().get_food() < 50  # Example threshold
+
+    def collect_resources(self, game_state):
+        """Directs villagers to collect resources using CollectAction."""
+        for unit in game_state.get_units(self):
+            if isinstance(unit, Villager):
+                resource_point = self.find_closest_resource(game_state, unit)
+                if resource_point:
+                    self.move_to_collect(unit, resource_point, game_state)
+
+    def move_to_collect(self, unit, resource_point, game_state):
+        """Moves a unit to the resource point and collects resources."""
+        if not self.is_position_available(resource_point.get_position(), game_state):
+            alternative_resource = self.find_alternative_resource(game_state, unit)
+            if alternative_resource:
+                resource_point = alternative_resource
+
+        if unit.get_position() != resource_point.get_position():
+            move_action = MoveAction(
+                game_state.get_map(), unit, resource_point.get_position()
+            )
+            game_state.add_action(move_action)
+
+        collect_action = CollectAction(unit, resource_point)
+        game_state.add_action(collect_action)
+
+    def is_position_available(self, position, game_state):
+        """Checks if the given position is available for a unit to move to."""
+        for building in game_state.get_buildings():
+            if building.get_position() == position:
+                return building.is_walkable()
+        for unit in game_state.get_units():
+            if unit.get_position() == position:
+                return False
+        return True
+
+    def find_alternative_resource(self, game_state, unit):
+        """Finds an alternative resource point if the closest one is not accessible."""
+        resource_points = game_state.get_resources()
+        accessible_resources = [
+            rp
+            for rp in resource_points
+            if self.is_position_available(rp.get_position(), game_state)
+        ]
         return min(
-            resources,
-            key=lambda res: unit_position.get_distance(res.get_position()),
-            default=None,
+            accessible_resources, key=lambda rp: self.distance(unit, rp), default=None
         )
 
-    def find_nearest_enemy(self, unit, game_map):
-        """Find the nearest enemy unit or building."""
-        unit_position = unit.get_position()
-        enemies = game_map.get_units() + game_map.get_buildings()
-        enemies = [e for e in enemies if e.get_player() != self]
+    def move_to_target(self, unit, target, game_state):
+        """Moves a unit to a target position using MoveAction."""
+        if unit.get_position() != target.get_position():
+            if self.is_position_available(target.get_position(), game_state):
+                action = MoveAction(game_state.get_map(), unit, target.get_position())
+                game_state.add_action(action)
+
+    def launch_attack(self, game_state):
+        """Launches an attack on the nearest enemy target."""
+        for unit in game_state.get_units(self):
+            if isinstance(unit, (Swordsman, Archer, Horseman)):
+                enemy = self.find_nearest_enemy(game_state, unit)
+                if enemy:
+                    self.move_to_target(unit, enemy, game_state)
+                    if isinstance(enemy, type(unit)):
+                        action = AttackUnitAction(unit, enemy)
+                    else:
+                        action = AttackBuildingAction(unit, enemy)
+                    game_state.add_action(action)
+
+    def needs_defense(self, game_state):
+        """Checks if the AI needs to strengthen its defenses."""
+        return (
+            len(
+                [
+                    building
+                    for building in game_state.get_buildings(self)
+                    if isinstance(building, Keep)
+                ]
+            )
+            < 2
+        )
+
+    def find_closest_resource(self, game_state, unit):
+        """Finds the closest resource point for a villager to collect."""
+        resource_points = game_state.get_resources()
         return min(
-            enemies,
-            key=lambda e: unit_position.get_distance(e.get_position()),
-            default=None,
+            resource_points, key=lambda rp: self.distance(unit, rp), default=None
         )
 
-    def find_empty_position(self, game_map):
-        """Find an empty position for building."""
-        for x in range(game_map.get_width()):
-            for y in range(game_map.get_height()):
-                position = Position(x, y)
-                if not game_map.is_position_occupied(position):
-                    return position
-        return None
+    def find_nearest_enemy(self, game_state, unit):
+        """Finds the nearest enemy unit or building to attack."""
+        enemies = game_state.get_units() | game_state.get_buildings()
+        player_entities = game_state.get_units(self) | game_state.get_buildings(self)
+        targets = enemies - player_entities
+        return min(targets, key=lambda e: self.distance(unit, e), default=None)
 
-    def has_enough_resources(self, cost):
-        """Check if resources meet the required cost."""
-        return all(
-            getattr(self.stock, f"get_{res}")() >= amount
-            for res, amount in cost.items()
+    def distance(self, obj1, obj2):
+        """Calculates the distance between two objects."""
+        pos1, pos2 = obj1.get_position(), obj2.get_position()
+        return (
+            (pos1.get_x() - pos2.get_x()) ** 2 + (pos1.get_y() - pos2.get_y()) ** 2
+        ) ** 0.5
+
+    def has_resources_for(self, entity_type):
+        """Checks if the AI has enough resources to train/build the specified entity."""
+        cost = entity_type.get_cost()
+        stock = self.get_resources()
+        return (
+            stock.get_wood() >= cost.get_wood()
+            and stock.get_gold() >= cost.get_gold()
+            and stock.get_food() >= cost.get_food()
         )
 
-    def subtract_resources(self, cost):
-        """Deduct resources used for an action."""
-        for res, amount in cost.items():
-            getattr(self.stock, f"add_{res}")(-amount)
+    def deduct_resources_for(self, entity_type):
+        """Deducts the resources required for training/building the specified entity."""
+        cost = entity_type.get_cost()
+        stock = self.get_resources()
+        stock.remove_wood(cost.get_wood())
+        stock.remove_gold(cost.get_gold())
+        stock.remove_food(cost.get_food())
 
-    def add_building(self, building):
-        """Add a building to the player's control."""
-        self.buildings.append(building)
+    def get_resources(self):
+        """Returns the current resource stock of the AI."""
+        # Assuming the AI player object has a resource stock attribute
+        return self.stock
 
-    def add_unit(self, unit):
-        """Add a unit to the player's control."""
-        self.units.append(unit)
