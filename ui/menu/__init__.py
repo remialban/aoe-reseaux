@@ -4,7 +4,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 from core import Game, Player, Map
-from core.map import Modes
+from core.map import RessourceModes, PlayerModes
 from ui import UI
 from ui.enums import UIList
 from ui.ui_manager import UIManager
@@ -151,7 +151,7 @@ class NewGameMenu:
         player2 = Player("eee", "RED")
         players = {player1, player2}
 
-        map = Map(100,20, Modes.NORMAL, players)
+        map = Map(100,20, RessourceModes.NORMAL, PlayerModes.LEAN, players)
         game = Game(players=players, map=map)
         UIManager.set_game(game)
         UIManager.get_current_ui().cleanup()
