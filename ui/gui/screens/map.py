@@ -28,6 +28,7 @@ class MapScreen(Screen):
         self.minimap = MiniMap(None, screen_width, 0, self._window)
         self.screen = self._window
 
+        self.resources_showed = True
 
     def loop(self):
         for event in pygame.event.get():
@@ -54,6 +55,9 @@ class MapScreen(Screen):
                     messagebox.showinfo('Sauvegarde réussie!', 'La partie a bien été enregistré avec le nom "' + backup_name + '"')
                     # stop tkinter
                     win.destroy()
+
+                if event.key == pygame.K_F1:
+                    self.resources_showed = not self.resources_showed
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 coordinates = list(pygame.mouse.get_pos())
@@ -86,10 +90,10 @@ class MapScreen(Screen):
         self.screen.fill((61, 10, 7))
 
         offset = 5
-        if pygame.key.get_pressed()[pygame.K_r]:
-            game = UIManager.get_game().get_map()
-            buildings = list(game.get_buildings())[0]
-            UIManager.get_game().get_map().remove_building(buildings)
+        # if pygame.key.get_pressed()[pygame.K_r]:
+        #     game = UIManager.get_game().get_map()
+        #     buildings = list(game.get_buildings())[0]
+        #     UIManager.get_game().get_map().remove_building(buildings)
 
 
         if pygame.key.get_pressed()[pygame.K_LEFT] or pygame.key.get_pressed()[pygame.K_q]:
@@ -170,6 +174,40 @@ class MapScreen(Screen):
         #pygame.draw.rect(self.screen, (255, 0, 0), (new_x, new_y, self.screen.get_width()/coef, self.screen.get_height()/coef), 2)
         pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
 
+        if self.resources_showed:
+            police = pygame.font.Font(None, 36)  # Police par défaut, taille 36
+            texte = "Ressources joueurs :"
+            texte_rendu = police.render(texte, True, (255,255,255))
+
+            # Position du texte (en haut à droite)
+            texte_rect = texte_rendu.get_rect()
+            texte_rect.topright = (self.screen.get_width() - 10, 10)  # Décalage de 10 pixels du bord
+
+            self.screen.blit(texte_rendu, texte_rect)
+            x = 0
+            for player in UIManager.get_game().get_players():
+                police = pygame.font.Font(None, 36)  # Police par défaut, taille 36
+
+                texte = "Joueur " + str(player.get_color()) + " - Bois : " + str(player.stock.get_wood()) + " - Nourriture : " + str(player.stock.get_food()) + " - Or : " + str(player.stock.get_gold())
+                texte_rendu = police.render(texte, True, (255,255,255))
+
+                # Position du texte (en haut à droite)
+                texte_rect = texte_rendu.get_rect()
+                texte_rect.topright = (self.screen.get_width() - 10, x + 50)  # Décalage de 10 pixels du bord
+                x += 50
+                self.screen.blit(texte_rendu, texte_rect)
+
+        if UIManager.get_game().is_paused():
+            texte = "Jeu en pause"
+            police = pygame.font.Font(None, 36)  # Police par défaut, taille 36
+
+            texte_rendu = police.render(texte, True, (255, 255, 255))
+
+            # Position du texte (en haut à gauche)
+            texte_rect = texte_rendu.get_rect()
+            texte_rect.topleft = (10, 10)
+
+            self.screen.blit(texte_rendu, texte_rect)
         pygame.display.flip()
 
         #tick the clock
