@@ -152,7 +152,7 @@ class NewGameMenu:
         player2 = Player("eee", "RED")
         players = {player1, player2}
 
-        map = Map(100,20, RessourceModes.NORMAL, PlayerModes.LEAN, players)
+        map = Map(120,120, RessourceModes.NORMAL, PlayerModes.LEAN, players)
         game = Game(players=players, map=map)
         UIManager.set_game(game)
         UIManager.get_current_ui().cleanup()

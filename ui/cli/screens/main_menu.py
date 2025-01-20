@@ -18,6 +18,9 @@ class MainMenu(Screen):
 
     def update(self):
         #curses.clear()
+        if UIManager.get_game() is not None:
+            ScreenManager.change_screen(Screens.GAME)
+
         curses.mvaddstr(0,0,"coucou")
         for i, choice in enumerate(self.__choices):
             if i == self.__current_choice:
