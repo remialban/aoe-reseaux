@@ -10,6 +10,9 @@ import pickle
 
 
 class UIException(Exception):
+    """
+    Exception raised when a UI is closed
+    """
     def __init__(self, ui: UI):
         super().__init__("UI closed")
         self.__ui = ui
@@ -18,6 +21,11 @@ class UIException(Exception):
         return self.__ui
 
 class UIManager:
+    """
+    Class managing the UIs
+    This class allows to change the current UI, add a new UI, stop the current UI and loop over the current UI
+    Also allow to set game, load game, save game and get backups
+    """
     __uis: dict[UIList, UI] = {}
     __current_ui: UI|None = None
 
@@ -58,20 +66,38 @@ class UIManager:
 
     @staticmethod
     def get_game() -> Game:
+        """
+        Get the current game
+        :return:
+        """
         return UIManager.__game
 
     @staticmethod
     def set_game(game: Game):
+        """
+        Set the current game
+        :param game: the game
+        :return:
+        """
         UIManager.__game = game
 
     @staticmethod
     def load_game(filename: str):
+        """
+        Load a game from a file
+        :param filename: the filename
+        """
         file = open(f"backups/{filename}", "rb")
         UIManager.__game = pickle.load(file)
         file.close()
 
     @staticmethod
     def save_game(filename: str):
+        """
+        Save the current game to a file
+        :param filename:
+        :return:
+        """
         if os.path.exists(filename):
             if os.path.isfile(filename):
                 os.remove(filename)
