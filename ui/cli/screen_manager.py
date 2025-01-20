@@ -30,7 +30,7 @@ class ScreenManager:
         while ScreenManager.__current_screen is not None:
             key = curses.getch()
             if key != -1:
-                if key == curses.KEY_F(12):
+                if key == curses.KEY_F(9):
                     UIManager.change_ui(UIList.GUI)
                 elif key == curses.KEY_F(1) and UIManager.get_game() is not None:
                     UIManager.render_html()
