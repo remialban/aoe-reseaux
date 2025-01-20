@@ -23,6 +23,7 @@ class MENU(UI):
 
     def cleanup(self):
         self.root.quit()
+        self.root.destroy()
 
 
     def loop(self):

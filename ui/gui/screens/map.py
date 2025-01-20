@@ -11,6 +11,8 @@ from ui.gui.maps.big_map.big_map import BigMap
 from ui.gui.screens import Screen
 from ui.ui_manager import UIManager
 
+from tkinter import *
+from tkinter import messagebox
 
 class MapScreen(Screen):
     def __init__(self, window):
@@ -44,6 +46,15 @@ class MapScreen(Screen):
                     UIManager.get_game().pause()
                 if event.key == pygame.K_r:
                     UIManager.get_game().resume()
+                if event.key == pygame.K_F11:
+                    backup_name = UIManager.get_name()
+                    UIManager.save_game(backup_name)
+                    win = Tk()  # to hide the main window
+                    win.wm_withdraw()
+                    messagebox.showinfo('Sauvegarde réussie!', 'La partie a bien été enregistré avec le nom "' + backup_name + '"')
+                    # stop tkinter
+                    win.destroy()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 coordinates = list(pygame.mouse.get_pos())
                 coordinates = list(event.pos)
