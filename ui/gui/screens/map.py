@@ -208,6 +208,17 @@ class MapScreen(Screen):
             texte_rect.topleft = (10, 10)
 
             self.screen.blit(texte_rendu, texte_rect)
+
+        # Display fps on the bottom left
+        fps = self.clock.get_fps()
+        police = pygame.font.Font(None, 18)
+        texte = "FPS : " + str(int(fps))
+        texte_rendu = police.render(texte, True, (255, 255, 255))
+        texte_rect = texte_rendu.get_rect()
+        texte_rect.bottomleft = (10, self.screen.get_height() - 10)
+        self.screen.blit(texte_rendu, texte_rect)
+
+
         pygame.display.flip()
 
         #tick the clock
