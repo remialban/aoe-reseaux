@@ -28,7 +28,7 @@ class MapScreen(Screen):
         self.minimap = MiniMap(None, screen_width, 0, self._window)
         self.screen = self._window
 
-        self.resources_showed = True
+        self.resources_showed = False
 
     def loop(self):
         for event in pygame.event.get():
