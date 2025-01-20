@@ -157,3 +157,8 @@ class UIManager:
         rendered_html = template.render(data)
         with open("game.html", "w") as file:
             file.write(rendered_html)
+
+    @staticmethod
+    def open_in_browser():
+        import webbrowser
+        webbrowser.open("game.html")

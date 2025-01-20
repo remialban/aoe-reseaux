@@ -34,6 +34,15 @@ class ScreenManager:
                     UIManager.change_ui(UIList.GUI)
                 elif key == curses.KEY_F(1) and UIManager.get_game() is not None:
                     UIManager.render_html()
+                elif key == ord("p"):
+                    UIManager.get_game().pause()
+                elif key == ord("r"):
+                    UIManager.get_game().resume()
+                elif key == ord("\t"):
+                    UIManager.get_game().pause()
+                    UIManager.render_html()
+                    UIManager.open_in_browser()
+
                 ScreenManager.__current_screen.on_key(key)
             ScreenManager.__current_screen.update()
             curses.refresh()

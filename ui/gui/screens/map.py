@@ -36,6 +36,14 @@ class MapScreen(Screen):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_F9:
                     UIManager.change_ui(UIList.CLI)
+                if event.key == pygame.K_TAB:
+                    UIManager.get_game().pause()
+                    UIManager.render_html()
+                    UIManager.open_in_browser()
+                if event.key == pygame.K_p:
+                    UIManager.get_game().pause()
+                if event.key == pygame.K_r:
+                    UIManager.get_game().resume()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 coordinates = list(pygame.mouse.get_pos())
                 coordinates = list(event.pos)

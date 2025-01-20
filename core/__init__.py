@@ -69,8 +69,5 @@ class Game:
         self.__map.clean()
 
 
-
-
-
-
-
+    def is_paused(self):
+        return self.__paused
