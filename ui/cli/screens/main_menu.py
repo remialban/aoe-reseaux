@@ -7,6 +7,7 @@ from core.units.archer import Archer
 from core.units.horse_man import Horseman
 from core.units.villager import Villager
 from ui.cli import Screen, GameMenu, ScreenManager, Screens
+from ui.enums import UIList
 from ui.ui_manager import UIManager
 from core.position import Position
 
@@ -38,6 +39,7 @@ class MainMenu(Screen):
         # Check if key is the enter key of the keyboard or the enter key of the keypad
         elif key in (ord("\n"), 459):
             if self.__current_choice == 0:
+                UIManager.change_ui(UIList.MENU)
                 player1 = Player("Soufiane", "RED")
                 player2 = Player("Bob", "GREEN")
                 player3 = Player("Rémi", "MAGENTA")
