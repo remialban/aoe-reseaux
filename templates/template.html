@@ -69,6 +69,9 @@
                 <th scope="col">Position</th>
                 <th scope="col">Points de vie</th>
                 <th scope="col">Points de vie maximum</th>
+                <th scope="col">Gold</th>
+                <th scope="col">Wood</th>
+                <th scope="col">Food</th>
               </tr>
             </thead>
             <tbody>
@@ -86,6 +89,21 @@
                 </td>
                 <td>
                   {{ unit.get_max_health_points() }}
+                </td>
+                <td>
+                  {% if unit.__class__.__name__ == 'Villager' %}
+                    {{ unit.get_stock().gold }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if unit.__class__.__name__ == 'Villager' %}
+                    {{ unit.get_stock().wood }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if unit.__class__.__name__ == 'Villager' %}
+                    {{ unit.get_stock().food}}
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}
