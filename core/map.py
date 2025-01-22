@@ -1,5 +1,7 @@
 from enum import Enum
 
+from pygame.mixer_music import pause
+
 from core.buildings.barracks import Barracks
 from core.buildings.house import House
 from core.buildings.stable import Stable
@@ -37,7 +39,7 @@ class Map:
         self.buildings: set[Building] = set()
         self.units: set[Unit] = set()
         self.resources_points: set[ResourcePoint] = set()
-
+        self.occupied_position: set[tuple] = set()
         Map.min_distance_between_players = max(2, int(min(self.__width, self.__height) * 0.5))
 
         for player in players:
@@ -53,11 +55,11 @@ class Map:
         self.initialize_players(players, player_mode)
 
         if ressource_mode == RessourceModes.NORMAL:
-            self.generate_resources(0.5, ressource_mode)
+            self.generate_resources(1, ressource_mode)
         elif ressource_mode == RessourceModes.GOLD_RUSH:
-            self.generate_resources(0.5, ressource_mode)
+            self.generate_resources(0.8, ressource_mode)
         elif ressource_mode == RessourceModes.GENEROUS:
-            self.generate_resources(30, ressource_mode)
+            self.generate_resources(1, ressource_mode)
         else:
             raise ValueError("Invalid mode")
 
@@ -117,7 +119,7 @@ class Map:
             while resources_added < num_each_resource:
                 mine_position = Position(randint(0, self.__width - 1), randint(0, self.__height - 1))
                 mine = Mine(mine_position)
-                if not self.check_resource_point_position(mine):
+                if self.check_resource_point_position(mine):
                     self.resources_points.add(mine)
                     resources_added += 1
 
@@ -140,17 +142,19 @@ class Map:
     def generate_unit(self,unit_type: type, player: Player, building: Building, unit_tmp: list[Unit]=[]) -> Unit:
         unit_pos = Position(randint(0, self.__width - 1), randint(0, self.__height - 1))
         unit = unit_type(player, unit_pos)
+        x_town_center = building.get_position().get_x()
+        y_town_center = building.get_position().get_y()
         for i in range(1000):
-            unit_pos.set_x(randint(0, self.__width - 1))
-            unit_pos.set_y(randint(0, self.__height - 1))
+            unit_pos.set_x(randint(int(x_town_center-5), int(x_town_center + building.get_width() + 5)))
+            unit_pos.set_y(randint(int(y_town_center-5), int(y_town_center + building.get_height() + 5)))
             if self.check_unit_position(unit, building):
                 return unit
         return None
 
     def distance_unit_to_building(self, unit: Unit, building: Building) -> float:
         return min(sqrt((x-unit.get_position().get_x()) ** 2 + (y-unit.get_position().get_y()) ** 2)
-                   for x in range(building.get_position().get_x(), building.get_position().get_x() + building.get_width())
-                   for y in range(building.get_position().get_y(), building.get_position().get_y() + building.get_height()))
+                   for x in range(int(building.get_position().get_x()), int(building.get_position().get_x() + building.get_width()))
+                   for y in range(int(building.get_position().get_y()), int(building.get_position().get_y() + building.get_height())))
 
     def initialize_players(self, players: set[Player], player_mode: PlayerModes) -> None:
         max_distance_same_player = 1  # Maximum distance for the same player's town centers to be relatively close
@@ -236,12 +240,14 @@ class Map:
                     break
                 else:
                     villagers.clear()
+
         if player_mode == PlayerModes.MARINES:
             if len(villagers) != len(town_centers) * 15:
                 raise Exception("Could not generate villager, Map is too small")
         else:
             if len(villagers) != len(town_centers) * 3:
                 raise Exception("Could not generate villager, Map is too small")
+
         for villager in villagers:
             self.add_unit(villager)
 
@@ -287,6 +293,7 @@ class Map:
         if (pos.get_x() < 0 or pos.get_x() >= self.__width or
                 pos.get_y() < 0 or pos.get_y() >= self.__height):
             return False
+        #return (pos.get_x(), pos.get_y()) not in self.occupied_position
 
         for u in unit_tmp: #check that unit is not on top of another unit
             u_pos = u.get_position()
@@ -340,6 +347,9 @@ class Map:
 
     def add_building(self, building: Building) -> None:
         self.buildings.add(building)
+        for x in range(int(building.get_position().get_x()), int(building.get_position().get_x() + building.get_width())):
+            for y in range(int(building.get_position().get_y()), int(building.get_position().get_y() + building.get_height())):
+                self.occupied_position.add((x, y))
 
     def remove_building(self, building: Building) -> None:
         if building in self.buildings:
@@ -347,6 +357,7 @@ class Map:
 
     def add_unit(self, unit: Unit) -> None:
         self.units.add(unit)
+        self.occupied_position.add((unit.get_position().get_x(), unit.get_position().get_y()))
 
     def remove_unit(self, unit: Unit) -> None:
         if unit in self.units:
