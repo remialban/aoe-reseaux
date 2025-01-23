@@ -224,7 +224,12 @@ class Map:
                 is_distance_good = [self.distance_unit_to_building(villager, town_center) <= 5 for villager in villagers
                                     for town_center in town_centers if
                                     villager.get_player() == town_center.get_player()]
-                if all(is_distance_good) and len(villagers) == len(town_centers) * 15:
+                print("avant condition: ", all(is_distance_good))
+                print("avant condition: ", len(villagers) == len(town_centers) * 15)
+                print("avant condition: len(villagers)", len(villagers))
+                print("avant condition: len(town_centers) * 15", len(town_centers) * 15)
+                #if all(is_distance_good) and len(villagers) == len(town_centers) * 15:
+                if len(villagers) == len(town_centers) * 15:
                     for i, villager in enumerate(villagers):
                         print(f"Villager{i + 1} position: {villager.get_position()}")
                     break
@@ -242,6 +247,8 @@ class Map:
                     villagers.clear()
 
         if player_mode == PlayerModes.MARINES:
+            print("len(town_centers) * 15", len(town_centers) * 15)
+            print("len(villagers)", len(villagers))
             if len(villagers) != len(town_centers) * 15:
                 raise Exception("Could not generate villager, Map is too small")
         else:
@@ -272,6 +279,13 @@ class Map:
             pos.get_y() < 0 or pos.get_y() + building.get_height()-1 >= self.__height):
             return False
 
+        for x in range(int(pos.get_x()), int(pos.get_x() + building.get_width())):
+            for y in range(int(pos.get_y()), int(pos.get_y() + building.get_height())):
+                if (x, y) in self.occupied_position:
+                    return False
+
+        return True
+
         for b in self.buildings:
             b_pos = b.get_position()
             if not (pos.get_x() + building.get_width() <= b_pos.get_x() or
@@ -293,7 +307,7 @@ class Map:
         if (pos.get_x() < 0 or pos.get_x() >= self.__width or
                 pos.get_y() < 0 or pos.get_y() >= self.__height):
             return False
-        #return (pos.get_x(), pos.get_y()) not in self.occupied_position
+        return (pos.get_x(), pos.get_y()) not in self.occupied_position
 
         for u in unit_tmp: #check that unit is not on top of another unit
             u_pos = u.get_position()
