@@ -152,8 +152,8 @@ class AI:
 
     def needs_more_houses(self, game_state):
         """Checks if the AI needs more Houses to support population growth."""
-        current_population = game_state.get_current_population(self)
-        max_population = game_state.get_max_population(self)
+        current_population = game_state.map.get_units(self)
+        max_population = self.calculate_max_number_units(self)
         return current_population >= max_population
 
     def needs_more_food(self, game_state):
