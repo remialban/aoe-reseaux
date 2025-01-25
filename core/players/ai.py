@@ -70,11 +70,9 @@ class AI:
                 game_state.add_action(action)
                 self.deduct_resources_for(unit_type)
 
-    def can_train(self, building, unit_type):
+    def can_train(self, building):
         """Determines if a building can train a specific unit type."""
-        return (
-            building.is_training_ready() and unit_type in building.get_trainable_units()
-        )
+        return building.is_training_ready()
 
     def build_structure(self, structure_type, game_state):
         """Builds a structure of the given type if resources allow."""
