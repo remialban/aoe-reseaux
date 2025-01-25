@@ -5,9 +5,10 @@ from core.players.ai import AI
 from core.units import Unit
 from core.buildings import Building
 
+
 class Game:
 
-    __actions : set[Action]
+    __actions: set[Action]
 
     def __init__(self, players: set[Player], map: Map):
         if len(players) < 2:
@@ -22,10 +23,10 @@ class Game:
     def get_players(self) -> set[Player]:
         return self.__players
 
-    def add_action(self,action : Action):
+    def add_action(self, action: Action):
         self.__actions.add(action)
 
-    def remove_action(self, action : Action):
+    def remove_action(self, action: Action):
         self.__actions.remove(action)
 
     """
@@ -36,24 +37,17 @@ class Game:
               raise ValueError(f"Unknown unit type: {type}")
           return unit
     """
+
     def party(self):
 
-        finished_actions : set[Action]= set()
+        finished_actions: set[Action] = set()
 
-        for p in self.__players :
-            if isinstance(p,AI):
-                p.play()
-        for a in self.__actions :
+        for p in self.__players:
+            if isinstance(p, AI):
+                p.play(self)
+        for a in self.__actions:
             if a.do_action():
                 finished_actions.add(a)
 
-        for fa in finished_actions :
+        for fa in finished_actions:
             self.__actions.remove(fa)
-
-
-
-
-
-
-
-

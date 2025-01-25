@@ -1,10 +1,21 @@
-from core.actions import AttackBuildingAction, AttackUnitAction, MoveAction, CollectAction
-from core.actions import BuildAction, TrainAction
+from core.actions.attack_building_action import AttackBuildingAction
+from core.actions.move_action import MoveAction
+from core.actions.attack_unit_action import AttackUnitAction
+from core.actions.create_building_action import CreateBuildingAction
+from core.actions.collect_action import Collect_Action
+from core.actions.training_action import TrainingAction
 from core.units.villager import Villager
 from core.units.archer import Archer
 from core.units.horse_man import Horseman
 from core.units.swordsman import Swordsman
-from core.buildings import Keep, Farm, TownCenter, Barracks, Stable, ArcheryRange, House
+from core.buildings.town_center import TownCenter
+from core.buildings.barracks import Barracks
+from core.buildings.archery_range import ArcheryRange
+from core.buildings.stable import Stable
+from core.buildings.house import House
+from core.buildings.farm import Farm
+from core.buildings.keep import Keep
+from core.position import Position
 
 
 class AI:
@@ -54,7 +65,7 @@ class AI:
     def train_unit(self, unit_type, building, game_state):
         """Trains a unit of the given type at the specified building."""
         if self.can_train(building, unit_type):
-            action = TrainAction(self, building, unit_type)
+            action = TrainingAction(self, building, unit_type)
             if self.has_resources_for(unit_type):
                 game_state.add_action(action)
                 self.deduct_resources_for(unit_type)
@@ -68,9 +79,68 @@ class AI:
     def build_structure(self, structure_type, game_state):
         """Builds a structure of the given type if resources allow."""
         if self.has_resources_for(structure_type):
-            action = BuildAction(self, structure_type)
-            game_state.add_action(action)
-            self.deduct_resources_for(structure_type)
+            # Determine a valid position for the structure
+            position = self.find_building_position(game_state, structure_type)
+            if position:
+                new_building = structure_type(position, self)
+                action = CreateBuildingAction(new_building)
+                game_state.add_action(action)
+                self.deduct_resources_for(structure_type)
+
+                # Assign builders to the new structure
+                for unit in game_state.get_units(self):
+                    if isinstance(unit, Villager):
+                        action.add_builder(unit)
+                        if (
+                            action.nb_builders >= 3
+                        ):  # Limit to 3 builders for efficiency
+                            break
+
+    def find_building_position(self, game_state, structure_type):
+        """Finds the most optimal position for constructing a building, considering proximity."""
+        map_size = game_state.get_map().get_size()
+        player_entities = game_state.get_buildings(self) | game_state.get_units(self)
+        enemy_entities = (
+            game_state.get_buildings() | game_state.get_units() - player_entities
+        )
+
+        best_position = None
+        best_score = float("-inf")
+
+        for x in range(map_size):
+            for y in range(map_size):
+                position = Position(x, y)
+                if self.is_area_available(position, structure_type, game_state):
+                    player_distance = sum(
+                        self.distance(position, e.get_position())
+                        for e in player_entities
+                    )
+                    enemy_distance = sum(
+                        self.distance(position, e.get_position())
+                        for e in enemy_entities
+                    )
+                    score = enemy_distance - player_distance
+                    if score > best_score:
+                        best_score = score
+                        best_position = position
+
+        return best_position
+
+    def is_area_available(self, position, structure_type, game_state):
+        """Checks if the area required for a building is available."""
+        width, height = structure_type.get_width(), structure_type.get_height()
+        map_size = game_state.get_map().get_size()
+
+        for dx in range(width):
+            for dy in range(height):
+                x, y = position.get_x() + dx, position.get_y() + dy
+                if x >= map_size or y >= map_size:
+                    return False
+                test_position = Position(x, y)
+                if not self.is_position_available(test_position, game_state):
+                    return False
+
+        return True
 
     def manage_economy(self, game_state):
         """Ensures sufficient resources by building Farms and Houses as needed."""
@@ -93,7 +163,7 @@ class AI:
         return self.get_resources().get_food() < 50  # Example threshold
 
     def collect_resources(self, game_state):
-        """Directs villagers to collect resources using CollectAction."""
+        """Directs villagers to collect resources using Collect_Action."""
         for unit in game_state.get_units(self):
             if isinstance(unit, Villager):
                 resource_point = self.find_closest_resource(game_state, unit)
@@ -113,7 +183,7 @@ class AI:
             )
             game_state.add_action(move_action)
 
-        collect_action = CollectAction(unit, resource_point)
+        collect_action = Collect_Action(unit, resource_point)
         game_state.add_action(collect_action)
 
     def is_position_available(self, position, game_state):
@@ -188,9 +258,7 @@ class AI:
     def distance(self, obj1, obj2):
         """Calculates the distance between two objects."""
         pos1, pos2 = obj1.get_position(), obj2.get_position()
-        return (
-            (pos1.get_x() - pos2.get_x()) ** 2 + (pos1.get_y() - pos2.get_y()) ** 2
-        ) ** 0.5
+        return (pos1.get_x() - pos2.get_x()) ** 2 + (pos1.get_y() - pos2.get_y()) ** 0.5
 
     def has_resources_for(self, entity_type):
         """Checks if the AI has enough resources to train/build the specified entity."""
@@ -214,4 +282,3 @@ class AI:
         """Returns the current resource stock of the AI."""
         # Assuming the AI player object has a resource stock attribute
         return self.stock
-
