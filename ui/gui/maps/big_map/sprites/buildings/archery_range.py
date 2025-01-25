@@ -18,5 +18,5 @@ town_centers = {
 class ArcheryRangeSprite(Resource):
 
     def __init__(self, resource):
-        super().__init__(resource, towncenters[resource.get_player().get_color()], Isometry(Camera.get_tile_length))
+        super().__init__(resource, town_centers[resource.get_player().get_color()], Isometry(Camera.get_tile_length))
 
