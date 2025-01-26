@@ -64,15 +64,10 @@ class AI:
 
     def train_unit(self, unit_type, building, game_state):
         """Trains a unit of the given type at the specified building."""
-        if self.can_train(building, unit_type):
-            action = TrainingAction(self, building, unit_type)
-            if self.has_resources_for(unit_type):
-                game_state.add_action(action)
-                self.deduct_resources_for(unit_type)
-
-    def can_train(self, building):
-        """Determines if a building can train a specific unit type."""
-        return building.is_training_ready()
+        action = TrainingAction(self, building, unit_type)
+        if self.has_resources_for(unit_type):
+            game_state.add_action(action)
+            self.deduct_resources_for(unit_type)
 
     def build_structure(self, structure_type, game_state):
         """Builds a structure of the given type if resources allow."""
