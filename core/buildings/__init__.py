@@ -14,7 +14,7 @@ class Building :
     __width : int
     __walkable : bool
     __cost_resource : Resource
-
+    __training : bool
 
 
 
@@ -30,6 +30,7 @@ class Building :
         self.__walkable = walkable
         self.__cost_resource = cost_resource
         self.__player = player
+        self.__training = False
 
 
     def get_building_percent(self) -> float:
@@ -69,6 +70,16 @@ class Building :
 
     def get_player(self)->Player:
         return self.__player
+
+    def is_training(self)->bool:
+        return self.__training
+
+    def train(self):
+        self.__training = True
+
+    def end_training(self):
+        self.__training = False
+
 
 
     # def update() :
