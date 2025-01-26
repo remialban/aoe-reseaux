@@ -14,6 +14,12 @@ class AttackUnitAction(Action):
         self.__attacked_unit = attacked_unit
         super().__init__()
 
+    def get_attacking_unit(self):
+        return self.__attacking_unit
+
+    def get_attacked_unit(self):
+        return self.__attacked_unit
+
     def distance(self):
         return math.sqrt((self.__attacked_unit.get_position().get_x() - self.__attacking_unit.get_position().get_x())**2 +(self.__attacked_unit.get_position().get_y() -self.__attacking_unit.get_position().get_y())**2 )
 

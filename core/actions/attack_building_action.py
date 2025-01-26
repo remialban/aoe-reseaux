@@ -31,3 +31,6 @@ class AttackBuildingAction(Action):
                 self.__attacked_building.remove_health_points(self.__attacking_unit.get_damage())
 
         return self.__attacked_building.get_health_points() <= 0
+
+    def get_attacking_unit(self) -> Unit:
+        return self.__attacking_unit

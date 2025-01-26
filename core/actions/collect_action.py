@@ -54,3 +54,6 @@ class Collect_Action(Action):
     def get_ptresource(self):
         return self.__collected
 
+    def get_villager(self):
+        return self.__villager
+

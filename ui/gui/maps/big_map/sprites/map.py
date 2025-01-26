@@ -123,6 +123,10 @@ class Map:
         self.buildings.draw(self.screen)
         self.units.draw(self.screen)
 
+        for unit in self.units:
+            if self.screen.get_rect().colliderect(unit.rect):
+                unit.draw(self.screen)
+
 
     def update(self):
         if self.tile_cam != Camera.get_tile_length() or self.camera_position != (Camera.get_x(), Camera.get_y()):

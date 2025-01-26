@@ -35,6 +35,9 @@ class Game:
         for a in self.__actions :
             a.save_time_delta()
 
+    def get_actions(self) -> set[Action]:
+        return self.__actions
+
     def resume(self):
         for a in self.__actions :
             a.before_action()
