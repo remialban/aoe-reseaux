@@ -3,31 +3,24 @@ from core.position import Position
 from core.resource import Resource
 
 
-class Building:
-    __building_percent: float
-    __build_time: float
-    __height: int
-    __health_points: int
-    __max_health_points: int
-    __player: Player
-    __position: Position
-    __width: int
-    __walkable: bool
-    __cost_resource: Resource
+class Building :
+    __building_percent : float
+    __build_time : float
+    __height : int
+    __health_points : int
+    __max_health_points : int
+    __player : Player
+    __position : Position
+    __width : int
+    __walkable : bool
+    __cost_resource : Resource
+    __training : bool
 
-    def __init__(
-        self,
-        build_time: float,
-        height: int,
-        health_point: int,
-        position: Position,
-        width: int,
-        walkable: bool,
-        cost_resource: Resource,
-        player: Player,
-    ):
-        self.__building_percent = 0
-        assert width > 0 and height > 0
+
+
+    def __init__(self, build_time :float, height :int, health_point : int, position : Position, width :int, walkable : bool, cost_resource : Resource, player : Player) :
+        self.__building_percent =  0
+        assert width >0 and height >0
         self.__build_time = build_time
         self.__height = height
         self.__health_points = health_point
@@ -37,6 +30,7 @@ class Building:
         self.__walkable = walkable
         self.__cost_resource = cost_resource
         self.__player = player
+        self.__training = False
 
     def get_building_percent(self) -> float:
         return self.__building_percent
@@ -75,7 +69,13 @@ class Building:
     def get_player(self) -> Player:
         return self.__player
 
-    def build(self,value : float):
-        self.__building_percent += value
+    def is_training(self)->bool:
+        return self.__training
+
+    def train(self):
+        self.__training = True
+
+    def end_training(self):
+        self.__training = False
 
     # def update() :
