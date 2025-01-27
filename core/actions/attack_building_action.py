@@ -24,6 +24,11 @@ class AttackBuildingAction(Action):
     def distance(self):
         return min(self.distance_between_position_and_units(Position(x, y), self.__attacking_unit) for x in range(int(self.__attacked_building.get_position().get_x()), int(self.__attacked_building.get_position().get_x() + self.__attacked_building.get_width())) for y in range(int(self.__attacked_building.get_position().get_y()), int(self.__attacked_building.get_position().get_y() + self.__attacked_building.get_height())))
 
+    def get_attacking_unit(self):
+        return self.__attacking_unit
+
+    def get_attacked_building(self):
+        return self.__attacked_building
 
     def do_action(self)->bool:
         self.before_action()
