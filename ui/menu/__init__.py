@@ -2,6 +2,21 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 from core import Game, Player, Map
+from core.buildings.barracks import Barracks
+from core.buildings.house import House
+from core.buildings.stable import Stable
+from core.players import Player
+from core.players import Resource
+from core.buildings import Building
+from core.buildings.town_center import TownCenter
+from core.position import Position
+from core.resource import Resource  
+from core.resources_points.mine import Mine
+from core.resources_points.wood import Wood
+from core.resources_points import ResourcePoint
+from core.units import Unit
+from random import randint
+from core.units.villager import Villager
 from core.map import RessourceModes, PlayerModes
 from ui import UI
 from ui.enums import UIList
@@ -35,9 +50,7 @@ class MenuTkinter:
 
         self.bg_image = Image.open("assets/background.jpg")
         self.bg_image = self.bg_image.resize((900, 700), Image.Resampling.LANCZOS)
-
         self.bg_photo = ImageTk.PhotoImage(self.bg_image)
-
         self.bg_label = tk.Label(self.master, image=self.bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -46,19 +59,35 @@ class MenuTkinter:
         self.new_game_button = tk.Button(self.master, text="New Game", command=self.new_game, **button_style)
         self.new_game_button.pack(pady=10)
 
-        self.load_game_button = tk.Button(self.master, text="Load Game", command=self.load_game, **button_style)
+        self.load_game_button = tk.Menubutton(self.master, text="Load Game", **button_style, direction="below")
         self.load_game_button.pack(pady=10)
+        self.load_game_menu = tk.Menu(self.load_game_button, tearoff=0)
+        self.load_game_button.configure(menu=self.load_game_menu)
+
+        self.populate_load_game_menu()
 
         self.quit_button = tk.Button(self.master, text="Quit", command=self.quit_game, **button_style)
         self.quit_button.pack(pady=10)
+
+    def populate_load_game_menu(self):
+        self.load_game_menu.delete(0, tk.END)  
+
+        backups = UIManager.get_backups()
+        if backups:
+            for backup in backups:
+                self.load_game_menu.add_command(label=backup, command=lambda b=backup: self.load_game(b))
+        else:
+            self.load_game_menu.add_command(label="No backups available", state=tk.DISABLED)
 
     def new_game(self):
         self.clear_menu()
         NewGameMenu(self.master, self.bg_photo)
 
-    def load_game(self):
-        print("Load game selected.")
-        
+    def load_game(self, backup_name):
+        print(f"Loading game: {backup_name}")
+        UIManager.load_game(backup_name)
+        UIManager.get_current_ui().cleanup()
+        UIManager.change_ui(UIList.GUI)
 
     def quit_game(self):
         print("Quit game selected.")
@@ -70,6 +99,13 @@ class MenuTkinter:
             widget.destroy()
 
 
+RESOURCE_MODE_MAP = {
+    "Gold Rush": RessourceModes.GOLD_RUSH,
+    "Generous": RessourceModes.GENEROUS,
+    "Normal": RessourceModes.NORMAL
+}
+
+
 class NewGameMenu:
     def __init__(self, master, bg_photo):
         self.master = master
@@ -77,7 +113,6 @@ class NewGameMenu:
         self.bg_image = Image.open("assets/background.jpg")  
         self.bg_image = self.bg_image.resize((900, 700), Image.Resampling.LANCZOS)  
         self.bg_photo = ImageTk.PhotoImage(self.bg_image)
-
         self.bg_label = tk.Label(self.master, image=self.bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -143,7 +178,36 @@ class NewGameMenu:
         else:
             players_set = {player1, player2}
 
-        map = Map(map_width, map_height, RessourceModes.NORMAL, PlayerModes.LEAN, players_set)
+
+        if starting_resources == "Lean":
+            player1.stock = Resource(0, 0, 0)  
+            player1.town_centers = [Building(10, 5, 1000, Position(0, 0), 10, True, Resource(0, 0, 0), player1)] 
+            player1.villagers = [Villager("Villager 1", player1), Villager("Villager 2", player1), Villager("Villager 3", player1)]
+        elif starting_resources == "Mean":
+            player1.stock = Resource(2000, 2000, 2000)  
+            player1.town_centers = [Building(10, 5, 1000, Position(0, 0), 10, True, Resource(200, 100, 100), player1)]  
+            player1.villagers = [Villager("Villager 1", player1), Villager("Villager 2", player1), Villager("Villager 3", player1)]
+        elif starting_resources == "Marines":
+            player1.stock = Resource(20000, 20000, 20000)  
+            player1.town_centers = [
+                Building(10, 5, 1000, Position(0, 0), 10, True, Resource(200, 100, 100), player1),  
+                Building(10, 5, 1000, Position(10, 0), 10, True, Resource(200, 100, 100), player1),  
+                Building(10, 5, 1000, Position(20, 0), 10, True, Resource(200, 100, 100), player1)   
+            ]
+            player1.villagers = [
+                Villager("Villager 1", player1), Villager("Villager 2", player1), Villager("Villager 3", player1),
+                Villager("Villager 4", player1), Villager("Villager 5", player1), Villager("Villager 6", player1),
+                Villager("Villager 7", player1), Villager("Villager 8", player1), Villager("Villager 9", player1),
+                Villager("Villager 10", player1), Villager("Villager 11", player1), Villager("Villager 12", player1),
+                Villager("Villager 13", player1), Villager("Villager 14", player1), Villager("Villager 15", player1)
+            ]
+            player1.barracks = [Building(10, 5, 800, Position(30, 0), 10, True, Resource(300, 150, 100), player1) for _ in range(2)]
+            player1.stables = [Building(10, 5, 800, Position(40, 0), 10, True, Resource(300, 150, 100), player1) for _ in range(2)]
+            player1.archery_ranges = [Building(10, 5, 800, Position(50, 0), 10, True, Resource(300, 150, 100), player1) for _ in range(2)]
+
+
+        map = Map(map_width, map_height, RESOURCE_MODE_MAP[resource_mode], PlayerModes[starting_resources.upper()], players_set)
+
 
         game = Game(players=players_set, map=map)
 
