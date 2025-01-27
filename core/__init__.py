@@ -5,6 +5,7 @@ from core.players.ai import AI
 from core.units import Unit
 from core.buildings import Building
 
+
 class Game:
 
     __actions : set[Action]
@@ -24,10 +25,10 @@ class Game:
     def get_players(self) -> set[Player]:
         return self.__players
 
-    def add_action(self,action : Action):
+    def add_action(self, action: Action):
         self.__actions.add(action)
 
-    def remove_action(self, action : Action):
+    def remove_action(self, action: Action):
         self.__actions.remove(action)
 
     def pause(self):
@@ -52,6 +53,7 @@ class Game:
               raise ValueError(f"Unknown unit type: {type}")
           return unit
     """
+
     def party(self):
 
         if not self.__paused:
