@@ -26,11 +26,10 @@ class AttackBuildingAction(Action):
 
 
     def do_action(self)->bool:
+        self.before_action()
         if self.distance() <= self.__attacking_unit.range:
             if (self.get_new_time() - self.get_old_time()) > timedelta(seconds = self.__attacking_unit.attack_speed):
                 self.__attacked_building.remove_health_points(self.__attacking_unit.get_damage())
+                self.after_action()
 
         return self.__attacked_building.get_health_points() <= 0
-
-    def get_attacking_unit(self) -> Unit:
-        return self.__attacking_unit
