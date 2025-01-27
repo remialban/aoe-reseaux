@@ -71,3 +71,20 @@ class Game:
 
     def is_paused(self):
         return self.__paused
+
+    def check_victory(self):
+        defeated_players = []
+        for player in self.__players:
+            if not player.get_units() and (
+                    not any(isinstance(building, TownCenter) for building in player.get_buildings()) and
+                    not any(isinstance(building, Stable) for building in player.get_buildings()) and
+                    not any(isinstance(building, Barracks) for building in player.get_buildings()) and
+                    not any(isinstance(building, ArcheryRange) for building in player.get_buildings())
+            ) or (not player.get_units() and player.get_resources() == 0):
+                defeated_players.append(player)
+
+        if len(defeated_players) == len(self.__players) - 1:
+            for player in self.__players:
+                if player not in defeated_players:
+                    return player
+        return None
