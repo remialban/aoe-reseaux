@@ -45,16 +45,21 @@ class Collect_Action(Action):
                     self.after_action()
 
 
-            elif isinstance(self.__collected, Farm) and (self.__void.get_wood() + self.__void.get_food() + self.__void.get_gold() < 20):
+            elif isinstance(self.__collected, Farm) and (self.__void.get_wood() + self.__void.get_food() + self.__void.get_gold() < 20) and (self.__collected.get_health_points() >0):
                 self.__void.add_food(0.46666666666666666666667)
                 self.__collected.collect(0.46666666666666666666667)
                 self.__villager.collect_resources("food", 0.46666666666666666666667)
                 self.after_action()
 
-            elif self.__void.get_wood() + self.__void.get_food() + self.__void.get_gold() >= 20 or self.__collected.get_resource() == Resource(0, 0, 0):
+            elif self.__void.get_wood() + self.__void.get_food() + self.__void.get_gold() >= 20 or self.__collected.get_resource() == Resource(0, 0, 0) :
                 return True
+
+            elif self.__collected.get_health_points() <=0:
+                return True
+
             else:
                 return False
+
     def get_resource(self):
         return self.__void
 

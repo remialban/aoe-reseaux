@@ -24,3 +24,5 @@ class Farm(Building):
             else :
                 self.resources.remove_food(food)
 
+    def get_resource (self):
+        return self.resources
