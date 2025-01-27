@@ -1,5 +1,13 @@
 from enum import Enum
+
+from pygame.mixer_music import pause
+
+from core.buildings.archery_range import ArcheryRange
+from core.buildings.barracks import Barracks
+from core.buildings.house import House
+from core.buildings.stable import Stable
 from core.players import Player
+from core.players import Resource
 from core.buildings import Building
 from core.buildings.town_center import TownCenter
 from core.position import Position
@@ -12,14 +20,19 @@ from core.units.villager import Villager
 from math import sqrt, cos, sin
 from math import radians
 
-class Modes(Enum):
+class RessourceModes(Enum):
     GOLD_RUSH = 1
     GENEROUS = 2
     NORMAL = 3
 
+
+class PlayerModes(Enum):
+    LEAN = 1
+    MEAN = 2
+    MARINES = 3
+
 class Map:
-    min_distance_between_players = 0
-    def __init__(self, width: int, height: int, mode: Modes, players: set) -> None:
+    def __init__(self, width: int, height: int, ressource_mode: RessourceModes, player_mode : PlayerModes, players: set) -> None:
 
         self.__width: int = width
         self.__height: int = height
@@ -27,20 +40,36 @@ class Map:
         self.buildings: set[Building] = set()
         self.units: set[Unit] = set()
         self.resources_points: set[ResourcePoint] = set()
-
+        self.occupied_position: set[tuple] = set()
         Map.min_distance_between_players = max(2, int(min(self.__width, self.__height) * 0.5))
 
-        if mode == Modes.NORMAL:
-            self.initialize_players(players, mode)
-            self.generate_resources(10, mode)
-        elif mode == Modes.GOLD_RUSH:
-            self.initialize_players(players, mode)
-            self.generate_resources(1, mode)
-        elif mode == Modes.GENEROUS:
-            self.initialize_players(players, mode)
-            self.generate_resources(30, mode)
+        for player in players:
+            if player_mode == PlayerModes.LEAN:
+                    player.stock = Resource(200, 50, 50)
+            elif player_mode == PlayerModes.MEAN:
+                player.stock = Resource(2000, 2000, 2000)
+            elif player_mode == PlayerModes.MARINES:
+                player.stock = Resource(20000, 20000, 20000)
+            else:
+                raise ValueError("Invalid mode")
+
+        self.initialize_players(players, player_mode)
+
+        if ressource_mode == RessourceModes.NORMAL:
+            self.generate_resources(0.8, ressource_mode)
+        elif ressource_mode == RessourceModes.GOLD_RUSH:
+            self.generate_resources(0.8, ressource_mode)
+        elif ressource_mode == RessourceModes.GENEROUS:
+            self.generate_resources(1, ressource_mode)
         else:
             raise ValueError("Invalid mode")
+
+    def calculate_max_number_units(self, player: Player) -> int:
+        house_count = sum(1 for building in self.buildings if building == isinstance(House) and building.get_player()==player)
+        towncenter_count = sum(1 for building in self.buildings if building == isinstance(TownCenter) and building.get_player()==player)
+
+        self.max_number_units = house_count * 5 + towncenter_count * 5
+        return self.max_number_units
 
     def generate_wood_clusters(self, num_clusters: int, cluster_range: int, max_wood_per_cluster: int) -> None:
         assert (2 * cluster_range + 1) ** 2 >= max_wood_per_cluster, "Cluster range is too small for the number of wood to generate"
@@ -54,22 +83,22 @@ class Map:
                     if self.check_resource_point_position(Wood(new_position)):
                         self.resources_points.add(Wood(new_position))
 
-    def generate_resources(self, percentage: float, mode: Modes) -> None:
+    def generate_resources(self, percentage: float, mode: RessourceModes) -> None:
         assert 0 <= percentage <= 100, "Percentage must be between 0 and 100"
 
         map_area = self.__width * self.__height
         num_resources = int(map_area * (percentage / 100))
         num_each_resource = num_resources // 2
 
-        if mode == Modes.GOLD_RUSH:
+        if mode == RessourceModes.GOLD_RUSH:
             center_x = self.__width // 2
             center_y = self.__height // 2
-            max_radius = min(self.__width, self.__height) // 4  # Limit radius to keep resources focused
+            max_radius = min(self.__width, self.__height) // 6 # Limit radius to keep resources focused
 
             resources_added = 0
             while resources_added < num_each_resource:
 
-                angle = randint(0, 360)
+                angle = randint(180, 360)
                 radius = randint(0, max_radius)
                 offset_x = int(radius * cos(radians(angle)))
                 offset_y = int(radius * sin(radians(angle)))
@@ -114,24 +143,25 @@ class Map:
     def generate_unit(self,unit_type: type, player: Player, building: Building, unit_tmp: list[Unit]=[]) -> Unit:
         unit_pos = Position(randint(0, self.__width - 1), randint(0, self.__height - 1))
         unit = unit_type(player, unit_pos)
+        x_town_center = building.get_position().get_x()
+        y_town_center = building.get_position().get_y()
         for i in range(1000):
-            unit_pos.set_x(randint(0, self.__width - 1))
-            unit_pos.set_y(randint(0, self.__height - 1))
+            unit_pos.set_x(randint(int(x_town_center-5), int(x_town_center + building.get_width() + 5)))
+            unit_pos.set_y(randint(int(y_town_center-5), int(y_town_center + building.get_height() + 5)))
             if self.check_unit_position(unit, building):
                 return unit
         return None
 
     def distance_unit_to_building(self, unit: Unit, building: Building) -> float:
         return min(sqrt((x-unit.get_position().get_x()) ** 2 + (y-unit.get_position().get_y()) ** 2)
-                   for x in range(building.get_position().get_x(), building.get_position().get_x() + building.get_width())
-                   for y in range(building.get_position().get_y(), building.get_position().get_y() + building.get_height()))
+                   for x in range(int(building.get_position().get_x()), int(building.get_position().get_x() + building.get_width()))
+                   for y in range(int(building.get_position().get_y()), int(building.get_position().get_y() + building.get_height())))
 
-    def initialize_players(self, players: set[Player], mode: Modes) -> None:
+    def initialize_players(self, players: set[Player], player_mode: PlayerModes) -> None:
         max_distance_same_player = 1  # Maximum distance for the same player's town centers to be relatively close
 
         def distance(pos1, pos2):
             return sqrt((pos1.get_x() - pos2.get_x()) ** 2 + (pos1.get_y() - pos2.get_y()) ** 2)
-
 
         town_centers = []
         villagers = []
@@ -147,21 +177,119 @@ class Map:
             else:
                 town_centers.clear()
         if len(town_centers) != len(players):
-            raise Exception("Could not generate town centers, Map is too small")
+            raise Exception("Could not generate villagers, Map is too small")
         for town_center in town_centers:
             self.add_building(town_center)
+            if player_mode == PlayerModes.MARINES:
+                for _ in range(1000):
+                    offset_x1 = randint(-15, 15)
+                    offset_y1 = randint(-15, 15)
+                    new_town_center1 = TownCenter(Position(town_center.get_position().get_x() + offset_x1,town_center.get_position().get_y() + offset_y1),town_center.get_player())
+                    if self.check_building_position(new_town_center1):
+                        self.add_building(new_town_center1)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-15, 15)
+                    offset_y2 = randint(-15, 15)
+                    new_town_center2 = TownCenter(Position(town_center.get_position().get_x() + offset_x2,town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(new_town_center2):
+                        self.add_building(new_town_center2)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    barracks = Barracks(Position(town_center.get_position().get_x() + offset_x2,town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(barracks):
+                        self.add_building(barracks)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    stable= Stable(Position(town_center.get_position().get_x() + offset_x2,town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(stable):
+                        self.add_building(stable)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    barracks = Barracks(Position(town_center.get_position().get_x() + offset_x2,
+                                                 town_center.get_position().get_y() + offset_y2),
+                                        town_center.get_player())
+                    if self.check_building_position(barracks):
+                        self.add_building(barracks)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    stable = Stable(Position(town_center.get_position().get_x() + offset_x2,
+                                             town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(stable):
+                        self.add_building(stable)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    archery = ArcheryRange(Position(town_center.get_position().get_x() + offset_x2,
+                                             town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(archery):
+                        self.add_building(archery)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    archery = ArcheryRange(Position(town_center.get_position().get_x() + offset_x2,
+                                             town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(archery):
+                        self.add_building(archery)
+                        break
+
         for i in range(10000):
             for town_center in town_centers:
-                villager = self.generate_unit(Villager, town_center.get_player(), town_center)
-                if villager is not None:
-                    villagers.append(villager)
-            is_distance_good = [self.distance_unit_to_building(villager, town_center) <= 1 for villager in villagers for town_center in town_centers if villager.get_player() == town_center.get_player()]
-            if all(is_distance_good) and len(villagers) == len(town_centers):
-                break
+                if player_mode == PlayerModes.MARINES:
+                    for _ in range(15):
+                        villager = self.generate_unit(Villager, town_center.get_player(), town_center)
+                        if villager is not None:
+                            villagers.append(villager)
+                else:
+                    for _ in range(3):
+                        villager = self.generate_unit(Villager, town_center.get_player(), town_center)
+                        if villager is not None:
+                            villagers.append(villager)
+            if player_mode == PlayerModes.MARINES:
+                is_distance_good = [self.distance_unit_to_building(villager, town_center) <= 5 for villager in villagers
+                                    for town_center in town_centers if
+                                    villager.get_player() == town_center.get_player()]
+                print("avant condition: ", all(is_distance_good))
+                print("avant condition: ", len(villagers) == len(town_centers) * 15)
+                print("avant condition: len(villagers)", len(villagers))
+                print("avant condition: len(town_centers) * 15", len(town_centers) * 15)
+                #if all(is_distance_good) and len(villagers) == len(town_centers) * 15:
+                if len(villagers) == len(town_centers) * 15:
+                    for i, villager in enumerate(villagers):
+                        print(f"Villager{i + 1} position: {villager.get_position()}")
+                    break
+                else:
+                    villagers.clear()
             else:
-                villagers.clear()
-        if len(villagers) != len(town_centers):
-            raise Exception("Could not generate villager, Map is too small")
+                is_distance_good = [self.distance_unit_to_building(villager, town_center) <= 5 for villager in villagers
+                                    for town_center in town_centers if
+                                    villager.get_player() == town_center.get_player()]
+                if all(is_distance_good) and len(villagers) == len(town_centers) * 3:
+                    for i, villager in enumerate(villagers):
+                        print(f"Villager{i + 1} position: {villager.get_position()}")
+                    break
+                else:
+                    villagers.clear()
+
+        if player_mode == PlayerModes.MARINES:
+            print("len(town_centers) * 15", len(town_centers) * 15)
+            print("len(villagers)", len(villagers))
+            if len(villagers) != len(town_centers) * 15:
+                raise Exception("Could not generate villager, Map is too small")
+        else:
+            if len(villagers) != len(town_centers) * 3:
+                raise Exception("Could not generate villager, Map is too small")
+
         for villager in villagers:
             self.add_unit(villager)
 
@@ -186,6 +314,13 @@ class Map:
             pos.get_y() < 0 or pos.get_y() + building.get_height()-1 >= self.__height):
             return False
 
+        for x in range(int(pos.get_x()), int(pos.get_x() + building.get_width())):
+            for y in range(int(pos.get_y()), int(pos.get_y() + building.get_height())):
+                if (x, y) in self.occupied_position:
+                    return False
+
+        return True
+
         for b in self.buildings:
             b_pos = b.get_position()
             if not (pos.get_x() + building.get_width() <= b_pos.get_x() or
@@ -207,6 +342,7 @@ class Map:
         if (pos.get_x() < 0 or pos.get_x() >= self.__width or
                 pos.get_y() < 0 or pos.get_y() >= self.__height):
             return False
+        return (pos.get_x(), pos.get_y()) not in self.occupied_position
 
         for u in unit_tmp: #check that unit is not on top of another unit
             u_pos = u.get_position()
@@ -251,15 +387,6 @@ class Map:
 
         return True
 
-    def revalidate_resources(self):
-        """Remove resources that overlap with buildings."""
-        resources_to_remove = []
-        for resource in self.resources_points:
-            if self.is_position_occupied(resource.get_position()):
-                resources_to_remove.append(resource)
-
-        for resource in resources_to_remove:
-            self.resources_points.remove(resource)
 
     def get_width(self) -> int:
         return self.__width
@@ -269,6 +396,9 @@ class Map:
 
     def add_building(self, building: Building) -> None:
         self.buildings.add(building)
+        for x in range(int(building.get_position().get_x()), int(building.get_position().get_x() + building.get_width())):
+            for y in range(int(building.get_position().get_y()), int(building.get_position().get_y() + building.get_height())):
+                self.occupied_position.add((x, y))
 
     def remove_building(self, building: Building) -> None:
         if building in self.buildings:
@@ -276,6 +406,7 @@ class Map:
 
     def add_unit(self, unit: Unit) -> None:
         self.units.add(unit)
+        self.occupied_position.add((unit.get_position().get_x(), unit.get_position().get_y()))
 
     def remove_unit(self, unit: Unit) -> None:
         if unit in self.units:
@@ -294,14 +425,25 @@ class Map:
     def get_resources(self) -> set:
         return self.resources_points
 
-    def clean (self):
+    def clean(self) -> None:
+        tmp_buildings: list[Building] = []
+        tmp_units: list[Unit] = []
+        tmp_resources: list[ResourcePoint] = []
         for building in self.buildings:
             if building.get_health_points() <= 0:
-                self.buildings.remove(building)
+                tmp_buildings.append(building)
+        for building in tmp_buildings:
+            self.buildings.remove(building)
+
         for unit in self.units:
-            if unit.health_points <= 0:
-                self.units.remove(unit)
+            if unit.get_health_points() <= 0:
+                tmp_units.append(unit)
+        for unit in tmp_units:
+            self.units.remove(unit)
+
         for resource_point in self.resources_points:
             resource = resource_point.get_resources()
-            if resource.get_gold() + resource.get_wood() + resource.get_food()  <= 0:
-                self.resources_points.remove(resource_point)
+            if resource.get_gold() + resource.get_wood() + resource.get_food() <= 0:
+                tmp_resources.append(resource_point)
+        for resource_point in tmp_resources:
+            self.resources_points.remove(resource_point)

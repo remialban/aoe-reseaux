@@ -75,4 +75,7 @@ class Building:
     def get_player(self) -> Player:
         return self.__player
 
+    def build(self,value : float):
+        self.__building_percent += value
+
     # def update() :

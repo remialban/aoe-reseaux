@@ -21,9 +21,13 @@ class Villager(Unit):
 
         )
 
-        self.max_stock = 25
+        self.max_stock = 20
         self.collect_speed = 25
-        self.stock = {}
+        self.stock = {
+            'gold': 0,
+            'wood': 0,
+            'food': 0,
+        }
 
     def build(self, building):
         """Builds a structure."""

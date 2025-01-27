@@ -24,7 +24,7 @@ class ResourcePoint:
     def get_resource(self):
         return self.__resources
 
-    def collect(self, amount: int, max_stock:int, stock : Resource) :
+    def collect(self, amount: float, max_stock:int, stock : Resource) :
 
         if stock.get_food() + stock.get_wood() + stock.get_gold() + amount <= max_stock :
             assert amount > 0, amount

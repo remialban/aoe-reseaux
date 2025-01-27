@@ -28,9 +28,17 @@ from ui.ui_manager import UIManager
 class BigMap(Map):
     def __init__(self, tile_length, offset_x, offset_y, screen):
         super().__init__(tile_length, 0, 0, Isometry(tile_length=Camera.get_tile_length), screen)
-        for x in range(UIManager.get_game().get_map().get_width()):
-            for y in range(UIManager.get_game().get_map().get_height()):
-                self.grass_list.add(Grass(x, y))
+        for x in range(0, UIManager.get_game().get_map().get_width(), 10):
+            for y in range(0, UIManager.get_game().get_map().get_height(), 10):
+                self.grass_list.add(Grass(x+9, y+9, width=10))
+
+        # add grass
+        w = UIManager.get_game().get_map().get_width() % 10
+        h = UIManager.get_game().get_map().get_height() % 10
+
+        for x in range(UIManager.get_game().get_map().get_width() - w, UIManager.get_game().get_map().get_width()):
+            for y in range(UIManager.get_game().get_map().get_height() - h, UIManager.get_game().get_map().get_height()):
+                self.grass_list.add(Grass(x, y, width=1))
 
 
     def add_resource_point_sprite(self, resource_point):
