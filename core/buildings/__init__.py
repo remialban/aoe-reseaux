@@ -32,7 +32,6 @@ class Building :
         self.__player = player
         self.__training = False
 
-
     def get_building_percent(self) -> float:
         return self.__building_percent
 
@@ -47,28 +46,27 @@ class Building :
 
     def get_max_health_points(self) -> int:
         return self.__max_health_points
-          
-    def get_position(self) -> Position :
+
+    def get_position(self) -> Position:
         return self.__position
 
-    def get_width(self)-> int:
+    def get_width(self) -> int:
         return self.__width
 
-    def is_walkable(self)->bool:
+    def is_walkable(self) -> bool:
         return self.__walkable
 
-    def get_cost_resource(self)->Resource:
+    def get_cost_resource(self) -> Resource:
         return self.__cost_resource
 
-    def is_built(self)->bool:
-        return self.__building_percent >=100
+    def is_built(self) -> bool:
+        return self.__building_percent >= 100
 
-    def remove_health_points(self, value : int):
+    def remove_health_points(self, value: int):
         assert value >= 0, value
         self.__health_points -= value
 
-
-    def get_player(self)->Player:
+    def get_player(self) -> Player:
         return self.__player
 
     def is_training(self)->bool:
@@ -80,24 +78,4 @@ class Building :
     def end_training(self):
         self.__training = False
 
-
-
     # def update() :
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

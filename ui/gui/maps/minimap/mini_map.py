@@ -58,6 +58,9 @@ class MiniMap(Map):
             width_image = cos(radians(30)) * (base + height)
             height_image = math.cos(radians(60)) * (base + height)
 
+            self.minimap_width = width_image
+            self.minimap_height = height_image
+
             return [
                 (cos(radians(30)) * height, 0),
                 (width_image, math.cos(radians(60)) * base),

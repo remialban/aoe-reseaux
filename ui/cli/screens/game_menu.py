@@ -42,5 +42,6 @@ class GameMenu(Screen):
                     curses.mvaddstr(1, 1, f"Error: {e}")
                     self.message = "Erreur lors de la sauvegarde"
             elif self.__current_choice == 2:
+                UIManager.set_game(None)
                 ScreenManager.change_screen(Screens.MENU)
 

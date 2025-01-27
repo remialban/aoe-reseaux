@@ -101,34 +101,39 @@ class Map:
             self.resource_points.remove(resource_point_to_remove)
 
     def draw(self):
+        #self.grass_list.draw(self.screen)
+        # for grass in self.grass_list:
+        #     if self.screen.get_rect().colliderect(grass.rect):
+        #         self.screen.blit(grass.image, grass.rect)
+        #
+        # for resource_point in self.resource_points:
+        #     if self.screen.get_rect().colliderect(resource_point.rect):
+        #         self.screen.blit(resource_point.image, resource_point.rect)
+        #
+        # for building in self.buildings:
+        #     if self.screen.get_rect().colliderect(building.rect):
+        #         self.screen.blit(building.image, building.rect)
+        #
+        # for unit in self.units:
+        #     if self.screen.get_rect().colliderect(unit.rect):
+        #         self.screen.blit(unit.image, unit.rect)
+
         self.grass_list.draw(self.screen)
-        for grass in self.grass_list:
-            if self.screen.get_rect().colliderect(grass.rect):
-                self.screen.blit(grass.image, grass.rect)
-
-        for resource_point in self.resource_points:
-            if self.screen.get_rect().colliderect(resource_point.rect):
-                self.screen.blit(resource_point.image, resource_point.rect)
-
-        for building in self.buildings:
-            if self.screen.get_rect().colliderect(building.rect):
-                self.screen.blit(building.image, building.rect)
+        self.resource_points.draw(self.screen)
+        self.buildings.draw(self.screen)
+        self.units.draw(self.screen)
 
         for unit in self.units:
             if self.screen.get_rect().colliderect(unit.rect):
-                self.screen.blit(unit.image, unit.rect)
-
-        # self.grass_list.draw(self.screen)
-        # self.resource_points.draw(self.screen)
-        # self.buildings.draw(self.screen)
-        # self.units.draw(self.screen)
+                unit.draw(self.screen)
 
 
     def update(self):
         if self.tile_cam != Camera.get_tile_length() or self.camera_position != (Camera.get_x(), Camera.get_y()):
             self.tile_cam = Camera.get_tile_length()
             self.camera_position = Camera.get_x(), Camera.get_y()
-        self.grass_list.update()
-        self.resource_points.update()
-        self.buildings.update()
+            self.buildings.update()
+            self.resource_points.update()
+            self.grass_list.update()
+
         self.units.update()

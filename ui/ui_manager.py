@@ -39,6 +39,10 @@ class UIManager:
             UIManager.__current_ui.setup()
 
     @staticmethod
+    def get_current_ui() -> UI:
+        return UIManager.__current_ui
+
+    @staticmethod
     def change_ui(name: UIList|None):
         old_ui: UI = UIManager.__current_ui
         UIManager.__current_ui = UIManager.__uis.get(name, None)
@@ -153,3 +157,8 @@ class UIManager:
         rendered_html = template.render(data)
         with open("game.html", "w") as file:
             file.write(rendered_html)
+
+    @staticmethod
+    def open_in_browser():
+        import webbrowser
+        webbrowser.open("game.html")

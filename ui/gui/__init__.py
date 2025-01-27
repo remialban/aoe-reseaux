@@ -3,13 +3,11 @@ from math import radians, cos
 import pygame
 
 from ui import UI
-from ui.enums import UIList
 from ui.gui.maps.minimap.mini_map import MiniMap
 from ui.gui.screen_manager import ScreenManager, Screens
 from ui.gui.screens.map import MapScreen
 from ui.gui.utils.camera import Camera
 from ui.gui.maps.big_map.big_map import BigMap
-from ui.ui_manager import UIManager
 
 
 # Launch a pygame window
