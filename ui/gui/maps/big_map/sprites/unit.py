@@ -115,8 +115,8 @@ class UnitSprite(Element):
         screen.blit(text_surface, rect)
 
 
-        resource = self.unit.get_stock()
         if isCollecting:
+            resource = self.unit.get_stock()
             text3 = f"W: {resource.get('wood')} F: {resource.get('food')} G: {resource.get('gold')}"
             text_surface = font.render(text3, True, (255, 255, 255))
             rect = text_surface.get_rect()
