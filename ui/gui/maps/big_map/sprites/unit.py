@@ -117,7 +117,7 @@ class UnitSprite(Element):
 
         resource = self.unit.get_stock()
         if isCollecting:
-            text3 = f"W: {resource.get("wood")} F: {resource.get("food")} G: {resource.get('gold')}"
+            text3 = f"W: {resource.get('wood')} F: {resource.get('food')} G: {resource.get('gold')}"
             text_surface = font.render(text3, True, (255, 255, 255))
             rect = text_surface.get_rect()
             rect.midbottom = self.rect.midtop
