@@ -2,6 +2,7 @@ from enum import Enum
 
 from pygame.mixer_music import pause
 
+from core.buildings.archery_range import ArcheryRange
 from core.buildings.barracks import Barracks
 from core.buildings.house import House
 from core.buildings.stable import Stable
@@ -55,7 +56,7 @@ class Map:
         self.initialize_players(players, player_mode)
 
         if ressource_mode == RessourceModes.NORMAL:
-            self.generate_resources(1, ressource_mode)
+            self.generate_resources(0.8, ressource_mode)
         elif ressource_mode == RessourceModes.GOLD_RUSH:
             self.generate_resources(0.8, ressource_mode)
         elif ressource_mode == RessourceModes.GENEROUS:
@@ -208,6 +209,40 @@ class Map:
                     if self.check_building_position(stable):
                         self.add_building(stable)
                         break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    barracks = Barracks(Position(town_center.get_position().get_x() + offset_x2,
+                                                 town_center.get_position().get_y() + offset_y2),
+                                        town_center.get_player())
+                    if self.check_building_position(barracks):
+                        self.add_building(barracks)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    stable = Stable(Position(town_center.get_position().get_x() + offset_x2,
+                                             town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(stable):
+                        self.add_building(stable)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    archery = ArcheryRange(Position(town_center.get_position().get_x() + offset_x2,
+                                             town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(archery):
+                        self.add_building(archery)
+                        break
+                for _ in range(1000):
+                    offset_x2 = randint(-25, 25)
+                    offset_y2 = randint(-25, 25)
+                    archery = ArcheryRange(Position(town_center.get_position().get_x() + offset_x2,
+                                             town_center.get_position().get_y() + offset_y2), town_center.get_player())
+                    if self.check_building_position(archery):
+                        self.add_building(archery)
+                        break
+
         for i in range(10000):
             for town_center in town_centers:
                 if player_mode == PlayerModes.MARINES:
