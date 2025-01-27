@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from core import Action
 from core.buildings.farm import Farm
 from core.resource import Resource
