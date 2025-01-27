@@ -14,6 +14,7 @@ from ui.ui_manager import UIManager
 from tkinter import *
 from tkinter import messagebox
 
+
 class MapScreen(Screen):
     def __init__(self, window):
         super().__init__(window)
@@ -60,7 +61,12 @@ class MapScreen(Screen):
                     UIManager.save_game(backup_name)
                     win = Tk()  # to hide the main window
                     win.wm_withdraw()
-                    messagebox.showinfo('Sauvegarde réussie!', 'La partie a bien été enregistré avec le nom "' + backup_name + '"')
+                    messagebox.showinfo(
+                        "Sauvegarde réussie!",
+                        'La partie a bien été enregistré avec le nom "'
+                        + backup_name
+                        + '"',
+                    )
                     # stop tkinter
                     win.destroy()
 
@@ -70,7 +76,7 @@ class MapScreen(Screen):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 coordinates = list(pygame.mouse.get_pos())
                 coordinates = list(event.pos)
-                x,y = coordinates
+                x, y = coordinates
 
                 # if x >= self.screen.get_width()-self.minimap.minimap_width or y >= self.screen.get_height() - self.minimap.minimap_height:
                 #     #coordinates[0] += self.screen.get_rect().x
@@ -85,19 +91,37 @@ class MapScreen(Screen):
                 #     Camera.set_camera(new_x, new_y)
         if pygame.mouse.get_pressed()[0]:
             coordinates = list(pygame.mouse.get_pos())
-            #coordinates = list(event.pos)
+            # coordinates = list(event.pos)
             # coordinates[0] += self.screen.get_rect().x
-            x,y = coordinates
-            if x >= self.screen.get_width() - self.minimap.minimap_width and y >= self.screen.get_height() - self.minimap.minimap_height:
+            x, y = coordinates
+            if (
+                x >= self.screen.get_width() - self.minimap.minimap_width
+                and y >= self.screen.get_height() - self.minimap.minimap_height
+            ):
 
-                coef_mul = self.map.isometry.get_tile_length() / self.minimap.isometry.get_tile_length()
-                new_x = (coordinates[0] - self.screen.get_width() + cos(radians(30))
-                         * self.minimap.isometry.get_tile_length() * UIManager.get_game().get_map().get_width()) * coef_mul
+                coef_mul = (
+                    self.map.isometry.get_tile_length()
+                    / self.minimap.isometry.get_tile_length()
+                )
+                new_x = (
+                    coordinates[0]
+                    - self.screen.get_width()
+                    + cos(radians(30))
+                    * self.minimap.isometry.get_tile_length()
+                    * UIManager.get_game().get_map().get_width()
+                ) * coef_mul
                 new_x -= self.screen.get_width() / 2
 
-                new_y = (coordinates[1] - self.screen.get_height() + cos(
-                    radians(60)) * self.minimap.isometry.get_tile_length() * (
-                                     UIManager.get_game().get_map().get_width() + UIManager.get_game().get_map().get_height())) * coef_mul  # *cos(radians(30)) * coef_mul * self.minimap.isometry.get_tile_length() * UIManager.get_game().get_map().get_width()
+                new_y = (
+                    coordinates[1]
+                    - self.screen.get_height()
+                    + cos(radians(60))
+                    * self.minimap.isometry.get_tile_length()
+                    * (
+                        UIManager.get_game().get_map().get_width()
+                        + UIManager.get_game().get_map().get_height()
+                    )
+                ) * coef_mul  # *cos(radians(30)) * coef_mul * self.minimap.isometry.get_tile_length() * UIManager.get_game().get_map().get_width()
                 new_y -= self.screen.get_height() / 2
                 new_y -= 2 * cos(radians(60)) * self.map.isometry.get_tile_length()
                 Camera.set_camera(new_x, new_y)
@@ -109,26 +133,60 @@ class MapScreen(Screen):
         #     buildings = list(game.get_buildings())[0]
         #     UIManager.get_game().get_map().remove_building(buildings)
 
-
         if self.correct_position:
-            if pygame.key.get_pressed()[pygame.K_LEFT] or pygame.key.get_pressed()[pygame.K_q]:
+            if (
+                pygame.key.get_pressed()[pygame.K_LEFT]
+                or pygame.key.get_pressed()[pygame.K_q]
+            ):
                 Camera.add_x(-offset)
-            if pygame.key.get_pressed()[pygame.K_RIGHT] or pygame.key.get_pressed()[pygame.K_d]:
+            if (
+                pygame.key.get_pressed()[pygame.K_RIGHT]
+                or pygame.key.get_pressed()[pygame.K_d]
+            ):
                 Camera.add_x(offset)
-            if pygame.key.get_pressed()[pygame.K_UP] or pygame.key.get_pressed()[pygame.K_z]:
+            if (
+                pygame.key.get_pressed()[pygame.K_UP]
+                or pygame.key.get_pressed()[pygame.K_z]
+            ):
                 Camera.add_y(-offset)
-            if pygame.key.get_pressed()[pygame.K_DOWN] or pygame.key.get_pressed()[pygame.K_s]:
+            if (
+                pygame.key.get_pressed()[pygame.K_DOWN]
+                or pygame.key.get_pressed()[pygame.K_s]
+            ):
                 Camera.add_y(offset)
 
-
             offset = 40
-            if (pygame.key.get_pressed()[pygame.K_LEFT] or pygame.key.get_pressed()[pygame.K_q]) and (pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]):
+            if (
+                pygame.key.get_pressed()[pygame.K_LEFT]
+                or pygame.key.get_pressed()[pygame.K_q]
+            ) and (
+                pygame.key.get_pressed()[pygame.K_LSHIFT]
+                or pygame.key.get_pressed()[pygame.K_RSHIFT]
+            ):
                 Camera.add_x(-offset)
-            if (pygame.key.get_pressed()[pygame.K_RIGHT] or pygame.key.get_pressed()[pygame.K_d]) and (pygame.key.get_pressed()[pygame.K_LSHIFT]  or pygame.key.get_pressed()[pygame.K_RSHIFT]):
+            if (
+                pygame.key.get_pressed()[pygame.K_RIGHT]
+                or pygame.key.get_pressed()[pygame.K_d]
+            ) and (
+                pygame.key.get_pressed()[pygame.K_LSHIFT]
+                or pygame.key.get_pressed()[pygame.K_RSHIFT]
+            ):
                 Camera.add_x(offset)
-            if (pygame.key.get_pressed()[pygame.K_UP] or pygame.key.get_pressed()[pygame.K_z]) and (pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]):
+            if (
+                pygame.key.get_pressed()[pygame.K_UP]
+                or pygame.key.get_pressed()[pygame.K_z]
+            ) and (
+                pygame.key.get_pressed()[pygame.K_LSHIFT]
+                or pygame.key.get_pressed()[pygame.K_RSHIFT]
+            ):
                 Camera.add_y(-offset)
-            if (pygame.key.get_pressed()[pygame.K_DOWN] or pygame.key.get_pressed()[pygame.K_s]) and (pygame.key.get_pressed()[pygame.K_LSHIFT] or pygame.key.get_pressed()[pygame.K_RSHIFT]):
+            if (
+                pygame.key.get_pressed()[pygame.K_DOWN]
+                or pygame.key.get_pressed()[pygame.K_s]
+            ) and (
+                pygame.key.get_pressed()[pygame.K_LSHIFT]
+                or pygame.key.get_pressed()[pygame.K_RSHIFT]
+            ):
                 Camera.add_y(offset)
 
             if pygame.key.get_pressed()[pygame.K_KP_PLUS]:
@@ -139,22 +197,32 @@ class MapScreen(Screen):
             Camera.add_x(1)
             Camera.add_y(1)
 
-        #clear the screen
+        # clear the screen
 
-        for resource in UIManager.get_game().get_map().get_resources() - self.map.resource_points_objects:
+        for resource in (
+            UIManager.get_game().get_map().get_resources()
+            - self.map.resource_points_objects
+        ):
             self.map.add_resource_point(resource)
             self.minimap.add_resource_point(resource)
-        for building in UIManager.get_game().get_map().get_buildings() - self.map.buildings_objects:
+        for building in (
+            UIManager.get_game().get_map().get_buildings() - self.map.buildings_objects
+        ):
             self.map.add_building(building)
             self.minimap.add_building(building)
         for unit in UIManager.get_game().get_map().get_units() - self.map.units_objects:
             self.map.add_units(unit)
             self.minimap.add_units(unit)
 
-        for resource in self.map.resource_points_objects - UIManager.get_game().get_map().get_resources():
+        for resource in (
+            self.map.resource_points_objects
+            - UIManager.get_game().get_map().get_resources()
+        ):
             self.map.remove_resource_point(resource)
             self.minimap.remove_resource_point(resource)
-        for building in self.map.buildings_objects - UIManager.get_game().get_map().get_buildings():
+        for building in (
+            self.map.buildings_objects - UIManager.get_game().get_map().get_buildings()
+        ):
             self.map.remove_building(building)
             self.minimap.remove_building(building)
         for unit in self.map.units_objects - UIManager.get_game().get_map().get_units():
@@ -164,30 +232,44 @@ class MapScreen(Screen):
         # START CHRONO
         t = pygame.time.get_ticks()
         self.map.update()
-        print("Update time : ", pygame.time.get_ticks() - t)
+        # print("Update time : ", pygame.time.get_ticks() - t)
         t = pygame.time.get_ticks()
         self.map.draw()
-        print("Draw time : ", pygame.time.get_ticks() - t)
+        # print("Draw time : ", pygame.time.get_ticks() - t)
 
         self.minimap.update()
         self.minimap.draw()
 
+        coef = (
+            self.map.isometry.get_tile_length()
+            / self.minimap.isometry.get_tile_length()
+        )
 
-        coef = self.map.isometry.get_tile_length() / self.minimap.isometry.get_tile_length()
+        rect = pygame.rect.Rect(
+            0, 0, self.screen.get_width() / coef, self.screen.get_height() / coef
+        )
 
-        rect = pygame.rect.Rect(0, 0, self.screen.get_width()/coef, self.screen.get_height()/coef)
-
-        new_x = (Camera.get_x() + self.screen.get_width() / 2) #- cos(radians(30)) * self.minimap.isometry.get_tile_length() * UIManager.get_game().get_map().get_width()
+        new_x = (
+            Camera.get_x() + self.screen.get_width() / 2
+        )  # - cos(radians(30)) * self.minimap.isometry.get_tile_length() * UIManager.get_game().get_map().get_width()
         new_x /= coef
-        new_x -= ( - self.screen.get_width() + cos(radians(30)) * self.minimap.isometry.get_tile_length() * UIManager.get_game().get_map().get_width())
+        new_x -= (
+            -self.screen.get_width()
+            + cos(radians(30))
+            * self.minimap.isometry.get_tile_length()
+            * UIManager.get_game().get_map().get_width()
+        )
 
-        new_y = (Camera.get_y())
-        new_y += 2*cos(radians(60)) * self.map.isometry.get_tile_length()
+        new_y = Camera.get_y()
+        new_y += 2 * cos(radians(60)) * self.map.isometry.get_tile_length()
         new_y += self.screen.get_height() / 2
         new_y /= coef
-        new_y -= - self.screen.get_height() + cos(
-            radians(60)) * self.minimap.isometry.get_tile_length() * (
-                             UIManager.get_game().get_map().get_width() + UIManager.get_game().get_map().get_height())
+        new_y -= -self.screen.get_height() + cos(
+            radians(60)
+        ) * self.minimap.isometry.get_tile_length() * (
+            UIManager.get_game().get_map().get_width()
+            + UIManager.get_game().get_map().get_height()
+        )
 
         # new_y = (coordinates[1] - self.screen.get_height() + cos(
         #     radians(60)) * self.minimap.isometry.get_tile_length() * (
@@ -196,31 +278,49 @@ class MapScreen(Screen):
         # new_y -= 2 * cos(radians(60)) * self.map.isometry.get_tile_length()
 
         rect.center = new_x, new_y
-        #pygame.draw.rect(self.screen, (255, 0, 0), (new_x, new_y, self.screen.get_width()/coef, self.screen.get_height()/coef), 2)
+        # pygame.draw.rect(self.screen, (255, 0, 0), (new_x, new_y, self.screen.get_width()/coef, self.screen.get_height()/coef), 2)
         pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
         self.position_rect = rect
-        x,y = rect.center
-        self.correct_position = x >= self.screen.get_width() - self.minimap.minimap_width and y >= self.screen.get_height() - self.minimap.minimap_height
+        x, y = rect.center
+        self.correct_position = (
+            x >= self.screen.get_width() - self.minimap.minimap_width
+            and y >= self.screen.get_height() - self.minimap.minimap_height
+        )
         if self.resources_showed:
             police = pygame.font.Font(None, 36)  # Police par défaut, taille 36
             texte = "Ressources joueurs :"
-            texte_rendu = police.render(texte, True, (255,255,255))
+            texte_rendu = police.render(texte, True, (255, 255, 255))
 
             # Position du texte (en haut à droite)
             texte_rect = texte_rendu.get_rect()
-            texte_rect.topright = (self.screen.get_width() - 10, 10)  # Décalage de 10 pixels du bord
+            texte_rect.topright = (
+                self.screen.get_width() - 10,
+                10,
+            )  # Décalage de 10 pixels du bord
 
             self.screen.blit(texte_rendu, texte_rect)
             x = 0
             for player in UIManager.get_game().get_players():
                 police = pygame.font.Font(None, 36)  # Police par défaut, taille 36
 
-                texte = "Joueur " + str(player.get_color()) + " - Bois : " + str(player.stock.get_wood()) + " - Nourriture : " + str(player.stock.get_food()) + " - Or : " + str(player.stock.get_gold())
-                texte_rendu = police.render(texte, True, (255,255,255))
+                texte = (
+                    "Joueur "
+                    + str(player.get_color())
+                    + " - Bois : "
+                    + str(player.stock.get_wood())
+                    + " - Nourriture : "
+                    + str(player.stock.get_food())
+                    + " - Or : "
+                    + str(player.stock.get_gold())
+                )
+                texte_rendu = police.render(texte, True, (255, 255, 255))
 
                 # Position du texte (en haut à droite)
                 texte_rect = texte_rendu.get_rect()
-                texte_rect.topright = (self.screen.get_width() - 10, x + 50)  # Décalage de 10 pixels du bord
+                texte_rect.topright = (
+                    self.screen.get_width() - 10,
+                    x + 50,
+                )  # Décalage de 10 pixels du bord
                 x += 50
                 self.screen.blit(texte_rendu, texte_rect)
 
@@ -245,11 +345,11 @@ class MapScreen(Screen):
         texte_rect.bottomleft = (10, self.screen.get_height() - 10)
         self.screen.blit(texte_rendu, texte_rect)
 
-        print("Camera", Camera.get_x(), Camera.get_y())
+        # print("Camera", Camera.get_x(), Camera.get_y())
 
         pygame.display.flip()
 
-        #tick the clock
+        # tick the clock
         self.clock.tick(1000)
         UIManager.get_game().party()
 

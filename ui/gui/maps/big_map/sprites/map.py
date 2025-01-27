@@ -8,7 +8,9 @@ from ui.gui.utils.isometry import Isometry
 
 
 class Map:
-    def __init__(self, tile_length: float, offset_x, offset_y, isometry: Isometry, screen):
+    def __init__(
+        self, tile_length: float, offset_x, offset_y, isometry: Isometry, screen
+    ):
         self.screen = screen
         self.isometry = isometry
 
@@ -20,13 +22,12 @@ class Map:
         self.units_objects = set()
         self.resource_points_objects = set()
 
-
         self.tile_length = tile_length
         self.offset_x = offset_x
         self.offset_y = offset_y
 
         self.grass_list = pygame.sprite.Group()
-        #self.grass_list.add(Grass(0,0, UIManager.get_game().get_map().get_width(), UIManager.get_game().get_map().get_height()))
+        # self.grass_list.add(Grass(0,0, UIManager.get_game().get_map().get_width(), UIManager.get_game().get_map().get_height()))
 
         self.camera_position = Camera.get_x(), Camera.get_y()
         self.tile_cam = Camera.get_tile_length()
@@ -93,15 +94,15 @@ class Map:
     def remove_resource_point(self, unit):
         resource_point_to_remove = None
         self.resource_points_objects.remove(unit)
-        for rp in self.resource_points:
-            if rp.unit == unit:
-                building_to_remove = rp
+        # for rp in self.resource_points:
+        #     if rp.unit == unit:
+        #         building_to_remove = rp
 
         if resource_point_to_remove is not None:
             self.resource_points.remove(resource_point_to_remove)
 
     def draw(self):
-        #self.grass_list.draw(self.screen)
+        # self.grass_list.draw(self.screen)
         # for grass in self.grass_list:
         #     if self.screen.get_rect().colliderect(grass.rect):
         #         self.screen.blit(grass.image, grass.rect)
@@ -127,9 +128,11 @@ class Map:
             if self.screen.get_rect().colliderect(unit.rect):
                 unit.draw(self.screen)
 
-
     def update(self):
-        if self.tile_cam != Camera.get_tile_length() or self.camera_position != (Camera.get_x(), Camera.get_y()):
+        if self.tile_cam != Camera.get_tile_length() or self.camera_position != (
+            Camera.get_x(),
+            Camera.get_y(),
+        ):
             self.tile_cam = Camera.get_tile_length()
             self.camera_position = Camera.get_x(), Camera.get_y()
             self.buildings.update()

@@ -1,4 +1,5 @@
 from . import Unit
+from core.resource import Resource
 
 
 class Archer(Unit):
@@ -17,4 +18,5 @@ class Archer(Unit):
             movement_speed=1,
             range=4,
             training_time=35,
+            cost=Resource(25, 45, 0),
         )

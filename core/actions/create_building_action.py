@@ -14,20 +14,25 @@ from core.position import Position
 
 class CreateBuildingAction(Action):
 
-    __map : Map
-    __type_building : type
-    __player : Player
-    __position : Position
+    __map: Map
+    __type_building: type
+    __player: Player
+    __position: Position
 
     def __init__(self, map: Map, type_building: type):
-        self.__map : Map
-        self.__player : Player
+        self.__map: Map
+        self.__player: Player
         self.__type_building = type_building
-        self.__position : Position
+        self.__position: Position
+        self.__b: Building
         super().__init__()
 
+    def get_building(self) -> Building:
+        return self.__b
 
-    def _is_valid_position(self, position: Position) -> bool:  # fonction absolument volée à Charles
+    def _is_valid_position(
+        self, position: Position
+    ) -> bool:  # fonction absolument volée à Charles
         if not (
             0 <= position.get_x() < self.__map.get_width()
             and 0 <= position.get_y() < self.__map.get_height()
@@ -51,37 +56,42 @@ class CreateBuildingAction(Action):
         # print(f"Position {position} is valid.")
         return True
 
-
     def do_action(self):
 
-        p0 = Position(0,0)
+        p0 = Position(0, 0)
         if self.__type_building == TownCenter:
-                b = TownCenter(p0,self.__player )
+            self.__b = TownCenter(p0, self.__player)
         elif self.__type_building == House:
-                b = House(p0,self.__player)
+            self.__b = House(p0, self.__player)
         elif self.__type_building == Camp:
-                b = Camp(p0,self.__player)
+            self.__b = Camp(p0, self.__player)
         elif self.__type_building == Farm:
-                b = Farm(p0,self.__player)
+            self.__b = Farm(p0, self.__player)
         elif self.__type_building == Keep:
-                b = Keep(p0,self.__player)
+            self.__b = Keep(p0, self.__player)
         elif self.__type_building == Barracks:
-                b = Barracks(p0,self.__player)
+            self.__b = Barracks(p0, self.__player)
         elif self.__type_building == ArcheryRange:
-                b = ArcheryRange(p0,self.__player)
-        else :
+            self.__b = ArcheryRange(p0, self.__player)
+        else:
             assert self.__type_building == Stable
-            b = Stable(p0,self.__player)
+            self.__b = Stable(p0, self.__player)
 
         all_free = True
 
-        for i in range (int(self.__position.get_x()),int(self.__position.get_x())+ b.get_width()):
-            for j in range(int(self.__position.get_y()),int(self.__position.get_y())+ b.get_height()):
-                if not(self._is_valid_position(self.__position)):
+        for i in range(
+            int(self.__position.get_x()),
+            int(self.__position.get_x()) + self.__b.get_width(),
+        ):
+            for j in range(
+                int(self.__position.get_y()),
+                int(self.__position.get_y()) + self.__b.get_height(),
+            ):
+                if not (self._is_valid_position(self.__position)):
                     all_free = False
 
-        if all_free :
-            b.__position = self.__position
-            self.__map.add_building(b)
+        if all_free:
+            self.__b.__position = self.__position
+            self.__map.add_building(self.__b)
 
         return True

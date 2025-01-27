@@ -1,4 +1,5 @@
 from . import Unit
+from core.resource import Resource
 
 
 class Horseman(Unit):
@@ -17,4 +18,5 @@ class Horseman(Unit):
             movement_speed=1.2,
             range=0.38,
             training_time=30,
+            cost=Resource(0, 20, 80),
         )

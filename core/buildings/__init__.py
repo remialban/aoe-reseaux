@@ -3,24 +3,32 @@ from core.position import Position
 from core.resource import Resource
 
 
-class Building :
-    __building_percent : float
-    __build_time : float
-    __height : int
-    __health_points : int
-    __max_health_points : int
-    __player : Player
-    __position : Position
-    __width : int
-    __walkable : bool
-    __cost_resource : Resource
-    __training : bool
+class Building:
+    __building_percent: float
+    __build_time: float
+    __height: int
+    __health_points: int
+    __max_health_points: int
+    __player: Player
+    __position: Position
+    __width: int
+    __walkable: bool
+    __cost_resource: Resource
+    __training: bool
 
-
-
-    def __init__(self, build_time :float, height :int, health_point : int, position : Position, width :int, walkable : bool, cost_resource : Resource, player : Player) :
-        self.__building_percent =  0
-        assert width >0 and height >0
+    def __init__(
+        self,
+        build_time: float,
+        height: int,
+        health_point: int,
+        position: Position,
+        width: int,
+        walkable: bool,
+        cost_resource: Resource,
+        player: Player,
+    ):
+        self.__building_percent = 0
+        assert width > 0 and height > 0
         self.__build_time = build_time
         self.__height = height
         self.__health_points = health_point
@@ -69,7 +77,11 @@ class Building :
     def get_player(self) -> Player:
         return self.__player
 
-    def is_training(self)->bool:
+    def build(self, value: float):
+        assert value >= 0, value
+        self.__building_percent += value
+
+    def is_training(self) -> bool:
         return self.__training
 
     def train(self):

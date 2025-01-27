@@ -1,3 +1,6 @@
+from core.resource import Resource
+
+
 class Unit:
     def __init__(
         self,
@@ -10,6 +13,7 @@ class Unit:
         movement_speed: float,
         range: float,
         training_time: float,
+        cost: Resource,
     ):
         self.attack_speed = attack_speed
         self.damage = damage
@@ -20,6 +24,7 @@ class Unit:
         self.position = position
         self.range = range
         self.training_time = training_time
+        self.cost = cost
 
     def get_max_health_points(self):
         return self.max_health_points
@@ -61,6 +66,9 @@ class Unit:
 
     def get_map(self):
         return self.map
+
+    def get_cost_resource(self):
+        return self.cost
 
     def remove_health_points(self, hp):
         self.health_points -= hp

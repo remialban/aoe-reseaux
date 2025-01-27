@@ -1,4 +1,5 @@
 from . import Unit
+from core.resource import Resource
 
 
 class Villager(Unit):
@@ -6,7 +7,6 @@ class Villager(Unit):
         self,
         player,
         position,
-
     ):
         super().__init__(
             player,
@@ -18,15 +18,15 @@ class Villager(Unit):
             movement_speed=1,
             range=1,
             training_time=25,
-
+            cost=Resource(0, 0, 50),
         )
 
         self.max_stock = 20
         self.collect_speed = 25
         self.stock = {
-            'gold': 0,
-            'wood': 0,
-            'food': 0,
+            "gold": 0,
+            "wood": 0,
+            "food": 0,
         }
 
     def build(self, building):
@@ -42,6 +42,7 @@ class Villager(Unit):
         print(
             f"Villager from {self.player.name} collected {amount} of {resource_type}."
         )
+
     def get_max_stock(self):
         return self.max_stock
 
