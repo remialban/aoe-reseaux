@@ -57,8 +57,10 @@ class MapScreen(Screen):
                     UIManager.open_in_browser()
                 if event.key == pygame.K_p:
                     UIManager.get_game().pause()
+                    UIManager.stop_game()
                 if event.key == pygame.K_r:
                     UIManager.get_game().resume()
+                    UIManager.start_game()
                 if event.key == pygame.K_F11:
                     backup_name = UIManager.get_name()
                     UIManager.save_game(backup_name)
