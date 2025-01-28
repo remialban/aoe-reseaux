@@ -15,8 +15,8 @@ class Game:
     __paused: bool
 
     def __init__(self, players: set[Player], map: Map):
-        if len(players) < 2:
-            raise ValueError("A game must have at least two players.")
+        # if len(players) < 2:
+        #     raise ValueError("A game must have at least two players.")
         self.__players = players
         self.__map = map
         self.__actions = set()
