@@ -1,4 +1,5 @@
 import os.path
+import threading
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -20,6 +21,13 @@ class UIException(Exception):
     def get_ui(self):
         return self.__ui
 
+isThreadRunning = True
+
+def loop_game():
+    global isThreadRunning
+    while isThreadRunning:
+        UIManager.get_game().party()
+
 class UIManager:
     """
     Class managing the UIs
@@ -30,6 +38,20 @@ class UIManager:
     __current_ui: UI|None = None
 
     __game: Game|None = None
+
+    __thread = threading.Thread(target=loop_game)
+
+    @staticmethod
+    def start_game():
+        global isThreadRunning
+        if not UIManager.__thread.is_alive():
+            isThreadRunning = True
+            UIManager.__thread.start()
+
+    @staticmethod
+    def stop_game():
+        global isThreadRunning
+        isThreadRunning = False
 
     @staticmethod
     def add_ui(name: UIList, ui: UI):
@@ -54,6 +76,7 @@ class UIManager:
 
     @staticmethod
     def stop():
+        UIManager.stop_game()
         UIManager.change_ui(None)
 
     @staticmethod

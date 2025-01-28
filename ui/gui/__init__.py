@@ -8,6 +8,7 @@ from ui.gui.screen_manager import ScreenManager, Screens
 from ui.gui.screens.map import MapScreen
 from ui.gui.utils.camera import Camera
 from ui.gui.maps.big_map.big_map import BigMap
+from ui.ui_manager import UIManager
 
 
 # Launch a pygame window
@@ -195,6 +196,7 @@ class GUI(UI):
         pygame.display.set_caption("AIge of EmpAIres - Groupe 1")
         #set the clock
         self.clock = pygame.time.Clock()
+        UIManager.start_game()
 
         ScreenManager.add_screen(Screens.MAP, MapScreen(self.screen))
         ScreenManager.change_screen(Screens.MAP)

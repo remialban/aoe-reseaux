@@ -47,4 +47,6 @@ class ScreenManager:
             ScreenManager.__current_screen.update()
             curses.refresh()
             if UIManager.get_game() is not None:
-                UIManager.get_game().party()
+                #UIManager.get_game().party()
+                UIManager.start_game()
+
