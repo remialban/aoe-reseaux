@@ -169,6 +169,8 @@ class AI(Player):
 
     def train_unit(self, unit_type, building, game_state):
         print(f"Training unit {unit_type.__name__} at building {building}")
+        if building.is_training():
+            return
         action = TrainingAction(game_state.get_map(), building, unit_type)
         if self.has_resources_for(unit_type):
             print(f"Sufficient resources for {unit_type.__name__}, adding action")

@@ -115,3 +115,6 @@ class TrainingAction(Action):
                 self.__building.train()
                 self.after_action()
             return False
+
+    def get_type_unit(self):
+        return self.__type_unit

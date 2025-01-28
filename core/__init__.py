@@ -69,7 +69,8 @@ class Game:
             print("====================== ACTIONS ======================")
             for a in self.__actions:
                 print(type(a).__name__)
-                # print(a)
+                if type(a).__name__ == "TrainingAction":
+                    print("Building:", a.get_type_unit())
                 if a.do_action():
                     # print("Action finished")
                     finished_actions.add(a)
