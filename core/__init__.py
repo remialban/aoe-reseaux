@@ -69,8 +69,6 @@ class Game:
             print("====================== ACTIONS ======================")
             for a in self.__actions:
                 print(type(a).__name__)
-                if type(a).__name__ == "TrainingAction":
-                    print("Building:", a.get_type_unit())
                 if a.do_action():
                     # print("Action finished")
                     finished_actions.add(a)
@@ -80,6 +78,11 @@ class Game:
                 self.__actions.remove(fa)
 
             self.__map.clean()
+
+            victory = self.check_victory()
+
+            if victory:
+                exit(f"Player {victory.get_name()} has won the game!")
 
         self.__map.clean()
 
@@ -92,26 +95,35 @@ class Game:
         defeated_players = []
         for player in self.__players:
             if (
-                not player.get_units()
+                # not self.__map.get_units(player)
+                self.__map.get_units(player)
                 and (
                     not any(
                         isinstance(building, TownCenter)
-                        for building in player.get_buildings()
+                        for building in self.__map.get_buildings(player)
                     )
                     and not any(
                         isinstance(building, Stable)
-                        for building in player.get_buildings()
+                        for building in self.__map.get_buildings(player)
                     )
                     and not any(
                         isinstance(building, Barracks)
-                        for building in player.get_buildings()
+                        for building in self.__map.get_buildings(player)
                     )
                     and not any(
                         isinstance(building, ArcheryRange)
-                        for building in player.get_buildings()
+                        for building in self.__map.get_buildings(player)
                     )
                 )
-                or (not player.get_units() and player.get_resources() == 0)
+                or (
+                    # not self.__map.get_units(player)
+                    self.__map.get_units(player)
+                    and (
+                        player.get_stock().get_wood() == 0
+                        and player.get_stock().get_gold() == 0
+                        and player.get_stock().get_food() == 0
+                    )
+                )
             ):
                 defeated_players.append(player)
 

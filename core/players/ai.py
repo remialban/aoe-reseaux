@@ -108,6 +108,8 @@ class AI(Player):
             self.aggressive_strategy(game_state)
 
     def divide_units_across_buildings(self, game_state):
+        if (game_state.get_map().get_buildings(self)) == 0:
+            return
         # Get all player village zones (building tiles)
         player_village_zone = {
             Position(x, y)
@@ -557,7 +559,8 @@ class AI(Player):
 
     def find_nearest_enemy(self, game_state, unit):
         enemies = (
-            game_state.get_map().get_units() | game_state.get_map().get_buildings()
+            # game_state.get_map().get_units() | game_state.get_map().get_buildings()
+            game_state.get_map().get_buildings()
         )
         player_entities = game_state.get_map().get_units(
             self
