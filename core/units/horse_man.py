@@ -16,7 +16,7 @@ class Horseman(Unit):
             max_health_points=45,
             damage=4,
             movement_speed=1.2,
-            range=0.38,
+            range=1,
             training_time=30,
             cost=Resource(0, 20, 80),
         )

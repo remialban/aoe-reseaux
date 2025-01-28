@@ -14,6 +14,7 @@ from ui.ui_manager import UIManager
 from tkinter import *
 from tkinter import messagebox
 
+import time
 
 class MapScreen(Screen):
     def __init__(self, window):
@@ -351,8 +352,7 @@ class MapScreen(Screen):
 
         # tick the clock
         self.clock.tick(1000)
-        import time
-        time.sleep(0.1)
+        # time.sleep(0.01)
         UIManager.get_game().party()
 
     def cleanup(self):

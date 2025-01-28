@@ -72,13 +72,16 @@ class AI(Player):
                 if isinstance(building, TownCenter):
                     print("Training villager")
                     self.train_unit(Villager, building, game_state)
+
+        if self.needs_defense(game_state):
+            print("Building keep")
+            self.build_structure(Keep, game_state)
+
         self.manage_economy(game_state)
 
     def defensive_strategy(self, game_state):
         print(f"{self.name} is executing defensive strategy")
-        if self.needs_defense(game_state):
-            print("Building keep")
-            self.build_structure(Keep, game_state)
+        self.divide_units_across_buildings(game_state)
         self.always_executing_strategy(game_state)
 
     def aggressive_strategy(self, game_state):
@@ -103,6 +106,56 @@ class AI(Player):
             self.defensive_strategy(game_state)
         else:
             self.aggressive_strategy(game_state)
+
+    def divide_units_across_buildings(self, game_state):
+        # Get all player village zones (building tiles)
+        player_village_zone = {
+            Position(x, y)
+            for building in game_state.get_map().get_buildings(self)
+            for x in range(
+                building.get_position().get_x(),
+                building.get_position().get_x() + building.get_width(),
+            )
+            for y in range(
+                building.get_position().get_y(),
+                building.get_position().get_y() + building.get_height(),
+            )
+        }
+
+        # Determine available tiles (not part of the village)
+        map_width, map_height = (
+            game_state.get_map().get_width(),
+            game_state.get_map().get_height(),
+        )
+        tiles_available = [
+            Position(x, y)
+            for x in range(map_width)
+            for y in range(map_height)
+            if Position(x, y) not in player_village_zone
+            and self.is_position_available(Position(x, y), game_state)
+        ]
+
+        # Find village center
+        buildings = game_state.get_map().get_buildings(self)
+        center_x = sum(b.get_position().get_x() for b in buildings) // len(buildings)
+        center_y = sum(b.get_position().get_y() for b in buildings) // len(buildings)
+        center = Position(center_x, center_y)
+
+        # Sort available tiles by distance to the village center
+        tiles_available.sort(key=lambda p: self._safe_distance(p, center))
+
+        # Assign units to closest available tiles
+        for unit in game_state.get_map().get_units(self):
+            if (
+                isinstance(unit, Swordsman)
+                or isinstance(unit, Archer)
+                or isinstance(unit, Horseman)
+            ) and self.is_attacker_available(game_state, unit):
+                closest_tile = tiles_available.pop(0)
+                if unit.get_position() != closest_tile:
+                    game_state.add_action(
+                        MoveAction(game_state.get_map(), unit, closest_tile)
+                    )
 
     def requires_aggressive_buildings(self, game_state):
         return sum(
@@ -222,10 +275,10 @@ class AI(Player):
         player_entities = game_state.get_map().get_buildings(
             self
         ) | game_state.get_map().get_units(self)
-        enemy_entities = (
-            game_state.get_map().get_buildings()
-            | game_state.get_map().get_units() - player_entities
-        )
+        # enemy_entities = (
+        #     game_state.get_map().get_buildings()
+        #     | game_state.get_map().get_units() - player_entities
+        # )
 
         best_position = None
         best_score = float("-inf")
@@ -238,11 +291,12 @@ class AI(Player):
                         self._safe_distance(position, e.get_position())
                         for e in player_entities
                     )
-                    enemy_distance = sum(
-                        self._safe_distance(position, e.get_position())
-                        for e in enemy_entities
-                    )
-                    score = enemy_distance - player_distance
+                    # enemy_distance = sum(
+                    #     self._safe_distance(position, e.get_position())
+                    #     for e in enemy_entities
+                    # )
+                    # score = enemy_distance - player_distance
+                    score = -player_distance
                     if score > best_score:
                         best_score = score
                         best_position = position
@@ -403,11 +457,41 @@ class AI(Player):
         )
 
     def move_to_target(self, unit, target, game_state):
-        target_position = self.find_closest_position_arround_object(target, game_state)
+        target_position = self.find_farest_position_arround_object_within_unit_range(
+            target, game_state, unit
+        )
         if unit.get_position() != target_position:
             if self.is_position_available(target_position, game_state):
                 action = MoveAction(game_state.get_map(), unit, target_position)
                 game_state.add_action(action)
+
+    def find_farest_position_arround_object_within_unit_range(
+        self, object, game_state, unit
+    ):
+        unit_range = int(unit.get_range())
+        # print(unit_range)
+        # find valid positions (must be dx**2 + dy**2 <= unit_range) but choose the farest
+        best_position = None
+        best_distance = 0
+        # print(f"Finding farest position for {unit} around {object}")
+        for dx in range(-unit_range, unit_range + 1):
+            for dy in range(-unit_range, unit_range + 1):
+                # print(f"Checking position {dx}, {dy}")
+                x, y = (
+                    object.get_position().get_x() + dx,
+                    object.get_position().get_y() + dy,
+                )
+                # print(f"Checking position {x}, {y}")
+                test_position = Position(x, y)
+                # print("is_position_available", self.is_position_available(test_position, game_state))
+                if self.is_position_available(test_position, game_state):
+                    # print("safe_distance", self._safe_distance(unit, test_position))
+                    distance = self._safe_distance(unit, test_position)
+                    if distance > best_distance:
+                        best_distance = distance
+                        best_position = test_position
+        # print(f"Best position: {best_position}")
+        return best_position
 
     def launch_attack(self, game_state):
         print(f"Launching attack for {self.name}")

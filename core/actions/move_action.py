@@ -37,7 +37,7 @@ class MoveAction(Action):
             # print("No path found. Action cannot be performed.")
             return False
 
-        time_per_step = 1 / (next(iter(self.get_involved_units())).get_movement_speed()*20)
+        time_per_step = 1 / (next(iter(self.get_involved_units())).get_movement_speed()*500)
         elapsed_time = (self.get_new_time() - self.get_old_time()).total_seconds()
 
         # print(f"Elapsed time: {elapsed_time}, Time per step: {time_per_step}")

@@ -16,7 +16,7 @@ class Swordsman(Unit):
             max_health_points=40,
             damage=4,
             movement_speed=0.9,
-            range=0.40,
+            range=1,
             training_time=20,
             cost=Resource(0, 20, 50),
         )

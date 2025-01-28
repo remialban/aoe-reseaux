@@ -93,3 +93,6 @@ class Unit:
 
     def get_movement_speed(self):
         return self.movement_speed
+
+    def get_range(self):
+        return self.range
