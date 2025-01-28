@@ -7,6 +7,7 @@ class Action(ABC) :
     __old_time : datetime
     __new_time : datetime
     __saved_time_delta : timedelta
+    __involved_units : set
     @abstractmethod
     def do_action(self)->bool:
         pass
@@ -36,3 +37,8 @@ class Action(ABC) :
     def set_old_time(self, t : datetime):
         self.__old_time = t
 
+    def set_involved_units(self, units : set):
+        self.__involved_units = units
+
+    def get_involved_units(self):
+        return self.__involved_units

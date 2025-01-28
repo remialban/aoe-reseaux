@@ -90,3 +90,6 @@ class Unit:
         """Collects resources from a farm."""
         farm.collect_resources()
         print(f"Unit from {self.player.name} collected resources from the farm.")
+
+    def get_movement_speed(self):
+        return self.movement_speed

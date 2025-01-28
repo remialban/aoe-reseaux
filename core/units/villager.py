@@ -15,7 +15,7 @@ class Villager(Unit):
             health_points=25,
             max_health_points=25,
             damage=2,
-            movement_speed=1,
+            movement_speed=10, # 1 in theory
             range=1,
             training_time=25,
             cost=Resource(0, 0, 50),
@@ -41,6 +41,15 @@ class Villager(Unit):
         self.stock[resource_type] += amount
         print(
             f"Villager from {self.player.name} collected {amount} of {resource_type}."
+        )
+
+    def remove_resources(self, resource_type, amount):
+        """Removes resources from the player."""
+        if resource_type not in self.stock:
+            self.stock[resource_type] = 0
+        self.stock[resource_type] -= amount
+        print(
+            f"Villager from {self.player.name} removed {amount} of {resource_type}."
         )
 
     def get_max_stock(self):

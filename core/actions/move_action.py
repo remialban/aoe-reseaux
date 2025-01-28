@@ -8,7 +8,6 @@ from typing import List, Set
 
 
 class MoveAction(Action):
-    __unit: Unit
     __new_position: Position
     __buildings: Set[Building]
     __path: List[Position]
@@ -20,7 +19,7 @@ class MoveAction(Action):
         self.__buildings = map.buildings
         self.__map_width = map.get_width()
         self.__map_height = map.get_height()
-        self.__unit = unit
+        self.set_involved_units(set([unit]))
         self.__new_position = new_position
 
         # print(f"Initializing MoveAction with unit at {self.__unit.get_position()} targeting {self.__new_position}")
@@ -38,7 +37,7 @@ class MoveAction(Action):
             # print("No path found. Action cannot be performed.")
             return False
 
-        time_per_step = 1 / self.__unit.movement_speed
+        time_per_step = 1 / next(iter(self.get_involved_units())).get_movement_speed()
         elapsed_time = (self.get_new_time() - self.get_old_time()).total_seconds()
 
         # print(f"Elapsed time: {elapsed_time}, Time per step: {time_per_step}")
@@ -48,19 +47,19 @@ class MoveAction(Action):
 
             if self.__current_step >= len(self.__path):
                 # print("Unit has reached the destination.")
-                self.__unit.change_position(self.__new_position)
+                next(iter(self.get_involved_units())).change_position(self.__new_position)
                 return True
 
             else:
                 next_position = self.__path[self.__current_step]
                 # print(f"Moving to next position: {next_position}")
-                self.__unit.change_position(next_position)
+                next(iter(self.get_involved_units())).change_position(next_position)
                 self.after_action()
 
         return False
 
     def _find_path(self) -> List[Position]:
-        start = self.__unit.get_position()
+        start = next(iter(self.get_involved_units())).get_position()
         goal = self.__new_position
 
         # print(f"Finding path from {start} to {goal}")

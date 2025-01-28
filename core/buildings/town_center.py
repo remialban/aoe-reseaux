@@ -2,13 +2,22 @@ from core.buildings import Building
 from core.players import Player
 from core.position import Position
 from core.resource import Resource
-
+from core.units import Unit
 
 
 class TownCenter(Building):
 
 
     def __init__(self, position : Position, player : Player):
-        resource_cost = Resource(350,0,0)
-        super().__init__(150, 4, 1000, position, 4, False, resource_cost,player)
+        self.player = player
+        super().__init__(150, 4, 1000, position, 4, False, Resource(350,0,0),player)
 
+    def drop_off_resources(self, unit: Unit):
+        unit_stock = unit.get_stock()
+        print(unit_stock)
+        converted = Resource(unit_stock["wood"], unit_stock["gold"], unit_stock["food"])
+        self.player.add_resources(converted)
+        unit.remove_resources("wood", converted.get_wood())
+        unit.remove_resources("food", converted.get_food())
+        unit.remove_resources("gold", converted.get_gold())
+        print(f"Resources dropped off at {self.player.name}'s town center.")

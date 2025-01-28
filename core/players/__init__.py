@@ -16,3 +16,11 @@ class Player:
 
     def get_max_number_units(self) -> int:
         return self.max_number_units
+
+    def add_resources(self, resource: Resource):
+        self.stock.add_food(resource.get_food())
+        self.stock.add_wood(resource.get_wood())
+        self.stock.add_gold(resource.get_gold())
+
+    def get_stock(self) -> Resource:
+        return self.stock

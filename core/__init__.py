@@ -58,7 +58,6 @@ class Game:
     """
 
     def party(self):
-        print("Party!")
         if not self.__paused:
             finished_actions: set[Action] = set()
             # print("Players:", self.__players)
@@ -68,7 +67,9 @@ class Game:
                     print("Playing AI for player", p.get_name())
                     p.play(self)
             for a in self.__actions:
+                print("Doing action of type", type(a).__name__)
                 if a.do_action():
+                    print("Action finished")
                     finished_actions.add(a)
 
             for fa in finished_actions:
@@ -77,6 +78,8 @@ class Game:
             self.__map.clean()
 
         self.__map.clean()
+
+        # input("Press Enter to continue...")
 
     def is_paused(self):
         return self.__paused

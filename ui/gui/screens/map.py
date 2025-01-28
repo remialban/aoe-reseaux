@@ -351,6 +351,8 @@ class MapScreen(Screen):
 
         # tick the clock
         self.clock.tick(1000)
+        import time
+        time.sleep(0.1)
         UIManager.get_game().party()
 
     def cleanup(self):

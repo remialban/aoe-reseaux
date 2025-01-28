@@ -80,6 +80,7 @@ class Building:
     def build(self, value: float):
         assert value >= 0, value
         self.__building_percent += value
+        print(f"Building {self.__building_percent}% complete.")
 
     def is_training(self) -> bool:
         return self.__training
