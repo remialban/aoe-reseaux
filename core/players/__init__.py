@@ -24,3 +24,17 @@ class Player:
 
     def get_stock(self) -> Resource:
         return self.stock
+
+    def get_resource_to_collect(self):
+        # returns "wood", "gold" or "food"
+        # finds minimum between the three resources
+        if self.stock.get_wood() < self.stock.get_gold():
+            if self.stock.get_wood() < self.stock.get_food():
+                return "wood"
+            else:
+                return "food"
+        else:
+            if self.stock.get_gold() < self.stock.get_food():
+                return "gold"
+            else:
+                return "food"

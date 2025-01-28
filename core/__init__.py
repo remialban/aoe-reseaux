@@ -66,11 +66,14 @@ class Game:
                 if isinstance(p, AI):
                     # print("Playing AI for player", p.get_name())
                     p.play(self)
+            print("====================== ACTIONS ======================")
             for a in self.__actions:
-                # print("Doing action of type", type(a).__name__)
+                print(type(a).__name__)
+                # print(a)
                 if a.do_action():
                     # print("Action finished")
                     finished_actions.add(a)
+            print("=====================================================")
 
             for fa in finished_actions:
                 self.__actions.remove(fa)

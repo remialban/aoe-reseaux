@@ -83,7 +83,7 @@ class TrainingAction(Action):
             else:
                 u = Horseman(self.__building.get_player(), p0)
 
-            if (self.get_new_time() - self.get_old_time()) > timedelta(
+            if (self.get_new_time() - self.get_old_time())*20 > timedelta(
                 seconds=u.get_training_time()
             ):
                 # calcul de la position

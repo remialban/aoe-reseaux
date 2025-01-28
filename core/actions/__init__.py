@@ -42,3 +42,8 @@ class Action(ABC) :
 
     def get_involved_units(self):
         return self.__involved_units
+
+    #enable print
+    def __repr__(self):
+        # print all attibutes
+        return str(self.__dict__)

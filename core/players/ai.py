@@ -18,11 +18,16 @@ from core.buildings.farm import Farm
 from core.buildings.keep import Keep
 from core.buildings.camp import Camp
 from core.units import Unit
+from core.buildings import Building
 from core.resources_points.wood import Wood
 from core.resources_points.mine import Mine
 from core.position import Position
 from core.players import Player
 import random
+
+KEEPS_BY_BUILDINGS = 1 / 6
+VILLAGERS_BY_BUILDINGS = 1 / 1.5
+ATTCKING_UNITS_TRAINERS_BY_BUILDINGS = 1 / 2
 
 
 class AI(Player):
@@ -42,29 +47,41 @@ class AI(Player):
         elif self.strategy == "balanced":
             self.balanced_strategy(game_state)
 
-    def defensive_strategy(self, game_state):
-        # print(f"{self.name} is executing defensive strategy")
-        # print(f"Number of buildings: {len(game_state.get_map().get_buildings(self))}")
-        # print(f"Number of units: {len(game_state.get_map().get_units(self))}")
-        if (
+    def always_executing_strategy(self, game_state):
+        print(
+            "Required villagers:",
             len(game_state.get_map().get_buildings(self))
-            >= len(game_state.get_map().get_units(self)) // 2
+            // (1 / VILLAGERS_BY_BUILDINGS),
+        )
+        print(
+            "Current villagers:",
+            len(
+                [
+                    u
+                    for u in game_state.get_map().get_units(self)
+                    if isinstance(u, Villager)
+                ]
+            ),
+        )
+        if len(
+            [u for u in game_state.get_map().get_units(self) if isinstance(u, Villager)]
+        ) <= len(game_state.get_map().get_buildings(self)) // (
+            1 / VILLAGERS_BY_BUILDINGS
         ):
             for building in game_state.get_map().get_buildings(self):
                 if isinstance(building, TownCenter):
+                    print("Training villager")
                     self.train_unit(Villager, building, game_state)
-
-        if self.needs_defense(game_state):
-            self.build_structure(Keep, game_state)
-
         self.manage_economy(game_state)
 
-    def aggressive_strategy(self, game_state):
-        print(f"{self.name} is executing aggressive strategy")
-        if self.requires_aggressive_buildings(game_state):
-            choices = [Barracks, ArcheryRange, Stable]
-            self.build_structure(random.choice(choices), game_state)
+    def defensive_strategy(self, game_state):
+        print(f"{self.name} is executing defensive strategy")
+        if self.needs_defense(game_state):
+            print("Building keep")
+            self.build_structure(Keep, game_state)
+        self.always_executing_strategy(game_state)
 
+    def aggressive_strategy(self, game_state):
         for building in game_state.get_map().get_buildings(self):
             if isinstance(building, Barracks):
                 self.train_unit(Swordsman, building, game_state)
@@ -73,8 +90,12 @@ class AI(Player):
             elif isinstance(building, Stable):
                 self.train_unit(Horseman, building, game_state)
 
+        if self.requires_aggressive_buildings(game_state):
+            choices = [Barracks, ArcheryRange, Stable]
+            self.build_structure(random.choice(choices), game_state)
+
         self.launch_attack(game_state)
-        self.manage_economy(game_state)
+        self.always_executing_strategy(game_state)
 
     def balanced_strategy(self, game_state):
         # print(f"{self.name} is executing balanced strategy")
@@ -84,14 +105,13 @@ class AI(Player):
             self.aggressive_strategy(game_state)
 
     def requires_aggressive_buildings(self, game_state):
-        return (
-            sum(
-                isinstance(building, Barracks)
-                or isinstance(building, ArcheryRange)
-                or isinstance(building, Stable)
-                for building in game_state.get_map().get_buildings(self)
-            )
-            <= len(game_state.get_map().get_units(self)) // 3
+        return sum(
+            isinstance(building, Barracks)
+            or isinstance(building, ArcheryRange)
+            or isinstance(building, Stable)
+            for building in game_state.get_map().get_buildings(self)
+        ) <= len(game_state.get_map().get_buildings(self)) // (
+            1 / ATTCKING_UNITS_TRAINERS_BY_BUILDINGS
         )
 
     def train_unit(self, unit_type, building, game_state):
@@ -114,7 +134,7 @@ class AI(Player):
         ):
             position = self.find_building_position(game_state, structure_type)
             if position:
-                # print(f"Found position {position} for {structure_type.__name__}")
+                print(f"Found position {position} for {structure_type.__name__}")
                 new_building = structure_type(position, self)
                 game_state.get_map().add_building(new_building)
                 self.deduct_resources_for(structure_type)
@@ -131,7 +151,7 @@ class AI(Player):
                         if self._safe_distance(unit, new_building) > 4:
                             # print(f"Moving {unit} to {new_building.get_position()}")
                             closest_position = (
-                                self.find_closest_position_arround_building(
+                                self.find_closest_position_arround_object(
                                     new_building, game_state
                                 )
                             )
@@ -142,24 +162,27 @@ class AI(Player):
                         if build_action.nb_builders >= 3:
                             break
             else:
-                pass
-                # print(f"No valid position found for {structure_type.__name__}")
+                # pass
+                print(f"No valid position found for {structure_type.__name__}")
         else:
-            pass
-            # print(
-            #     f"Not enough resources for {structure_type.__name__} or no available builders"
-            # )
+            # pass
+            print(
+                f"Not enough resources for {structure_type.__name__} or no available builders"
+            )
 
-    def find_closest_position_arround_building(self, building, game_state):
-        # check tiles arround building (using width and height of building and position) and return a random one that is walkable
+    def find_closest_position_arround_object(self, object, game_state):
         available_positions = set()
         for x in range(
-            building.get_position().get_x() - 1,
-            building.get_position().get_x() + building.get_width() + 1,
+            object.get_position().get_x() - 1,
+            object.get_position().get_x()
+            + (object.get_width() if isinstance(object, Building) else 1)
+            + 1,
         ):
             for y in range(
-                building.get_position().get_y() - 1,
-                building.get_position().get_y() + building.get_height() + 1,
+                object.get_position().get_y() - 1,
+                object.get_position().get_y()
+                + (object.get_height() if isinstance(object, Building) else 1)
+                + 1,
             ):
                 if self.is_position_available(Position(x, y), game_state):
                     available_positions.add(Position(x, y))
@@ -283,7 +306,7 @@ class AI(Player):
                     if isinstance(building, TownCenter) or isinstance(building, Camp):
                         if self._safe_distance(unit, building) > 4:
                             closest_position = (
-                                self.find_closest_position_arround_building(
+                                self.find_closest_position_arround_object(
                                     building, game_state
                                 )
                             )
@@ -317,9 +340,8 @@ class AI(Player):
             if isinstance(unit, Villager) and self.is_villager_available(
                 game_state, unit
             ):
-                most_failure_resource = max(self.failures, key=self.failures.get)
                 resource_point = self.find_closest_resource(
-                    game_state, unit, most_failure_resource
+                    game_state, unit, self.get_resource_to_collect()
                 )
                 if resource_point:
                     self.move_to_collect(unit, resource_point, game_state)
@@ -381,14 +403,17 @@ class AI(Player):
         )
 
     def move_to_target(self, unit, target, game_state):
-        if unit.get_position() != target.get_position():
-            if self.is_position_available(target.get_position(), game_state):
-                action = MoveAction(game_state.get_map(), unit, target.get_position())
+        target_position = self.find_closest_position_arround_object(target, game_state)
+        if unit.get_position() != target_position:
+            if self.is_position_available(target_position, game_state):
+                action = MoveAction(game_state.get_map(), unit, target_position)
                 game_state.add_action(action)
 
     def launch_attack(self, game_state):
         print(f"Launching attack for {self.name}")
         for unit in game_state.get_map().get_units(self):
+            if not self.is_attacker_available(game_state, unit):
+                continue
             if isinstance(unit, (Swordsman, Archer, Horseman)):
                 enemy = self.find_nearest_enemy(game_state, unit)
                 if enemy:
@@ -399,17 +424,23 @@ class AI(Player):
                         action = AttackBuildingAction(unit, enemy)
                     game_state.add_action(action)
 
+    def is_attacker_available(self, game_state, attacker):
+        for action in game_state.get_actions():
+            if isinstance(action, AttackUnitAction) or isinstance(
+                action, AttackBuildingAction
+            ):
+                if action.get_attacking_unit() == attacker:
+                    return False
+        return True
+
     def needs_defense(self, game_state):
-        result = (
-            len(
-                [
-                    building
-                    for building in game_state.get_map().get_buildings(self)
-                    if isinstance(building, Keep)
-                ]
-            )
-            <= len(game_state.get_map().get_units(self)) // 3
-        )
+        result = len(
+            [
+                building
+                for building in game_state.get_map().get_buildings(self)
+                if isinstance(building, Keep)
+            ]
+        ) <= len(game_state.get_map().get_buildings(self)) // (1 / KEEPS_BY_BUILDINGS)
         print(f"Needs defense: {result}")
         return result
 
@@ -433,7 +464,7 @@ class AI(Player):
             resource_points = [
                 rp for rp in resource_points if isinstance(rp, target_resource_point)
             ]
-        self.failures[target_resource] = 0
+        # self.failures[target_resource] = 0
         return min(
             resource_points, key=lambda rp: self._safe_distance(unit, rp), default=None
         )
@@ -466,11 +497,11 @@ class AI(Player):
         )
         # print(f"Has resources for {entity_type.__name__}: {result}")
         # failures count
-        if not result:
-            self.failures["wood"] += cost.get_wood() / (stock.get_wood() or 1)
-            self.failures["gold"] += cost.get_gold() / (stock.get_gold() or 1)
-            self.failures["food"] += cost.get_food() / (stock.get_food() or 1)
-            print(f"Failures: {self.failures}")
+        # if not result:
+        #     self.failures["wood"] += cost.get_wood() / (stock.get_wood() or 1)
+        #     self.failures["gold"] += cost.get_gold() / (stock.get_gold() or 1)
+        #     self.failures["food"] += cost.get_food() / (stock.get_food() or 1)
+        # print(f"Failures: {self.failures}")
         return result
 
     def deduct_resources_for(self, entity_type):
