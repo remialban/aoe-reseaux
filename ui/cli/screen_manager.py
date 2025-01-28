@@ -40,6 +40,7 @@ class ScreenManager:
                     UIManager.get_game().resume()
                 elif key == ord("\t"):
                     UIManager.get_game().pause()
+                    UIManager.stop_game()
                     UIManager.render_html()
                     UIManager.open_in_browser()
 

@@ -52,6 +52,7 @@ class MapScreen(Screen):
                     UIManager.change_ui(UIList.CLI)
                 if event.key == pygame.K_TAB:
                     UIManager.get_game().pause()
+                    UIManager.stop_game()
                     UIManager.render_html()
                     UIManager.open_in_browser()
                 if event.key == pygame.K_p:

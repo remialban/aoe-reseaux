@@ -21,7 +21,7 @@ class UIException(Exception):
     def get_ui(self):
         return self.__ui
 
-isThreadRunning = True
+isThreadRunning = False
 
 def loop_game():
     global isThreadRunning
@@ -44,8 +44,9 @@ class UIManager:
     @staticmethod
     def start_game():
         global isThreadRunning
+        isThreadRunning = True
         if not UIManager.__thread.is_alive():
-            isThreadRunning = True
+            UIManager.__thread = threading.Thread(target=loop_game)
             UIManager.__thread.start()
 
     @staticmethod
