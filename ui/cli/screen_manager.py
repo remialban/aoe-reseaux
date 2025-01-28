@@ -36,10 +36,13 @@ class ScreenManager:
                     UIManager.render_html()
                 elif key == ord("p"):
                     UIManager.get_game().pause()
+                    UIManager.stop_game()
                 elif key == ord("r"):
                     UIManager.get_game().resume()
+                    UIManager.start_game()
                 elif key == ord("\t"):
                     UIManager.get_game().pause()
+                    UIManager.stop_game()
                     UIManager.render_html()
                     UIManager.open_in_browser()
 
@@ -47,4 +50,6 @@ class ScreenManager:
             ScreenManager.__current_screen.update()
             curses.refresh()
             if UIManager.get_game() is not None:
-                UIManager.get_game().party()
+                #UIManager.get_game().party()
+                UIManager.start_game()
+

@@ -154,8 +154,8 @@
                 </td>
                 <td>
                   <div class="progress" role="progressbar" aria-label="Info example">
-                    <div class="progress-bar bg-info text-dark" style="width: {{ building.get_building_percent() }} %">
-                      {{ building.get_building_percent() }}%
+                    <div class="progress-bar bg-info text-dark" style="width: {{ building.get_building_percent() }}%">
+                      {{ [building.get_building_percent(), 100] | min }}%
                     </div>
                   </div>
                 </td>

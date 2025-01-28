@@ -45,18 +45,22 @@ class MapScreen(Screen):
 
             if event.type == pygame.QUIT:
                 running = False
+                UIManager.stop_game()
                 UIManager.stop()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_F9:
                     UIManager.change_ui(UIList.CLI)
                 if event.key == pygame.K_TAB:
                     UIManager.get_game().pause()
+                    UIManager.stop_game()
                     UIManager.render_html()
                     UIManager.open_in_browser()
                 if event.key == pygame.K_p:
                     UIManager.get_game().pause()
+                    UIManager.stop_game()
                 if event.key == pygame.K_r:
                     UIManager.get_game().resume()
+                    UIManager.start_game()
                 if event.key == pygame.K_F11:
                     backup_name = UIManager.get_name()
                     UIManager.save_game(backup_name)
@@ -230,7 +234,6 @@ class MapScreen(Screen):
             self.map.remove_unit(unit)
             self.minimap.remove_unit(unit)
 
-        # START CHRONO
         t = pygame.time.get_ticks()
         self.map.update()
         # print("Update time : ", pygame.time.get_ticks() - t)
@@ -353,7 +356,8 @@ class MapScreen(Screen):
         # tick the clock
         self.clock.tick(1000)
         # time.sleep(0.01)
-        UIManager.get_game().party()
+        #UIManager.get_game().party()
+        UIManager.start_game()
 
     def cleanup(self):
         pass
