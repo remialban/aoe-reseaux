@@ -15,7 +15,7 @@ class Villager(Unit):
             health_points=25,
             max_health_points=25,
             damage=2,
-            movement_speed=10, # 1 in theory
+            movement_speed=1*20, # 1 in theory
             range=1,
             training_time=25,
             cost=Resource(0, 0, 50),

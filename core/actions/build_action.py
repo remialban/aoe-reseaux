@@ -36,7 +36,7 @@ class BuildAction(Action):
         if (self.get_new_time() - self.get_old_time()) > timedelta(seconds=1):
             if self.nb_builders > 0:
                 self.building.build(
-                    100 / (3 * self.building.get_build_time() / (self.nb_builders + 2))
+                    100 / (3 * self.building.get_build_time() / (self.nb_builders + 2))             * 20 # SPEED
                 )
             self.after_action()
             return self.building.is_built()

@@ -64,12 +64,12 @@ class Game:
             for p in self.__players:
                 # print("Isinstance AI?", isinstance(p, AI))
                 if isinstance(p, AI):
-                    print("Playing AI for player", p.get_name())
+                    # print("Playing AI for player", p.get_name())
                     p.play(self)
             for a in self.__actions:
-                print("Doing action of type", type(a).__name__)
+                # print("Doing action of type", type(a).__name__)
                 if a.do_action():
-                    print("Action finished")
+                    # print("Action finished")
                     finished_actions.add(a)
 
             for fa in finished_actions:

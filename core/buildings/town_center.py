@@ -14,10 +14,8 @@ class TownCenter(Building):
 
     def drop_off_resources(self, unit: Unit):
         unit_stock = unit.get_stock()
-        print(unit_stock)
         converted = Resource(unit_stock["wood"], unit_stock["gold"], unit_stock["food"])
         self.player.add_resources(converted)
         unit.remove_resources("wood", converted.get_wood())
         unit.remove_resources("food", converted.get_food())
         unit.remove_resources("gold", converted.get_gold())
-        print(f"Resources dropped off at {self.player.name}'s town center.")

@@ -8,8 +8,8 @@ from core.resources_points.wood import Wood
 from core.resources_points.mine import Mine
 from core.units.villager import Villager
 
-SPEED = 0.46666666666666666666667  # 25 per minute
-
+# SPEED = 0.46666666666666666666667  # 25 per minute
+SPEED = 20
 
 class Collect_Action(Action):
     __collected: ResourcePoint
@@ -43,21 +43,6 @@ class Collect_Action(Action):
                 and self.__collected.get_health_points() <= 0
             ):
                 return True
-            print(
-                f"Collecting {self.__collected.get_resource()} with {next(iter(self.get_involved_units()))}"
-            )
-            print(
-                "Counts: ",
-                self.__void.get_wood(),
-                self.__void.get_food(),
-                self.__void.get_gold(),
-            )
-            print(
-                "Counts: ",
-                self.__collected.get_resource().get_wood(),
-                self.__collected.get_resource().get_food(),
-                self.__collected.get_resource().get_gold(),
-            )
             if isinstance(self.__collected, ResourcePoint) and (
                 self.__void.get_wood() + self.__void.get_food() + self.__void.get_gold()
                 < 20

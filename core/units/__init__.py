@@ -39,9 +39,9 @@ class Unit:
     def change_position(self, new_position):
         """Changes the unit's position on the map."""
         self.position = new_position
-        print(
-            f"Unit moved to new position: {self.position.get_x()}, {self.position.get_y()}"
-        )
+        # print(
+        #     f"Unit moved to new position: {self.position.get_x()}, {self.position.get_y()}"
+        # )
 
     def get_health_points(self):
         return self.health_points
