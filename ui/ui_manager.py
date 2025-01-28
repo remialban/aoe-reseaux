@@ -179,7 +179,7 @@ class UIManager:
         }
 
         rendered_html = template.render(data)
-        with open("game.html", "w") as file:
+        with open("game.html", "w", encoding="utf-8") as file:
             file.write(rendered_html)
 
     @staticmethod
