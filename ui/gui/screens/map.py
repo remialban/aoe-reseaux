@@ -74,6 +74,11 @@ class MapScreen(Screen):
                     )
                     # stop tkinter
                     win.destroy()
+                elif event.key == pygame.K_F12:
+                    UIManager.stop_game()
+                    UIManager.set_game(None)
+                    UIManager.change_ui(UIList.MENU)
+
 
                 if event.key == pygame.K_F1:
                     self.resources_showed = not self.resources_showed

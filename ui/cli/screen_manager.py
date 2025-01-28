@@ -31,7 +31,10 @@ class ScreenManager:
             key = curses.getch()
             if key != -1:
                 if key == curses.KEY_F(9):
-                    UIManager.change_ui(UIList.GUI)
+                    if UIManager.get_game() is None:
+                        UIManager.change_ui(UIList.MENU)
+                    else:
+                        UIManager.change_ui(UIList.GUI)
                 elif key == curses.KEY_F(1) and UIManager.get_game() is not None:
                     UIManager.render_html()
                 elif key == ord("p"):

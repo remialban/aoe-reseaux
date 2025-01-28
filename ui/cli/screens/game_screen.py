@@ -146,7 +146,8 @@ class GameScreen(Screen):
             self.__camera[0] -= offset
         elif (keyboard.is_pressed("d") or keyboard.is_pressed("right")):
             self.__camera[0] += offset
-
+        elif (keyboard.is_pressed("esc")):
+            ScreenManager.change_screen(Screens.GAME_MENU)
         # if key in (curses.KEY_UP, ord('z')) and self.__camera[1] > 0:
         #     self.__camera[1] -= offset
         # elif key in (curses.KEY_DOWN, ord('s')):
