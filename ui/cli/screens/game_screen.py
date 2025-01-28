@@ -17,7 +17,7 @@ from core.units.villager import Villager
 from ui.cli import Screens, ScreenManager
 from ui.cli.screens import Screen
 from ui.ui_manager import UIManager
-
+import keyboard
 
 class GameScreen(Screen):
     UNIT_REPRESENTATION: dict[type, str] = {
@@ -132,14 +132,29 @@ class GameScreen(Screen):
                                     curses.color_pair(GameScreen.COLORS.get(unit.get_player().get_color(), 0)))
 
     def on_key(self, key):
-        if key in (curses.KEY_UP, ord('z')) and self.__camera[1] > 0:
-            self.__camera[1] -= 1
-        elif key in (curses.KEY_DOWN, ord('s')):
-            self.__camera[1] += 1
-        elif key in (curses.KEY_LEFT, ord('q')) and self.__camera[0] > 0:
-            self.__camera[0] -= 1
-        elif key in (curses.KEY_RIGHT, ord('d')):
-            self.__camera[0] += 1
-        elif key == 27:
-            ScreenManager.change_screen(Screens.GAME_MENU)
+        if keyboard.is_pressed("shift"):
+            self.offset = 10
+        else:
+            self.offset = 1
+        offset = self.offset
+
+        if (keyboard.is_pressed("z") or keyboard.is_pressed("up")) and self.__camera[1] > 0:
+            self.__camera[1] -= offset
+        elif (keyboard.is_pressed("s") or keyboard.is_pressed("down")):
+            self.__camera[1] += offset
+        elif (keyboard.is_pressed("q") or keyboard.is_pressed("left")) and self.__camera[0] > 0:
+            self.__camera[0] -= offset
+        elif (keyboard.is_pressed("d") or keyboard.is_pressed("right")):
+            self.__camera[0] += offset
+
+        # if key in (curses.KEY_UP, ord('z')) and self.__camera[1] > 0:
+        #     self.__camera[1] -= offset
+        # elif key in (curses.KEY_DOWN, ord('s')):
+        #     self.__camera[1] += offset
+        # elif key in (curses.KEY_LEFT, ord('q')) and self.__camera[0] > 0:
+        #     self.__camera[0] -= offset
+        # elif key in (curses.KEY_RIGHT, ord('d')):
+        #     self.__camera[0] += offset
+        # elif key == 27:
+        #     ScreenManager.change_screen(Screens.GAME_MENU)
 
