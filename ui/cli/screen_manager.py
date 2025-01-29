@@ -48,7 +48,8 @@ class ScreenManager:
                     UIManager.stop_game()
                     UIManager.render_html()
                     UIManager.open_in_browser()
-
+                elif key == curses.KEY_F(12):
+                    ScreenManager.change_screen(Screens.SELECT_BACKUP)
                 ScreenManager.__current_screen.on_key(key)
             try:
                 ScreenManager.__current_screen.update()
