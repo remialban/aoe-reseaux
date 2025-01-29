@@ -407,9 +407,10 @@ class AI(Player):
                 and sum(unit.get_stock().values()) >= 20
                 and self.is_villager_available(game_state, unit)
             ):
+                print("Dropping off resources for ", unit)
                 for building in game_state.get_map().get_buildings(self):
                     if isinstance(building, TownCenter) or isinstance(building, Camp):
-                        if self._safe_distance(unit, building) > 4:
+                        if self._safe_distance(unit, building) > 2:
                             closest_position = (
                                 self.find_closest_position_arround_object(
                                     building, game_state
@@ -442,8 +443,10 @@ class AI(Player):
     def collect_resources(self, game_state):
         # print(f"Collecting resources for {self.name}")
         for unit in game_state.get_map().get_units(self):
-            if isinstance(unit, Villager) and self.is_villager_available(
-                game_state, unit
+            if (
+                isinstance(unit, Villager)
+                and self.is_villager_available(game_state, unit)
+                and sum(unit.get_stock().values()) < 20
             ):
                 resource_point = self.find_closest_resource(
                     game_state, unit, self.get_resource_to_collect()
