@@ -13,6 +13,7 @@ from core.position import Position
 SPEED = 0.5
 # SPEED = 20
 
+
 class Collect_Action(Action):
     __collected: ResourcePoint
     __void: Resource
@@ -38,10 +39,13 @@ class Collect_Action(Action):
 
     def do_action(self):
         self.before_action()
-        if self.distance(
-            next(iter(self.get_involved_units())).get_position(),
-            self.__collected.get_position(),
-        ) > 1:
+        if (
+            self.distance(
+                next(iter(self.get_involved_units())).get_position(),
+                self.__collected.get_position(),
+            )
+            > 1
+        ):
             return False
         if (self.get_new_time() - self.get_old_time()) > timedelta(seconds=1):
             if (
@@ -94,7 +98,7 @@ class Collect_Action(Action):
                 self.__collected.collect(SPEED)
                 next(iter(self.get_involved_units())).collect_resources("food", SPEED)
                 self.after_action()
-
+                return False
             elif (
                 self.__void.get_wood() + self.__void.get_food() + self.__void.get_gold()
                 >= 20

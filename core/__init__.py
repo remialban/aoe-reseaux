@@ -72,6 +72,7 @@ class Game:
                 if type(a).__name__ == "MoveAction":
                     print(next(iter(a.get_involved_units())))
                 if a.do_action():
+                    print("Action finished")
                     # print("Action finished")
                     finished_actions.add(a)
             print("=====================================================")
