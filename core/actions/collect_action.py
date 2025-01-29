@@ -7,9 +7,11 @@ from core.resources_points import ResourcePoint
 from core.resources_points.wood import Wood
 from core.resources_points.mine import Mine
 from core.units.villager import Villager
+from core.position import Position
 
 # SPEED = 0.46666666666666666666667  # 25 per minute
-SPEED = 20
+SPEED = 0.5
+# SPEED = 20
 
 class Collect_Action(Action):
     __collected: ResourcePoint
@@ -36,7 +38,11 @@ class Collect_Action(Action):
 
     def do_action(self):
         self.before_action()
-
+        if self.distance(
+            next(iter(self.get_involved_units())).get_position(),
+            self.__collected.get_position(),
+        ) > 1:
+            return False
         if (self.get_new_time() - self.get_old_time()) > timedelta(seconds=1):
             if (
                 isinstance(self.__collected, Farm)
@@ -107,3 +113,11 @@ class Collect_Action(Action):
 
     def get_villager(self):
         return next(iter(self.get_involved_units()))
+
+    def distance(self, obj1, obj2):
+        pos1, pos2 = obj1.get_position() if not isinstance(obj1, Position) else obj1, (
+            obj2.get_position() if not isinstance(obj2, Position) else obj2
+        )
+        dist = (pos1.get_x() - pos2.get_x()) ** 2 + (pos1.get_y() - pos2.get_y()) ** 2
+        # print(f"Distance between {obj1} and {obj2}: {dist}")
+        return dist

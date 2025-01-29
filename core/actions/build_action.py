@@ -24,19 +24,30 @@ class BuildAction(Action):
         # dify = v.get_position().get_y() - self.building.get_position().get_y()
         # assert not math.sqrt(difx**2 + dify**2) < 4, "builder too far"
 
-
         # check all builders are math.sqrt(difx**2 + dify**2) < 4 from the building (using width and height of building)
+        if [v for v in self.get_involved_units() if v.get_health_points() <= 0]:
+            self.building.remove_health_points(self.building.get_health_points())
+            return True
         for v in self.get_involved_units():
             x, y = self.get_closest_tile_of_buiding_from_unit(v)
             # print(f"builder at {v.get_position().get_x()} {v.get_position().get_y()} closest tile {x} {y}")
             # print(f"distance {math.sqrt((v.get_position().get_x() - x)**2 + (v.get_position().get_y() - y)**2)}")
-            if not math.sqrt((v.get_position().get_x() - x)**2 + (v.get_position().get_y() - y)**2) < 4:
+            if (
+                not math.sqrt(
+                    (v.get_position().get_x() - x) ** 2
+                    + (v.get_position().get_y() - y) ** 2
+                )
+                < 4
+            ):
                 return False
         # print("all builders are close enough")
         if (self.get_new_time() - self.get_old_time()) > timedelta(seconds=1):
             if self.nb_builders > 0:
                 self.building.build(
-                    100 / (3 * self.building.get_build_time() / (self.nb_builders + 2))             * 20 # SPEED
+                    100
+                    / (
+                        3 * self.building.get_build_time() / (self.nb_builders + 2)
+                    )  # * 20 # SPEED
                 )
             self.after_action()
             return self.building.is_built()

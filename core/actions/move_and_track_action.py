@@ -7,7 +7,7 @@ import heapq
 from typing import List, Set
 
 
-class MoveAction(Action):
+class MoveAndTrackAction(Action):
     __new_position: Position
     __buildings: Set[Building]
     __path: List[Position]
@@ -15,17 +15,20 @@ class MoveAction(Action):
     __map_width: int
     __map_height: int
 
-    def __init__(self, map: Map, unit: Unit, new_position: Position):
+    def __init__(self, map: Map, unit: Unit, target_unit: Unit):
         self.__buildings = map.buildings
         self.__map_width = map.get_width()
         self.__map_height = map.get_height()
         self.set_involved_units(set([unit]))
-        self.__new_position = new_position
-
-        # print(f"Initializing MoveAction with unit at {self.__unit.get_position()} targeting {self.__new_position}")
+        self.__target_unit = target_unit
+        self.__latest_position = target_unit.get_position()
+        self.__new_position = (
+            self.find_farest_position_arround_object_within_unit_range(
+                target_unit, unit
+            )
+        )
 
         self.__path = self._find_path()
-        # print(f"Initial path found: {self.__path}")
 
         self.__current_step = 0
         super().__init__()
@@ -33,14 +36,35 @@ class MoveAction(Action):
     def get_unit(self):
         return next(iter(self.get_involved_units()))
 
+    def get_target_unit(self):
+        return self.__target_unit
+
     def do_action(self) -> bool:
         self.before_action()
+
+        if self.__target_unit.get_position() != self.__latest_position:
+            self.__latest_position = self.__target_unit.get_position()
+            self.__path = self._find_path()
+            self.__current_step = 0
+            self.__new_position = (
+                self.find_farest_position_arround_object_within_unit_range(
+                    self.__target_unit, next(iter(self.get_involved_units()))
+                )
+            )
+
+        if (
+            self.__target_unit.get_health_points() <= 0
+            or next(iter(self.get_involved_units())).get_health_points() <= 0
+        ):
+            return True
 
         if not self.__path:
             # print("No path found. Action cannot be performed.")
             return False
 
-        time_per_step = 1 / (next(iter(self.get_involved_units())).get_movement_speed())
+        time_per_step = 1 / (
+            next(iter(self.get_involved_units())).get_movement_speed()
+        )
         elapsed_time = (self.get_new_time() - self.get_old_time()).total_seconds()
 
         # print(f"Elapsed time: {elapsed_time}, Time per step: {time_per_step}")
@@ -50,7 +74,9 @@ class MoveAction(Action):
 
             if self.__current_step >= len(self.__path):
                 # print("Unit has reached the destination.")
-                next(iter(self.get_involved_units())).change_position(self.__new_position)
+                next(iter(self.get_involved_units())).change_position(
+                    self.__new_position
+                )
                 return True
 
             else:
@@ -151,3 +177,39 @@ class MoveAction(Action):
         # print(f"Reconstructed path: {reconstructed_path}")
 
         return reconstructed_path
+
+    def find_farest_position_arround_object_within_unit_range(self, object, unit):
+        unit_range = int(unit.get_range())
+        best_position = None
+        best_distance = 0
+        for dx in range(-unit_range, unit_range + 1):
+            for dy in range(-unit_range, unit_range + 1):
+                if dx ** 2 + dy ** 2 > unit_range:
+                    continue
+                x, y = (
+                    object.get_position().get_x() + dx,
+                    object.get_position().get_y() + dy,
+                )
+                test_position = Position(x, y)
+                if self._is_valid_position(test_position):
+                    distance = self._safe_distance(unit, test_position)
+                    if distance > best_distance:
+                        best_distance = distance
+                        best_position = test_position
+        return best_position
+
+    def distance(self, obj1, obj2):
+        pos1, pos2 = obj1.get_position() if not isinstance(obj1, Position) else obj1, (
+            obj2.get_position() if not isinstance(obj2, Position) else obj2
+        )
+        dist = (pos1.get_x() - pos2.get_x()) ** 2 + (pos1.get_y() - pos2.get_y()) ** 2
+        # print(f"Distance between {obj1} and {obj2}: {dist}")
+        return dist
+
+    def _safe_distance(self, pos1, pos2):
+        """Helper function to safely calculate distance."""
+        distance = self.distance(pos1, pos2)
+        if isinstance(distance, complex):
+            # Handle complex numbers by using the magnitude or real part
+            return abs(distance)  # Use magnitude of the complex number
+        return distance

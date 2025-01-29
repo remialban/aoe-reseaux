@@ -25,8 +25,3 @@ class Keep(Building):
 
     def get_attack_speed(self):
         return self.attack_speed
-
-p = Position(5, 6)
-play = Player("Philip", "red")
-f = Keep(p, play)
-print(f.get_damage(), f.get_range(), f.get_attack_speed())

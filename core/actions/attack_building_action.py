@@ -59,7 +59,7 @@ class AttackBuildingAction(Action):
             ):
                 print("Attacking building")
                 self.__attacked_building.remove_health_points(
-                    self.__attacking_unit.get_damage() * 20
+                    self.__attacking_unit.get_damage()
                 )
                 print("Damage", self.__attacking_unit.get_damage())
                 print("Building health points", self.__attacked_building.get_health_points(), "/", self.__attacked_building.get_max_health_points())

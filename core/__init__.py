@@ -69,6 +69,8 @@ class Game:
             print("====================== ACTIONS ======================")
             for a in self.__actions:
                 print(type(a).__name__)
+                if type(a).__name__ == "MoveAction":
+                    print(next(iter(a.get_involved_units())))
                 if a.do_action():
                     # print("Action finished")
                     finished_actions.add(a)
@@ -95,8 +97,8 @@ class Game:
         defeated_players = []
         for player in self.__players:
             if (
-                # not self.__map.get_units(player)
-                self.__map.get_units(player)
+                not self.__map.get_units(player)
+                # self.__map.get_units(player)
                 and (
                     not any(
                         isinstance(building, TownCenter)
@@ -116,8 +118,8 @@ class Game:
                     )
                 )
                 or (
-                    # not self.__map.get_units(player)
-                    self.__map.get_units(player)
+                    not self.__map.get_units(player)
+                    # self.__map.get_units(player)
                     and (
                         player.get_stock().get_wood() == 0
                         and player.get_stock().get_gold() == 0
