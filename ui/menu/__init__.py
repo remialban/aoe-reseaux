@@ -82,6 +82,14 @@ class MenuTkinter:
         )
         self.quit_button.pack(pady=10)
 
+        self.master.bind("<KeyPress>", self.on_key_press)
+
+    def on_key_press(self, event):
+        if event.keysym == "F9":
+            UIManager.get_current_ui().cleanup()
+            UIManager.change_ui(UIList.CLI)
+            UIManager.get_current_ui().cleanup()
+
     def populate_load_game_menu(self):
         self.load_game_menu.delete(0, tk.END)
 

@@ -17,7 +17,7 @@ from core.units.villager import Villager
 from ui.cli import Screens, ScreenManager
 from ui.cli.screens import Screen
 from ui.ui_manager import UIManager
-
+import keyboard
 
 class GameScreen(Screen):
     UNIT_REPRESENTATION: dict[type, str] = {
@@ -107,20 +107,41 @@ class GameScreen(Screen):
                 curses.mvaddstr(new_coordonates[1], new_coordonates[0], "#")
 
         # Show buildings
-        for building in game.get_map().get_buildings():
-            for i in range(building.get_width()):
-                for j in range(building.get_height()):
-                    new_x = building.get_position().get_x() + i
-                    new_y = building.get_position().get_y() + j
-                    new_coordonates = self.new_coordonates(new_x, new_y)
-                    if self.check_if_position_in_camera(new_x, new_y):
-                        curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]), GameScreen.BUILDING_REPRESENTATION.get(type(building), "B"), curses.color_pair(GameScreen.COLORS.get(building.get_player().get_color(), 0)))
+        # for building in game.get_map().get_buildings():
+        #     for i in range(building.get_width()):
+        #         for j in range(building.get_height()):
+        #             new_x = building.get_position().get_x() + i
+        #             new_y = building.get_position().get_y() + j
+        #             new_coordonates = self.new_coordonates(new_x, new_y)
+        #             if self.check_if_position_in_camera(new_x, new_y):
+        #                 curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]), GameScreen.BUILDING_REPRESENTATION.get(type(building), "B"), curses.color_pair(GameScreen.COLORS.get(building.get_player().get_color(), 0)))
+        #return 0 <= y - self.__camera[1] + 1 < height and 0 <= x - self.__camera[0] + 1 < width
+        height, width = curses.getmaxyx(self._window)
+
+        for x in range(self.__camera[0] - 1, self.__camera[0] - 1 + width):
+            for y in range(self.__camera[1] - 1, self.__camera[1] + height - 1):
+                t = (x,y)
+                new_coordonates = self.new_coordonates(x,y)
+                if game.get_map().buildings_dict.get(t) is not None:
+                    building = game.get_map().buildings_dict.get(t)
+                    curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]), GameScreen.BUILDING_REPRESENTATION.get(type(building), "B"), curses.color_pair(GameScreen.COLORS.get(building.get_player().get_color(), 0)))
+
         # Show resources points
-        for resource in game.get_map().get_resources():
-            x, y = resource.get_position().get_x(), resource.get_position().get_y()
-            if self.check_if_position_in_camera(x, y):
-                new_coordonates = self.new_coordonates(x, y)
-                curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]), GameScreen.SOURCE_POINT_REPRESENTATION.get(type(resource), "R"), curses.color_pair(7))
+        # for resource in game.get_map().get_resources():
+        #     x, y = resource.get_position().get_x(), resource.get_position().get_y()
+        #     if self.check_if_position_in_camera(x, y):
+        #         new_coordonates = self.new_coordonates(x, y)
+        #         curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]), GameScreen.SOURCE_POINT_REPRESENTATION.get(type(resource), "R"), curses.color_pair(7))
+
+        for x in range(self.__camera[0] - 1, self.__camera[0] - 1 + width):
+            for y in range(self.__camera[1] - 1, self.__camera[1] + height - 1):
+                t = (x,y)
+                new_coordonates = self.new_coordonates(x,y)
+                if game.get_map().resources_points_dict.get(t) is not None:
+                    resource = game.get_map().resources_points_dict.get(t)
+                    curses.mvaddstr(int(new_coordonates[1]), int(new_coordonates[0]),
+                                    GameScreen.SOURCE_POINT_REPRESENTATION.get(type(resource), "R"),
+                                    curses.color_pair(7))
 
         # Show units
         for unit in game.get_map().get_units():
@@ -132,14 +153,30 @@ class GameScreen(Screen):
                                     curses.color_pair(GameScreen.COLORS.get(unit.get_player().get_color(), 0)))
 
     def on_key(self, key):
-        if key in (curses.KEY_UP, ord('z')) and self.__camera[1] > 0:
-            self.__camera[1] -= 1
-        elif key in (curses.KEY_DOWN, ord('s')):
-            self.__camera[1] += 1
-        elif key in (curses.KEY_LEFT, ord('q')) and self.__camera[0] > 0:
-            self.__camera[0] -= 1
-        elif key in (curses.KEY_RIGHT, ord('d')):
-            self.__camera[0] += 1
-        elif key == 27:
+        if keyboard.is_pressed("shift"):
+            self.offset = 10
+        else:
+            self.offset = 1
+        offset = self.offset
+
+        if (keyboard.is_pressed("z") or keyboard.is_pressed("up")) and self.__camera[1] > 0:
+            self.__camera[1] -= offset
+        elif (keyboard.is_pressed("s") or keyboard.is_pressed("down")):
+            self.__camera[1] += offset
+        elif (keyboard.is_pressed("q") or keyboard.is_pressed("left")) and self.__camera[0] > 0:
+            self.__camera[0] -= offset
+        elif (keyboard.is_pressed("d") or keyboard.is_pressed("right")):
+            self.__camera[0] += offset
+        elif (keyboard.is_pressed("esc")):
             ScreenManager.change_screen(Screens.GAME_MENU)
+        # if key in (curses.KEY_UP, ord('z')) and self.__camera[1] > 0:
+        #     self.__camera[1] -= offset
+        # elif key in (curses.KEY_DOWN, ord('s')):
+        #     self.__camera[1] += offset
+        # elif key in (curses.KEY_LEFT, ord('q')) and self.__camera[0] > 0:
+        #     self.__camera[0] -= offset
+        # elif key in (curses.KEY_RIGHT, ord('d')):
+        #     self.__camera[0] += offset
+        # elif key == 27:
+        #     ScreenManager.change_screen(Screens.GAME_MENU)
 

@@ -50,6 +50,10 @@ class Map:
         self.units: set[Unit] = set()
         self.resources_points: set[ResourcePoint] = set()
         self.occupied_position: set[tuple] = set()
+
+        self.resources_points_dict = dict()
+        self.buildings_dict = dict()
+
         Map.min_distance_between_players = max(
             2, int(min(self.__width, self.__height) * 0.5)
         )
@@ -109,7 +113,7 @@ class Map:
                 if 0 <= new_x < self.__width and 0 <= new_y < self.__height:
                     new_position = Position(new_x, new_y)
                     if self.check_resource_point_position(Wood(new_position)):
-                        self.resources_points.add(Wood(new_position))
+                        self.add_resource_point(Wood(new_position))
 
     def generate_resources(self, percentage: float, mode: RessourceModes) -> None:
         assert 0 <= percentage <= 100, "Percentage must be between 0 and 100"
@@ -137,7 +141,7 @@ class Map:
                 mine = Mine(mine_position)
 
                 if self.check_resource_point_position(mine):
-                    self.resources_points.add(mine)
+                    self.add_resource_point(mine)
                     resources_added += 1
 
             resources_added = 0
@@ -153,7 +157,7 @@ class Map:
                 )
                 mine = Mine(mine_position)
                 if self.check_resource_point_position(mine):
-                    self.resources_points.add(mine)
+                    self.add_resource_point(mine)
                     resources_added += 1
 
             resources_added = 0
@@ -564,11 +568,23 @@ class Map:
                 int(building.get_position().get_y()),
                 int(building.get_position().get_y() + building.get_height()),
             ):
+                self.buildings_dict[(x, y)] = building
                 self.occupied_position.add((x, y))
 
     def remove_building(self, building: Building) -> None:
         if building in self.buildings:
             self.buildings.remove(building)
+
+        for x in range(
+                int(building.get_position().get_x()),
+                int(building.get_position().get_x() + building.get_width()),
+        ):
+            for y in range(
+                    int(building.get_position().get_y()),
+                    int(building.get_position().get_y() + building.get_height()),
+            ):
+                self.occupied_position.remove((x, y))
+                self.buildings_dict.pop((x,y))
 
     def add_unit(self, unit: Unit) -> None:
         self.units.add(unit)
@@ -619,3 +635,11 @@ class Map:
                 tmp_resources.append(resource_point)
         for resource_point in tmp_resources:
             self.resources_points.remove(resource_point)
+
+    def add_resource_point(self, rp: ResourcePoint):
+        self.resources_points.add(rp)
+        self.resources_points_dict[(rp.get_position().get_x(), rp.get_position().get_y())] = rp
+
+    def remove_resource_point(self, rp: ResourcePoint):
+        self.resources_points.remove(rp)
+        self.resources_points_dict.pop((rp.get_position().get_x(), rp.get_position().get_y()))

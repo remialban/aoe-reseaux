@@ -31,13 +31,16 @@ class ScreenManager:
             key = curses.getch()
             if key != -1:
                 if key == curses.KEY_F(9):
-                    UIManager.change_ui(UIList.GUI)
+                    if UIManager.get_game() is None:
+                        UIManager.change_ui(UIList.MENU)
+                    else:
+                        UIManager.change_ui(UIList.GUI)
                 elif key == curses.KEY_F(1) and UIManager.get_game() is not None:
                     UIManager.render_html()
-                elif key == ord("p"):
+                elif key == ord("p") and UIManager.get_game() is not None and not UIManager.get_game().is_paused():
                     UIManager.get_game().pause()
                     UIManager.stop_game()
-                elif key == ord("r"):
+                elif key == ord("r") and UIManager.get_game() is not None and UIManager.get_game().is_paused():
                     UIManager.get_game().resume()
                     UIManager.start_game()
                 elif key == ord("\t"):
@@ -47,7 +50,10 @@ class ScreenManager:
                     UIManager.open_in_browser()
 
                 ScreenManager.__current_screen.on_key(key)
-            ScreenManager.__current_screen.update()
+            try:
+                ScreenManager.__current_screen.update()
+            except:
+                pass
             curses.refresh()
             if UIManager.get_game() is not None:
                 #UIManager.get_game().party()
