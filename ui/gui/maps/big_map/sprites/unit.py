@@ -81,63 +81,65 @@ class UnitSprite(Element):
 
         # if self.rect.midright[0] < 0 or self.rect.midleft[0] > screen.get_width() or self.rect.midbottom[1] < 0 or self.rect.midtop[1] > screen.get_height():
         #     return
+        try:
+            actions = UIManager.get_game().get_actions()
 
-        actions = UIManager.get_game().get_actions()
-
-        isAttackingUnit = any(
-            isinstance(a, AttackUnitAction) and a.get_attacking_unit() == self.unit
-            for a in actions
-        )
-        isAttackingBuilding = any(
-            isinstance(a, AttackBuildingAction) and a.get_attacking_unit() == self.unit
-            for a in actions
-        )
-
-        if isinstance(self.unit, Villager):
-            isCollecting = any(
-                isinstance(a, Collect_Action) and a.get_villager() == self.unit
+            isAttackingUnit = any(
+                isinstance(a, AttackUnitAction) and a.get_attacking_unit() == self.unit
                 for a in actions
             )
-        else:
-            isCollecting = False
+            isAttackingBuilding = any(
+                isinstance(a, AttackBuildingAction) and a.get_attacking_unit() == self.unit
+                for a in actions
+            )
 
-        isAttacked = any(
-            isinstance(a, AttackUnitAction) and a.get_attacked_unit() == self.unit
-            for a in actions
-        )
-        font = pygame.font.Font(
-            pygame.font.get_default_font(), 12 * self.image.get_height() // 50
-        )
+            if isinstance(self.unit, Villager):
+                isCollecting = any(
+                    isinstance(a, Collect_Action) and a.get_villager() == self.unit
+                    for a in actions
+                )
+            else:
+                isCollecting = False
 
-        h1 = 0
-        if isAttacked:
-            text1 = f"HP: {self.unit.get_health_points()}/100"
-            text_surface = font.render(text1, True, (255, 255, 255))
-            rect = text_surface.get_rect()
-            h1 = rect.height
-            rect.midbottom = self.rect.midtop
-            screen.blit(text_surface, rect)
+            isAttacked = any(
+                isinstance(a, AttackUnitAction) and a.get_attacked_unit() == self.unit
+                for a in actions
+            )
+            font = pygame.font.Font(
+                pygame.font.get_default_font(), 12 * self.image.get_height() // 50
+            )
 
-        text2 = ""
-        if isAttackingUnit:
-            text2 = "En attaque joueur"
-        elif isAttackingBuilding:
-            text2 = "En attaque bâtiment"
-        elif isCollecting:
-            text2 = "En collecte"
+            h1 = 0
+            if isAttacked:
+                text1 = f"HP: {self.unit.get_health_points()}/100"
+                text_surface = font.render(text1, True, (255, 255, 255))
+                rect = text_surface.get_rect()
+                h1 = rect.height
+                rect.midbottom = self.rect.midtop
+                screen.blit(text_surface, rect)
 
-        text_surface = font.render(text2, True, (255, 255, 255))
-        rect = text_surface.get_rect()
-        rect.midbottom = self.rect.midtop
-        rect.y -= h1
-        h1 += rect.height
-        screen.blit(text_surface, rect)
+            text2 = ""
+            if isAttackingUnit:
+                text2 = "En attaque joueur"
+            elif isAttackingBuilding:
+                text2 = "En attaque bâtiment"
+            elif isCollecting:
+                text2 = "En collecte"
 
-        if isCollecting:
-            resource = self.unit.get_stock()
-            text3 = f"W: {round(resource.get('wood'), 2)} F: {round(resource.get('food'), 2)} G: {round(resource.get('gold'), 2)}"
-            text_surface = font.render(text3, True, (255, 255, 255))
+            text_surface = font.render(text2, True, (255, 255, 255))
             rect = text_surface.get_rect()
             rect.midbottom = self.rect.midtop
             rect.y -= h1
+            h1 += rect.height
             screen.blit(text_surface, rect)
+
+            if isCollecting:
+                resource = self.unit.get_stock()
+                text3 = f"W: {round(resource.get('wood'), 2)} F: {round(resource.get('food'), 2)} G: {round(resource.get('gold'), 2)}"
+                text_surface = font.render(text3, True, (255, 255, 255))
+                rect = text_surface.get_rect()
+                rect.midbottom = self.rect.midtop
+                rect.y -= h1
+                screen.blit(text_surface, rect)
+        except:
+            pass
