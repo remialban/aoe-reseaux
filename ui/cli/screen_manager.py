@@ -50,6 +50,8 @@ class ScreenManager:
                     UIManager.open_in_browser()
                 elif key == curses.KEY_F(12):
                     ScreenManager.change_screen(Screens.SELECT_BACKUP)
+                elif key == curses.KEY_F(11) and UIManager.get_game() is not None:
+                    UIManager.save_game(UIManager.get_name())
                 ScreenManager.__current_screen.on_key(key)
             try:
                 ScreenManager.__current_screen.update()
