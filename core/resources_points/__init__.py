@@ -1,6 +1,7 @@
 from core.position import Position
 
 from core.resource import Resource
+from core.utils import generate_id
 
 
 class ResourcePoint:
@@ -8,6 +9,7 @@ class ResourcePoint:
     __resources: Resource
 
     def __init__(self, position: Position, resource: Resource) -> None:
+        self.id = generate_id()
         self.__position = position
         self.__resources = resource
 

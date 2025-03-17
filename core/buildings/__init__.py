@@ -1,6 +1,7 @@
 from core.players import Player
 from core.position import Position
 from core.resource import Resource
+from core.utils import generate_id
 
 
 class Building:
@@ -27,6 +28,7 @@ class Building:
         cost_resource: Resource,
         player: Player,
     ):
+        self.id = generate_id()
         self.__building_percent = 0
         assert width > 0 and height > 0
         self.__build_time = build_time

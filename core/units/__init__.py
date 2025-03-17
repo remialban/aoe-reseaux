@@ -1,4 +1,5 @@
 from core.resource import Resource
+from core.utils import generate_id
 
 
 class Unit:
@@ -15,6 +16,7 @@ class Unit:
         training_time: float,
         cost: Resource,
     ):
+        self.id = generate_id()
         self.attack_speed = attack_speed
         self.damage = damage
         self.health_points = health_points

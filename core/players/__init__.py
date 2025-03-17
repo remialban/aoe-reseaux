@@ -1,8 +1,10 @@
 from core.resource import Resource
+from core.utils import generate_id
 
 
 class Player:
     def __init__(self, name: str, color: str, resource: Resource = Resource(0, 0, 0)):
+        self.id = generate_id()
         self.name: str = name
         self.color: str = color
         self.max_number_units: int = 0
