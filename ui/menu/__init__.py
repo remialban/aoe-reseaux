@@ -155,6 +155,13 @@ class NewGameMenu:
         )
         self.players_label.place(x=center_x, y=50)
         self.players_var = tk.IntVar(value=1)
+        self.players_option0 = tk.Radiobutton(
+            self.master,
+            text="0 Player",
+            variable=self.players_var,
+            value=0,
+            **button_style,
+        )
         self.players_option1 = tk.Radiobutton(
             self.master,
             text="1 Player",
@@ -169,6 +176,7 @@ class NewGameMenu:
             value=2,
             **button_style,
         )
+        self.players_option0.place(x=center_x - 100, y=90)
         self.players_option1.place(x=center_x, y=90)
         self.players_option2.place(x=center_x + 100, y=90)
 
@@ -251,7 +259,9 @@ class NewGameMenu:
         player1 = AI("Selma", "BLUE")
         player2 = AI("Remi ;)", "YELLOW", strategy="defensive")
 
-        if players == 1:
+        if players == 0:
+            players_set = set()
+        elif players == 1:
             players_set = {player1}
         else:
             players_set = {player1, player2}
