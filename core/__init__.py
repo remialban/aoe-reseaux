@@ -66,16 +66,16 @@ class Game:
                 if isinstance(p, AI):
                     # print("Playing AI for player", p.get_name())
                     p.play(self)
-            print("====================== ACTIONS ======================")
+            #print("====================== ACTIONS ======================")
             for a in self.__actions:
-                print(type(a).__name__)
-                if type(a).__name__ == "MoveAction":
-                    print(next(iter(a.get_involved_units())))
+                #print(type(a).__name__)
+                #if type(a).__name__ == "MoveAction":
+                #    print(next(iter(a.get_involved_units())))
                 if a.do_action():
-                    print("Action finished")
+                    #print("Action finished")
                     # print("Action finished")
                     finished_actions.add(a)
-            print("=====================================================")
+            #print("=====================================================")
 
             for fa in finished_actions:
                 self.__actions.remove(fa)
