@@ -94,3 +94,11 @@ class Building:
         self.__training = False
 
     # def update() :
+
+    def __setattr__(self, key, value):
+        from network.sender import Sender
+        from network.state import State
+
+        super().__setattr__(key, value)
+        if not State.is_receiving() and key in ("max_number_units", "stock", "name", "color") and self.__class__.__name__ != "Player":
+            Sender.notify_edit(self, key, value)

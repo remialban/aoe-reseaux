@@ -52,3 +52,11 @@ class ResourcePoint:
                 return -1
         else:
             return 0
+
+    def __setattr__(self, key, value):
+        from network.sender import Sender
+        from network.state import State
+
+        super().__setattr__(key, value)
+        if not State.is_receiving():
+            Sender.notify_edit(self, key, value)

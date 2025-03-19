@@ -67,6 +67,7 @@ class CreateBuildingAction(Action):
             self.__b = Camp(p0, self.__player)
         elif self.__type_building == Farm:
             self.__b = Farm(p0, self.__player)
+            print("ici!!!!!!!!!!!!!!sdfsmdlkfjqlsjflm")
         elif self.__type_building == Keep:
             self.__b = Keep(p0, self.__player)
         elif self.__type_building == Barracks:

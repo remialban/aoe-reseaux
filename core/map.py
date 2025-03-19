@@ -559,6 +559,12 @@ class Map:
         return self.__height
 
     def add_building(self, building: Building) -> None:
+        from network.state import State
+        from network.sender import Sender
+
+        if not State.is_receiving():
+            Sender.notify_add(building)
+
         self.buildings.add(building)
         for x in range(
             int(building.get_position().get_x()),
@@ -572,6 +578,12 @@ class Map:
                 self.occupied_position.add((x, y))
 
     def remove_building(self, building: Building) -> None:
+        from network.state import State
+        from network.sender import Sender
+
+        if not State.is_receiving():
+            Sender.notify_remove(building)
+
         if building in self.buildings:
             self.buildings.remove(building)
 
@@ -587,12 +599,24 @@ class Map:
                 self.buildings_dict.pop((x,y))
 
     def add_unit(self, unit: Unit) -> None:
+        from network.state import State
+        from network.sender import Sender
+
+        if not State.is_receiving():
+            Sender.notify_add(unit)
+
         self.units.add(unit)
         self.occupied_position.add(
             (unit.get_position().get_x(), unit.get_position().get_y())
         )
 
     def remove_unit(self, unit: Unit) -> None:
+        from network.state import State
+        from network.sender import Sender
+
+        if not State.is_receiving():
+            Sender.notify_remove(unit)
+
         if unit in self.units:
             self.units.remove(unit)
 
@@ -637,9 +661,21 @@ class Map:
             self.resources_points.remove(resource_point)
 
     def add_resource_point(self, rp: ResourcePoint):
+        from network.state import State
+        from network.sender import Sender
+
+        if not State.is_receiving():
+            Sender.notify_add(rp)
+
         self.resources_points.add(rp)
         self.resources_points_dict[(rp.get_position().get_x(), rp.get_position().get_y())] = rp
 
     def remove_resource_point(self, rp: ResourcePoint):
+        from network.state import State
+        from network.sender import Sender
+
+        if not State.is_receiving():
+            Sender.notify_remove(rp)
+
         self.resources_points.remove(rp)
         self.resources_points_dict.pop((rp.get_position().get_x(), rp.get_position().get_y()))

@@ -16,6 +16,12 @@ class Unit:
         training_time: float,
         cost: Resource,
     ):
+        from network.sender import Sender
+        from network.state import State
+
+        old_state = State.is_receiving()
+        State.set_receiving(True)
+
         self.id = generate_id()
         self.attack_speed = attack_speed
         self.damage = damage
@@ -27,6 +33,9 @@ class Unit:
         self.range = range
         self.training_time = training_time
         self.cost = cost
+
+        State.set_receiving(old_state)
+        Sender.notify_add(self)
 
     def get_max_health_points(self):
         return self.max_health_points
@@ -98,3 +107,11 @@ class Unit:
 
     def get_range(self):
         return self.range
+
+    def __setattr__(self, key, value):
+        from network.sender import Sender
+        from network.state import State
+
+        super().__setattr__(key, value)
+        if not State.is_receiving() and self.__class__.__name__ != "Unit" and key not in ("id"):
+            Sender.notify_edit(self, key, value)
