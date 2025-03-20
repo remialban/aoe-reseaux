@@ -9,8 +9,8 @@ class TownCenter(Building):
 
 
     def __init__(self, position : Position, player : Player):
-        self.player = player
         super().__init__(150, 4, 1000, position, 4, False, Resource(350,0,0),player)
+        self.player = player
 
     def drop_off_resources(self, unit: Unit):
         unit_stock = unit.get_stock()

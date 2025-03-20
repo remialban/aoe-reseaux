@@ -562,8 +562,12 @@ class Map:
         from network.state import State
         from network.sender import Sender
 
+
         if not State.is_receiving():
+            old_state = State.is_receiving()
+            State.set_receiving(True)
             Sender.notify_add(building)
+            State.set_receiving(old_state)
 
         self.buildings.add(building)
         for x in range(

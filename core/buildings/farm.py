@@ -9,9 +9,9 @@ class Farm(Building):
     resources : Resource
 
     def __init__(self, position : Position, player : Player):
-        self.resources = Resource(0,0,300) #
         resource_cost = Resource(60,0,0)
         super().__init__(10, 2, 100, position, 2, True, resource_cost,player)
+        self.resources = Resource(0,0,300) #
 
 
 

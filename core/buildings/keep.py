@@ -12,10 +12,11 @@ class Keep(Building):
 
     def __init__(self, position : Position, player : Player):
         resource_cost = Resource(35,125,0)
+        super().__init__(80, 1, 800, position, 1, False, resource_cost, player)
+
         self.damage = 4
         self.range = 4
         self.attack_speed = 1
-        super().__init__(80, 1, 800, position, 1, False, resource_cost, player)
 
     def get_damage(self):
         return self.damage

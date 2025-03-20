@@ -28,6 +28,7 @@ class Building:
         cost_resource: Resource,
         player: Player,
     ):
+
         self.id = generate_id()
         self.__building_percent = 0
         assert width > 0 and height > 0
@@ -100,5 +101,6 @@ class Building:
         from network.state import State
 
         super().__setattr__(key, value)
-        if not State.is_receiving() and key in ("max_number_units", "stock", "name", "color") and self.__class__.__name__ != "Player":
+        #if not State.is_receiving() and key in ("max_number_units", "stock", "name", "color") and self.__class__.__name__ != "Player":
+        if not State.is_receiving() and key not in ("id") and self.__class__.__name__ != "Player":
             Sender.notify_edit(self, key, value)
