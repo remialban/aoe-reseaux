@@ -8,7 +8,8 @@ from ui import UI
 from ui.enums import UIList
 from datetime import datetime
 import pickle
-
+from network.state import State
+from network.receiver import Receiver
 
 class UIException(Exception):
     """
@@ -26,7 +27,12 @@ isThreadRunning = False
 def loop_game():
     global isThreadRunning
     while isThreadRunning:
+        State.set_receiving(False)
         UIManager.get_game().party()
+
+        State.set_receiving(True)
+        for _ in range(100):
+            Receiver.event_manager(UIManager)
 
 class UIManager:
     """
