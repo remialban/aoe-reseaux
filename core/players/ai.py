@@ -74,11 +74,11 @@ class AI(Player):
         ):
             for building in game_state.get_map().get_buildings(self):
                 if isinstance(building, TownCenter):
-                    print("Training villager")
+                    #print("Training villager")
                     self.train_unit(Villager, building, game_state)
 
         if self.needs_defense(game_state):
-            print("Building keep")
+            #print("Building keep")
             self.build_structure(Keep, game_state)
 
         self.build_camps(game_state)
@@ -88,7 +88,7 @@ class AI(Player):
         self.keeps_attack(game_state)
 
     def defensive_strategy(self, game_state):
-        print(f"{self.name} is executing defensive strategy")
+        #print(f"{self.name} is executing defensive strategy")
         self.divide_units_across_buildings(game_state)
         self.always_executing_strategy(game_state)
 
@@ -258,13 +258,13 @@ class AI(Player):
                         if build_action.nb_builders >= 3:
                             break
             else:
-                # pass
-                print(f"No valid position found for {structure_type.__name__}")
+                pass
+                # print(f"No valid position found for {structure_type.__name__}")
         else:
-            # pass
-            print(
-                f"Not enough resources for {structure_type.__name__} or no available builders"
-            )
+            pass
+            #print(
+            #    f"Not enough resources for {structure_type.__name__} or no available builders"
+            #)
 
     def find_closest_position_arround_object(self, object, game_state):
         available_positions = set()

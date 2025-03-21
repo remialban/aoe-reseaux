@@ -2,6 +2,7 @@ from core.players import Player
 from core.position import Position
 from core.resource import Resource
 from core.utils import generate_id
+from network.state import State
 
 
 class Building:
@@ -28,7 +29,8 @@ class Building:
         cost_resource: Resource,
         player: Player,
     ):
-
+        old_state = State.is_receiving()
+        State.set_receiving(True)
         self.id = generate_id()
         self.__building_percent = 0
         assert width > 0 and height > 0
@@ -42,6 +44,7 @@ class Building:
         self.__cost_resource = cost_resource
         self.__player = player
         self.__training = False
+        State.set_receiving(old_state)
 
     def get_building_percent(self) -> float:
         return self.__building_percent

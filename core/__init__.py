@@ -87,6 +87,8 @@ class Game:
             if victory:
                 exit(f"Player {victory.get_name()} has won the game!")
 
+            print("End of turn !!!")
+
         self.__map.clean()
 
         # input("Press Enter to continue...")

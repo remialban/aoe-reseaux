@@ -240,7 +240,7 @@ class Map:
                 town_center = self.generate_building(TownCenter, player, town_centers)
                 if town_center is not None:
                     town_centers.append(town_center)
-            print(Map.min_distance_between_players)
+            #print(Map.min_distance_between_players)
             distances = [
                 distance(t1.get_position(), t2.get_position())
                 >= Map.min_distance_between_players
@@ -385,10 +385,10 @@ class Map:
                     for town_center in town_centers
                     if villager.get_player() == town_center.get_player()
                 ]
-                print("avant condition: ", all(is_distance_good))
-                print("avant condition: ", len(villagers) == len(town_centers) * 15)
-                print("avant condition: len(villagers)", len(villagers))
-                print("avant condition: len(town_centers) * 15", len(town_centers) * 15)
+                # print("avant condition: ", all(is_distance_good))
+                # print("avant condition: ", len(villagers) == len(town_centers) * 15)
+                # print("avant condition: len(villagers)", len(villagers))
+                # print("avant condition: len(town_centers) * 15", len(town_centers) * 15)
                 # if all(is_distance_good) and len(villagers) == len(town_centers) * 15:
                 if len(villagers) == len(town_centers) * 15:
                     for i, villager in enumerate(villagers):
@@ -561,7 +561,6 @@ class Map:
     def add_building(self, building: Building) -> None:
         from network.state import State
         from network.sender import Sender
-
 
         if not State.is_receiving():
             old_state = State.is_receiving()

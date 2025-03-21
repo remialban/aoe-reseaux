@@ -12,7 +12,12 @@ from core.actions import Action
 import socket
 import json
 
+
+
+
 class Sender:
+    data_to_send = list()
+    client_socket = None
     @staticmethod
     def get_type(obj):
         if isinstance(obj, Unit):
@@ -44,7 +49,7 @@ class Sender:
             # print("END VALUE")
             value = value.id
 
-        print(obj)
+        #print(obj)
         #pprint(obj.__a)
         # print("OBJET A AVNEOYER =================================")
         # print(obj)
@@ -78,8 +83,8 @@ class Sender:
 
     @staticmethod
     def notify_add(obj):
-        print("====== NOUVEL OBJET==========")
-        print("-> objet", obj)
+        # print("====== NOUVEL OBJET==========")
+        # print("-> objet", obj)
         #print("ccccccc")
         property = []
         #print("las bbas")
@@ -89,8 +94,8 @@ class Sender:
             property = [obj.get_name(), obj.get_color(), Sender.get_value(obj.get_stock())]
         elif isinstance(obj, Unit):
             property = [
-                Sender.get_value(obj.get_player()),
-                Sender.get_value(obj.get_position())
+                Sender.get_value(obj.get_position()),
+                Sender.get_value(obj.get_player())
             ]
         elif isinstance(obj, Building):
             property = [
@@ -112,6 +117,7 @@ class Sender:
         }
         #pprint(data)
         #print("ici")
+        print(data)
         Sender.send_to_C(data)
 
     @staticmethod
@@ -126,16 +132,33 @@ class Sender:
 
     @staticmethod
     def send_to_C(message):
-        # Création du socket UDP
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        if Sender.client_socket is None:
+            # Création du socket UDP
+            Sender.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        # print(message)
+        # # Création du socket UDP
+        # print("⁼====================== CREATION CLINET SOCKET ===========================")
+        # client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        if message["operation"] == "add" and message["type"] == "building":
+            print(message)
 
         # Adresse du serveur (IP et port)
-        server_address = ('127.0.0.1', 5000)
+        server_address = ('127.0.0.1', 5001)
+
+        Sender.data_to_send.append(message)
+
+        if len(Sender.data_to_send) > 5:
+
+            Sender.client_socket.sendto((json.dumps(Sender.data_to_send)).encode('utf-8'), server_address)
+            Sender.data_to_send = list()
 
         # Envoi des données
-        client_socket.sendto((json.dumps(message) + "\n").encode('utf-8'), server_address)
+        #Sender.client_socket.sendto(().encode('utf-8'), server_address)
 
-        # Fermeture du socket
-        client_socket.close()
+        # # Fermeture du socket
+        # client_socket.close()
+
+        return
 
 

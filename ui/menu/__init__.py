@@ -19,6 +19,8 @@ from core.units import Unit
 from random import randint
 from core.units.villager import Villager
 from core.map import RessourceModes, PlayerModes
+from network.sender import Sender
+from network.state import State
 from ui import UI
 from ui.enums import UIList
 from ui.ui_manager import UIManager
@@ -244,6 +246,7 @@ class NewGameMenu:
         self.back_button.place(x=center_x, y=500)
 
     def start_game(self):
+        State.set_receiving(True)
         players = self.players_var.get()
         map_width = self.map_width_slider.get()
         map_height = self.map_height_slider.get()
@@ -388,6 +391,10 @@ class NewGameMenu:
                 for _ in range(2)
             ]
 
+        State.set_receiving(False)
+        for p in players_set:
+            Sender.notify_add(p)
+        State.set_receiving(True)
         map = Map(
             map_width,
             map_height,
@@ -395,8 +402,21 @@ class NewGameMenu:
             PlayerModes[starting_resources.upper()],
             players_set,
         )
+        State.set_receiving(True)
+
+        for b in map.buildings:
+            Sender.notify_add(b)
+        for r in map.resources_points:
+            Sender.notify_add(r)
+
+        for u in map.units:
+            Sender.notify_add(u)
+
+
+
 
         game = Game(players=players_set, map=map)
+        State.set_receiving(False)
 
         UIManager.set_game(game)
         UIManager.get_current_ui().cleanup()
