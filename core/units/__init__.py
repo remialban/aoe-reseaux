@@ -16,12 +16,6 @@ class Unit:
         training_time: float,
         cost: Resource,
     ):
-        from network.sender import Sender
-        from network.state import State
-
-        old_state = State.is_receiving()
-        State.set_receiving(True)
-
         self.id = generate_id()
         self.attack_speed = attack_speed
         self.damage = damage
@@ -34,8 +28,6 @@ class Unit:
         self.training_time = training_time
         self.cost = cost
 
-        State.set_receiving(old_state)
-        Sender.notify_add(self)
 
     def get_max_health_points(self):
         return self.max_health_points
