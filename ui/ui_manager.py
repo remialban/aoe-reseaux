@@ -24,6 +24,8 @@ class UIException(Exception):
 
 isThreadRunning = False
 
+
+
 def loop_game():
     global isThreadRunning
     while isThreadRunning:
@@ -31,8 +33,9 @@ def loop_game():
         UIManager.get_game().party()
 
         State.set_receiving(True)
-        for _ in range(100):
-            Receiver.event_manager(UIManager)
+        # for _ in range(100):
+        #     Receiver.event_manager
+        Receiver.process_message(UIManager)
 
 class UIManager:
     """
@@ -54,6 +57,9 @@ class UIManager:
         if not UIManager.__thread.is_alive():
             UIManager.__thread = threading.Thread(target=loop_game)
             UIManager.__thread.start()
+
+            threading.Thread(target=Receiver.event_manager, args=(UIManager,)).start()
+
 
     @staticmethod
     def stop_game():
