@@ -259,7 +259,7 @@ class NewGameMenu:
 
         # player1 = Player("eee", "MAGENTA")
         # player2 = Player("eee", "RED")
-        player1 = AI("Selma", "BLUE")
+        player1 = AI("Selma", "RED")
         player2 = AI("Remi ;)", "YELLOW", strategy="defensive")
 
         if players == 0:

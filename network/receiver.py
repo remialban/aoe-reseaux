@@ -1,3 +1,4 @@
+import queue
 import socket
 import threading
 import time
@@ -43,7 +44,7 @@ class Receiver:
     ui=None
     sock=None
 
-    data = list()
+    data = queue.Queue()
 
     @staticmethod
     def init(ui):
@@ -78,7 +79,8 @@ class Receiver:
                         print(f"Reçu {data} de {addr}")
 
                         # Traiter les données reçues (exemple : action du joueur)
-                        threading.Thread(target=message_pick_up, args=(Receiver.ui, data)).start()
+                        #threading.Thread(target=message_pick_up, args=(Receiver.ui, data)).start()
+                        message_pick_up(Receiver.ui, data)
 
                         #message_pick_up(Receiver.ui,data)
                 except BlockingIOError:
@@ -97,16 +99,15 @@ class Receiver:
 
     @staticmethod
     def process_message(ui):
-        State.lock.acquire()
-        events = deepcopy(Receiver.data)
-        Receiver.data = list()
 
-        State.lock.release()
 
         game = ui.get_game()
         map = game.get_map()
 
-        for response in events:
+        for i in range(50):
+            if Receiver.data.empty():
+                break
+            response = Receiver.data.get()
             try:
                 if response["class"] == "Keep":
                     continue
@@ -201,9 +202,9 @@ def message_pick_up(ui,data):
     map = game.get_map()
 
     response = json.loads(data)
-    State.lock.acquire()
-    Receiver.data += response
-    State.lock.release()
+
+    for event in response:
+        Receiver.data.put(event)
 
 
 def get_player_by_id(id,ui):

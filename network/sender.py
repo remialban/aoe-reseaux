@@ -136,29 +136,34 @@ class Sender:
             # Création du socket UDP
             Sender.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-        # print(message)
-        # # Création du socket UDP
-        # print("⁼====================== CREATION CLINET SOCKET ===========================")
-        # client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        n = 1
         if message["operation"] == "add" and message["type"] == "building":
-            print(message)
+            n = 10
 
-        # Adresse du serveur (IP et port)
-        server_address = ('127.0.0.1', 5001)
+        for _ in range(1):
+            # print(message)
+            # # Création du socket UDP
+            # print("⁼====================== CREATION CLINET SOCKET ===========================")
+            # client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            if message["operation"] == "add" and message["type"] == "building":
+                print(message)
 
-        Sender.data_to_send.append(message)
+            # Adresse du serveur (IP et port)
+            server_address = ('127.0.0.1', 5001)
 
-        if len(Sender.data_to_send) > 5:
+            Sender.data_to_send.append(message)
 
-            Sender.client_socket.sendto((json.dumps(Sender.data_to_send)).encode('utf-8'), server_address)
-            Sender.data_to_send = list()
+            if len(Sender.data_to_send) > 5:
 
-        # Envoi des données
-        #Sender.client_socket.sendto(().encode('utf-8'), server_address)
+                Sender.client_socket.sendto((json.dumps(Sender.data_to_send)).encode('utf-8'), server_address)
+                Sender.data_to_send = list()
 
-        # # Fermeture du socket
-        # client_socket.close()
+            # Envoi des données
+            #Sender.client_socket.sendto(().encode('utf-8'), server_address)
 
-        return
+            # # Fermeture du socket
+            # client_socket.close()
+
+            return
 
 
