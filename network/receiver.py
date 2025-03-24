@@ -240,30 +240,30 @@ class Receiver:
                                 if response["class"] == "resource_point":
                                     for p in local_players :
                                         resource_p = get_resources_by_id(response["id"], ui)
-                                        if resource_p.owner == p.id :
+                                        if resource_p.__owner == p.id :
                                             Sender.give_property(resource_p)
                                 elif response["class"] == "unit":
                                     for p in local_players :
                                         unit_p = get_unit_by_id(response["id"], ui)
-                                        if unit_p.owner == p.id :
+                                        if unit_p.__owner == p.id :
                                             Sender.give_property(unit_p)
                                 elif response["class"] == "building":
                                     for p in local_players :
                                         building_p = get_building_by_id(response["id"], ui)
-                                        if building_p.owner == p.id :
+                                        if building_p.__owner == p.id :
                                             Sender.give_property(building_p)
 
                         elif response["operation"] == "give_property":
                             local_players = list(game.get_local_players())
 
                             if response["class"] == "resource_point":
-                                get_resources_by_id(response["id"],ui).owner = local_players[0].id
+                                get_resources_by_id(response["id"],ui).__owner = local_players[0].id
 
                             elif response["class"] == "unit":
-                                get_unit_by_id(response["id"], ui).owner = local_players[0].id
+                                get_unit_by_id(response["id"], ui).__owner = local_players[0].id
 
                             elif response["class"] == "building":
-                                get_building_by_id(response["id"], ui).owner = local_players[0].id
+                                get_building_by_id(response["id"], ui).__owner = local_players[0].id
 
 
 
