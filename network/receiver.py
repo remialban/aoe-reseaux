@@ -35,6 +35,7 @@ from core.resource import Resource
 
 from core.players import Player
 from core.players.ai import AI
+from network.sender import Sender
 from network.state import State
 from tests.test_position import position
 from tests.test_resource import resource
@@ -43,7 +44,7 @@ from tests.test_resource import resource
 class Receiver:
     ui=None
     sock=None
-
+    objet_present=set()
     data = queue.Queue()
 
     @staticmethod
@@ -116,82 +117,138 @@ class Receiver:
                 class_name = response["class"]
                 class__ = globals()[class_name]
 
-                if response["operation"] == "add":
-                    argument = response["args"]
-                    print(response)
-                    if response["type"] == "resources_point":
-                        position = Position(argument[0][0], argument[0][1])
-                        if class_name == "Mine":
-                            resources = Mine(position)
-                        else:
-                            resources = Wood(position)
+                if response["operation"] == "bug":
 
-                        resources.id = response["id"]
-                        map.add_resource_point(resources)
+                    if response["type"] == "building":
+                        building_a_renvoyer = get_building_by_id(response["id"], ui)
 
-                    elif response["type"] == "player":
-                        player = Player(argument[0], argument[1])
-                        game.get_players().add(player)
-                        player.id = response["id"]
+                        Sender.send_to_C([{
+                            "operation": "add",
+                            "type": "building",
+                            "class": class_name,
+                            "args": [[building_a_renvoyer.__position.get_x(), building_a_renvoyer.__position.get_y()],
+                                     building_a_renvoyer.__player],
+                            "id": response["id"],
+
+                        }])
+                    elif response["type"] == "units":
+                        unite_a_renvoyer = get_unit_by_id(response["id"], ui)
+
+                        Sender.send_to_C([{
+                            "operation": "add",
+                            "type": "unit",
+                            "class": class_name,
+                            "args": [[unite_a_renvoyer.position.get_x(), unite_a_renvoyer.position.get_y()],
+                                     unite_a_renvoyer.player],
+                            "id": response["id"],
+
+                        }])
                     else:
-                        print("message building ", response, class_name, class__)
-                        instance = class__(
-                            position=Position(argument[0][0], argument[0][1]),
-                            player=get_player_by_id(argument[1], ui)
+                        resources_a_renvoyer = get_resources_by_id(response["id"], ui)
 
-                        )
-                        print(instance)
-                        instance.id = response["id"]
+                        # le .player peut poser pb enfin jsp faudra voir
+                        Sender.send_to_C([{
+                            "operation": "add",
+                            "type": "resources_point",
+                            "class": class_name,
+                            "args": [[resources_a_renvoyer.__position.get_x(), resources_a_renvoyer.__position.get_y()],
+                                     resources_a_renvoyer.player],
+                            "id": response["id"],
 
-                        if response["type"] == "unit":
-                            map.add_unit(instance)
-                        else:
-                            map.add_building(instance)
-
-
-                elif response["operation"] == "edit":
-                    if response["type"] == "resources_point":
-                        instance = get_resources_by_id(response["id"], ui)
-
-                    elif response["type"] == "unit":
-                        instance = get_unit_by_id(response["id"], ui)
-
-
-                    elif response["type"] == "building":
-                        instance = get_building_by_id(response["id"], ui)
-
-                    elif response["type"] == "player":
-                        instance = get_player_by_id(response["id"], ui)
-
-                    t = type(getattr(instance, response["property"]))
-
-                    value = response["value"]
-
-                    if t == Resource:
-                        value = Resource(value[0], value[1], value[2])
-
-                    elif t == Position:
-                        value = Position(value[0], value[1])
-
-                    setattr(instance, response['property'], value)
-
-
+                        }])
                 else:
-                    print("remove")
-                    if response["type"] == "resource_point":
+                        if response["operation"] == "add":
+                            if response["id"] in Receiver.objet_present:
+                                continue
+                            else:
 
-                        instance = get_resources_by_id(response["id"], ui)
-                        map.remove_resource_point(instance)
+                                Receiver.objet_present.add(response["id"])
+                                argument = response["args"]
+                                print(response)
 
-                    elif response["type"] == "building":
-                        instance = get_building_by_id(response["id"], ui)
-                        map.remove_building(instance)
+                                if response["type"] == "resources_point":
+                                    position = Position(argument[0][0], argument[0][1])
+                                    if class_name == "Mine":
+                                        resources = Mine(position)
+                                    else:
+                                        resources = Wood(position)
 
-                    else:
-                        print("remove d'une unité")
-                        instance = get_unit_by_id(response["id"], ui)
-                        print("instance remove : ", instance)
-                        map.remove_unit(instance)
+                                    resources.id = response["id"]
+                                    map.add_resource_point(resources)
+
+                                elif response["type"] == "player":
+                                    player = Player(argument[0], argument[1])
+                                    game.get_players().add(player)
+                                    player.id = response["id"]
+                                else:
+                                    print("message building ", response, class_name, class__)
+                                    instance = class__(
+                                        position=Position(argument[0][0], argument[0][1]),
+                                        player=get_player_by_id(argument[1], ui)
+
+                                    )
+                                    print(instance)
+                                    instance.id = response["id"]
+
+                                    if response["type"] == "unit":
+                                        map.add_unit(instance)
+                                    else:
+                                        map.add_building(instance)
+
+
+                        elif response["operation"] == "edit":
+                                if response["id"] in Receiver.objet_present:
+                                    if response["type"] == "resources_point":
+                                        instance = get_resources_by_id(response["id"], ui)
+
+                                    elif response["type"] == "unit":
+                                        instance = get_unit_by_id(response["id"], ui)
+
+
+                                    elif response["type"] == "building":
+                                        instance = get_building_by_id(response["id"], ui)
+
+                                    elif response["type"] == "player":
+                                        instance = get_player_by_id(response["id"], ui)
+
+                                else:
+                                    Sender.send_to_C([{
+                                        "operation": "bug",
+                                        "type": response["type"],
+                                        "class": response["class"],
+                                        "id": response["id"],
+
+                                    }])
+
+                                t = type(getattr(instance, response["property"]))
+
+                                value = response["value"]
+
+                                if t == Resource:
+                                    value = Resource(value[0], value[1], value[2])
+
+                                elif t == Position:
+                                    value = Position(value[0], value[1])
+
+                                setattr(instance, response['property'], value)
+
+
+                        else:
+                            print("remove")
+                            if response["type"] == "resource_point":
+
+                                instance = get_resources_by_id(response["id"], ui)
+                                map.remove_resource_point(instance)
+
+                            elif response["type"] == "building":
+                                instance = get_building_by_id(response["id"], ui)
+                                map.remove_building(instance)
+
+                            else:
+                                print("remove d'une unité")
+                                instance = get_unit_by_id(response["id"], ui)
+                                print("instance remove : ", instance)
+                                map.remove_unit(instance)
 
             except Exception as e:
                 print(e)
