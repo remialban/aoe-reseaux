@@ -7,5 +7,5 @@ from core.resources_points import ResourcePoint
 
 
 class Mine(ResourcePoint) :
-    def __init__(self, position : Position):
-        ResourcePoint.__init__(self ,position,Resource(0,800 , 0))
+    def __init__(self, position : Position,owner):
+        ResourcePoint.__init__(self ,position,Resource(0,800 , 0),owner)

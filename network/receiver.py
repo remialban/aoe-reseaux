@@ -110,8 +110,6 @@ class Receiver:
                 break
             response = Receiver.data.get()
             try:
-                if response["class"] == "Keep":
-                    continue
 
                 print(response)
                 class_name = response["class"]

@@ -647,7 +647,7 @@ class AI(Player):
         return dist
 
     def has_resources_for(self, entity_type):
-        cost = entity_type(Player("", ""), Position(0, 0)).get_cost_resource()
+        cost = entity_type( Position(0, 0), Player("", "")).get_cost_resource()
         stock = self.get_resources()
         result = (
             stock.get_wood() >= cost.get_wood()

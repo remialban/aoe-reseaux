@@ -269,6 +269,7 @@ class NewGameMenu:
         else:
             players_set = {player1, player2}
 
+        """
         if starting_resources == "Lean":
             player1.stock = Resource(0, 0, 0)
             player1.town_centers = [
@@ -334,6 +335,7 @@ class NewGameMenu:
                     player1,
                 ),
             ]
+            
             player1.villagers = [
                 Villager("Villager 1", player1),
                 Villager("Villager 2", player1),
@@ -390,7 +392,7 @@ class NewGameMenu:
                 )
                 for _ in range(2)
             ]
-
+        """
         State.set_receiving(False)
         for p in players_set:
             Sender.notify_add(p)

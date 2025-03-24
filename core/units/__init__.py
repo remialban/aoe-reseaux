@@ -1,11 +1,10 @@
 from core.resource import Resource
 from core.utils import generate_id
 
-
 class Unit:
     def __init__(
         self,
-        player,
+        player ,
         position,
         attack_speed: float,
         health_points: int,

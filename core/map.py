@@ -45,7 +45,7 @@ class Map:
 
         self.__width: int = width
         self.__height: int = height
-
+        self.players=list(players)
         self.buildings: set[Building] = set()
         self.units: set[Unit] = set()
         self.resources_points: set[ResourcePoint] = set()
@@ -112,8 +112,9 @@ class Map:
                 new_y = cluster_center.get_y() + randint(-cluster_range, cluster_range)
                 if 0 <= new_x < self.__width and 0 <= new_y < self.__height:
                     new_position = Position(new_x, new_y)
-                    if self.check_resource_point_position(Wood(new_position,list(player[0]).id)):
-                        self.add_resource_point(Wood(new_position,list(players[0]).id))
+                    new_position = Position(new_x, new_y)
+                    if self.check_resource_point_position(Wood(new_position,self.players[0].id)):
+                        self.add_resource_point(Wood(new_position,self.players[0].id))
 
     def generate_resources(self, percentage: float, mode: RessourceModes) -> None:
         assert 0 <= percentage <= 100, "Percentage must be between 0 and 100"
@@ -138,7 +139,7 @@ class Map:
                 offset_y = int(radius * sin(radians(angle)))
 
                 mine_position = Position(center_x + offset_x, center_y + offset_y)
-                mine = Mine(mine_position,list(player[0]).id)
+                mine = Mine(mine_position,self.players[0].id)
 
                 if self.check_resource_point_position(mine):
                     self.add_resource_point(mine)
@@ -155,7 +156,7 @@ class Map:
                 mine_position = Position(
                     randint(0, self.__width - 1), randint(0, self.__height - 1)
                 )
-                mine = Mine(mine_position,list(player[0]).id)
+                mine = Mine(mine_position,list(self.players[0]).id)
                 if self.check_resource_point_position(mine):
                     self.add_resource_point(mine)
                     resources_added += 1
