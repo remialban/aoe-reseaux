@@ -1,3 +1,4 @@
+from core import Player
 from core.position import Position
 
 from core.resource import Resource
@@ -7,11 +8,13 @@ from core.utils import generate_id
 class ResourcePoint:
     __position: Position
     __resources: Resource
+    __owner : int
 
-    def __init__(self, position: Position, resource: Resource) -> None:
+    def __init__(self, position: Position, resource: Resource, owner : Player) -> None:
         self.id = generate_id()
         self.__position = position
         self.__resources = resource
+        self.__owner = owner.id
 
     def get_resources(self) -> Resource:
         return self.__resources

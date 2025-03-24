@@ -166,4 +166,23 @@ class Sender:
 
             return
 
+    @staticmethod
+    def ask_property(player,obj):
+        data = {
+            "operation": "ask_property",
+            "type": Sender.get_type(obj),
+            "class": obj.__class__.__name__,
+            "id": obj.id,
+            "arg" : player.id #joueur voulant obtenir la propriété de l'objet
+        }
+        Sender.send_to_C(data)
 
+    @staticmethod
+    def give_property(obj):
+        data = {
+            "operation": "give_property",
+            "type": Sender.get_type(obj),
+            "class": obj.__class__.__name__,
+            "id": obj.id,
+        }
+        Sender.send_to_C(data)

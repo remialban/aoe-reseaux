@@ -17,6 +17,7 @@ class Building:
     __walkable: bool
     __cost_resource: Resource
     __training: bool
+    __owner : int
 
     def __init__(
         self,
@@ -43,6 +44,7 @@ class Building:
         self.__walkable = walkable
         self.__cost_resource = cost_resource
         self.__player = player
+        self.__owner = player.id
         self.__training = False
         State.set_receiving(old_state)
 

@@ -27,6 +27,7 @@ class Unit:
         self.range = range
         self.training_time = training_time
         self.cost = cost
+        self.owner = player.id
 
 
     def get_max_health_points(self):
