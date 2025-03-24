@@ -187,6 +187,7 @@ class Receiver:
                                         player=get_player_by_id(argument[1], ui)
 
                                     )
+                                    instance.__owners =argument[1]
                                     print(instance)
                                     instance.id = response["id"]
 
@@ -263,15 +264,6 @@ class Receiver:
 
                             elif response["class"] == "building":
                                 get_building_by_id(response["id"], ui).owner = local_players[0].id
-
-
-
-
-
-
-
-
-
 
 
 
