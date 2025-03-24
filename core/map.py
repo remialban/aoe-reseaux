@@ -112,8 +112,8 @@ class Map:
                 new_y = cluster_center.get_y() + randint(-cluster_range, cluster_range)
                 if 0 <= new_x < self.__width and 0 <= new_y < self.__height:
                     new_position = Position(new_x, new_y)
-                    if self.check_resource_point_position(Wood(new_position)):
-                        self.add_resource_point(Wood(new_position))
+                    if self.check_resource_point_position(Wood(new_position,Player.id)):
+                        self.add_resource_point(Wood(new_position,Player.id))
 
     def generate_resources(self, percentage: float, mode: RessourceModes) -> None:
         assert 0 <= percentage <= 100, "Percentage must be between 0 and 100"
@@ -138,7 +138,7 @@ class Map:
                 offset_y = int(radius * sin(radians(angle)))
 
                 mine_position = Position(center_x + offset_x, center_y + offset_y)
-                mine = Mine(mine_position)
+                mine = Mine(mine_position,Player.id)
 
                 if self.check_resource_point_position(mine):
                     self.add_resource_point(mine)
@@ -155,7 +155,7 @@ class Map:
                 mine_position = Position(
                     randint(0, self.__width - 1), randint(0, self.__height - 1)
                 )
-                mine = Mine(mine_position)
+                mine = Mine(mine_position,Player.id)
                 if self.check_resource_point_position(mine):
                     self.add_resource_point(mine)
                     resources_added += 1
@@ -682,3 +682,42 @@ class Map:
 
         self.resources_points.remove(rp)
         self.resources_points_dict.pop((rp.get_position().get_x(), rp.get_position().get_y()))
+
+                
+    def add_player(self, player: Player):
+        villagers = []
+        town_centers = []
+        
+        for _ in range(10000):
+            # Generate town center
+            town_center = self.generate_building(TownCenter, player, town_centers)
+            if town_center is None:
+                continue
+            town_centers.append(town_center)
+            self.add_building(town_center)
+            break
+                
+
+        for _ in range(10000):   
+            # Generate 3 villagers
+            current_villagers = []
+            for _ in range(3):
+                villager = self.generate_unit(Villager, town_center.get_player(), town_center)
+                if villager is not None:
+                    current_villagers.append(villager)
+                    
+            # Check if all villagers were generated and are at correct distance
+            if len(current_villagers) == 3:
+                is_distance_good = all(
+                    self.distance_unit_to_building(villager, town_center) <= 5
+                    for villager in current_villagers
+                )
+                
+                if is_distance_good:
+                    villagers.extend(current_villagers)
+                    for villager in current_villagers:
+                        self.add_unit(villager)
+                    return True
+                    
+        raise Exception("Could not add player - failed to generate town center and villagers")
+        
