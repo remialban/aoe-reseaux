@@ -213,3 +213,10 @@ class MoveAndTrackAction(Action):
             # Handle complex numbers by using the magnitude or real part
             return abs(distance)  # Use magnitude of the complex number
         return distance
+
+
+    def get_list_attributes(self):
+        l = []
+        for u in self.set_involved_units() :
+            l.append(u.id,"position")
+        return l

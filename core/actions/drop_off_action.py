@@ -43,3 +43,13 @@ class DropOffAction(Action):
         x = min(max(x, x_b), x_b + w)
         y = min(max(y, y_b), y_b + h)
         return x, y
+
+
+    def get_list_attributes(self):
+        l=[]
+        for v in self.set_involved_units():
+           l.append([v.id,"wood"])
+           l.append([v.id, "gold"])
+           l.append([v.id, "food"])
+        return l
+

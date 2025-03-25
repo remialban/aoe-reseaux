@@ -125,3 +125,7 @@ class Collect_Action(Action):
         dist = (pos1.get_x() - pos2.get_x()) ** 2 + (pos1.get_y() - pos2.get_y()) ** 2
         # print(f"Distance between {obj1} and {obj2}: {dist}")
         return dist
+
+    def get_list_attributes(self):
+        return [[self.__collected.id, "wood"],[self.__collected.id,"gold"],[self.__collected.id,"food"]]
+
