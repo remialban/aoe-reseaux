@@ -46,6 +46,7 @@ class Receiver:
     sock=None
     objet_present=set()
     data = queue.Queue()
+    connected_players = set()
 
     @staticmethod
     def init(ui):
@@ -232,7 +233,18 @@ class Receiver:
 
                                 setattr(instance, response['property'], value)
 
-
+                        elif response["operation"] == "ask_active_players":
+                            players = game.get_local_players()
+                            player = list(players)[0]
+                            Sender.send_to_C([{
+                                "operation": "answer_active_player",
+                                "color": player.get_color(),
+                                "name": player.get_name(),
+                            }])
+                        elif response["operation"] == "answer_active_player":
+                            color = response["color"]
+                            name = response["name"]
+                            Receiver.connected_players.add({"color": color, "name": name})
                         else:
                             print("remove")
                             if response["type"] == "resource_point":
@@ -252,8 +264,16 @@ class Receiver:
 
             except Exception as e:
                 print(e)
-
-
+@staticmethod
+def get_available_colors():
+    Receiver.connected_players.clear()  
+    Sender.send_to_C([{
+        "operation": "ask_active_players"
+    }])
+    time.sleep(3)
+    taken_colors = {player["color"] for player in Receiver.connected_players}
+    all_colors = {"RED", "BLUE", "GREEN", "YELLOW", "CYAN", "MAGENTA", "WHITE"}
+    return list(all_colors - taken_colors)
 def message_pick_up(ui,data):
     game = ui.get_game()
     map = game.get_map()

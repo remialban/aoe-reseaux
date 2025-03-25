@@ -67,6 +67,13 @@ class Sender:
         # pprint(data)
 
         Sender.send_to_C(data)
+        
+    @staticmethod
+    def join():
+        data = {
+            "operation": "join",
+        }
+        Sender.send_to_C(data)
 
     @staticmethod
     def get_value(value):
