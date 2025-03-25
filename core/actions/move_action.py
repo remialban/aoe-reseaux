@@ -154,6 +154,6 @@ class MoveAction(Action):
 
     def get_list_attributes(self):
         l = []
-        for u in self.set_involved_units() :
+        for u in self.get_involved_units() :
             l.append([u.id,"position"])
         return l

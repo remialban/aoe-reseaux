@@ -47,7 +47,7 @@ class DropOffAction(Action):
 
     def get_list_attributes(self):
         l=[]
-        for v in self.set_involved_units():
+        for v in self.get_involved_units():
            l.append([v.id,"wood"])
            l.append([v.id, "gold"])
            l.append([v.id, "food"])

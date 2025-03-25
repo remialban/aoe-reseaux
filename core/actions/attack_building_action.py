@@ -69,4 +69,4 @@ class AttackBuildingAction(Action):
 
 
     def get_list_attributes(self):
-        return [[self.__attacked_building.id, "hp"]]
+        return [[self.__attacked_building.id, "health_points"]]
