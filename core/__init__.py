@@ -62,13 +62,13 @@ class Game:
 
         if not self.__paused:
             finished_actions: set[Action] = set()
-            print("Players:", self.__players)
+            # print("Players:", self.__players)
             for p in self.__local_players:
                 # print("Isinstance AI?", isinstance(p, AI))
                 if isinstance(p, AI):
                     # print("Playing AI for player", p.get_name())
                     p.play(self)
-            print("====================== ACTIONS ======================")
+            # print("====================== ACTIONS ======================")
             for a in self.__actions:
                 #print(type(a).__name__)
                 #if type(a).__name__ == "MoveAction":
@@ -77,7 +77,7 @@ class Game:
                     #print("Action finished")
                     # print("Action finished")
                     finished_actions.add(a)
-            print("=====================================================")
+            # print("=====================================================")
 
             for fa in finished_actions:
                 self.__actions.remove(fa)
@@ -89,7 +89,7 @@ class Game:
             # if victory:
             #     exit(f"Player {victory.get_name()} has won the game!")
 
-            print("End of turn !!!")
+            # print("End of turn !!!")
 
         self.__map.clean()
 

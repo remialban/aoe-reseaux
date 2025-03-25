@@ -165,7 +165,7 @@ class Receiver:
 
                                 Receiver.objet_present.add(response["id"])
                                 argument = response["args"]
-                                Receiver.dico[str(response["id"])] =[]
+                                Receiver.dico[response["id"]] =[]
                                 print(response)
 
                                 if response["type"] == "resources_point":
@@ -196,15 +196,17 @@ class Receiver:
                                     instance.__owners =argument[1]
                                     print(instance)
                                     instance.id = response["id"]
+                                    print("A")
 
-                                    Receiver.dico[response["id"]] = {"position": [instance.__owner, True],
-                                                                    "health_points": [instance.__owner, True]
+                                    Receiver.dico[response["id"]] = {"position": [response["owner"], True],
+                                                                    "health_points": [response["owner"], True]
                                                                      }
-
+                                    print("B")
                                     if response["type"] == "unit":
                                         map.add_unit(instance)
                                     else:
                                         map.add_building(instance)
+                                        print("Jajoute ", instance, "dans building")
 
 
                         elif response["operation"] == "edit":

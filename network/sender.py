@@ -117,16 +117,23 @@ class Sender:
             ]
 
 
+        owner = None
+
+        if isinstance(obj, Building) or isinstance(obj, Unit):
+            owner = obj
+
         data = {
             "operation": "add",
             "type": Sender.get_type(obj),
             "class": obj.__class__.__name__,
             "id": obj.id,
             "args": property,
+            "owner": owner
+
         }
         #pprint(data)
         #print("ici")
-        print(data)
+        # print(data)
         Sender.send_to_C(data)
 
     @staticmethod
@@ -154,8 +161,8 @@ class Sender:
             # # Création du socket UDP
             # print("⁼====================== CREATION CLINET SOCKET ===========================")
             # client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            if message["operation"] == "add" and message["type"] == "building":
-                print(message)
+            # if message["operation"] == "add" and message["type"] == "building":
+            #     print(message)
 
             # Adresse du serveur (IP et port)
             server_address = ('127.0.0.1', 5001)
