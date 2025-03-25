@@ -156,7 +156,7 @@ class Map:
                 mine_position = Position(
                     randint(0, self.__width - 1), randint(0, self.__height - 1)
                 )
-                mine = Mine(mine_position,list(self.players[0]).id)
+                mine = Mine(mine_position,self.players[0].id)
                 if self.check_resource_point_position(mine):
                     self.add_resource_point(mine)
                     resources_added += 1
