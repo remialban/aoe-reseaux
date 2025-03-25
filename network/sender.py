@@ -116,8 +116,7 @@ class Sender:
                 Sender.get_value(obj.get_resource())
             ]
 
-
-
+        Receiver.objet_present.add(obj.id)
         data = {
             "operation": "add",
             "type": Sender.get_type(obj),

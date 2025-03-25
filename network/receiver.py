@@ -108,7 +108,7 @@ class Receiver:
         game = ui.get_game()
         map = game.get_map()
 
-        for i in range(50):
+        for i in range(10000):
             if Receiver.data.empty():
                 break
             response = Receiver.data.get()
@@ -122,16 +122,16 @@ class Receiver:
 
                     if response["type"] == "building":
                         building_a_renvoyer = get_building_by_id(response["id"], ui)
-
-                        Sender.send_to_C({
-                            "operation": "add",
-                            "type": "building",
-                            "class": class_name,
-                            "args": [[building_a_renvoyer.__position.get_x(), building_a_renvoyer.__position.get_y()],
-                                     building_a_renvoyer.__player],
-                            "id": response["id"],
-
-                        })
+                        Sender.notify_add(building_a_renvoyer)
+                        # Sender.send_to_C({
+                        #     "operation": "add",
+                        #     "type": "building",
+                        #     "class": class_name,
+                        #     "args": [[building_a_renvoyer.__position.get_x(), building_a_renvoyer.__position.get_y()],
+                        #              building_a_renvoyer.__player],
+                        #     "id": response["id"],
+                        #
+                        # })
                     elif response["type"] == "units":
                         unite_a_renvoyer = get_unit_by_id(response["id"], ui)
 
@@ -247,7 +247,16 @@ class Receiver:
                                     elif t == Position:
                                         value = Position(value[0], value[1])
 
-                                    setattr(instance, response['property'], value)
+                                    try:
+                                        setattr(instance, response['property'], value)
+                                    except:
+                                        Sender.send_to_C({
+                                            "operation": "bug",
+                                            "type": response["type"],
+                                            "class": response["class"],
+                                            "id": response["id"],
+
+                                        })
 
                                 else:
                                     print("beta")
