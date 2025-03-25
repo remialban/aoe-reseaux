@@ -109,3 +109,6 @@ class Building:
         #if not State.is_receiving() and key in ("max_number_units", "stock", "name", "color") and self.__class__.__name__ != "Player":
         if not State.is_receiving() and key not in ("id") and self.__class__.__name__ != "Player":
             Sender.notify_edit(self, key, value)
+
+    def get_owner(self):
+        return self.__owner

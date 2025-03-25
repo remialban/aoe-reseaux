@@ -83,6 +83,7 @@ class Sender:
 
     @staticmethod
     def notify_add(obj):
+        from network.receiver import Receiver
         # print("====== NOUVEL OBJET==========")
         # print("-> objet", obj)
         #print("ccccccc")
@@ -92,21 +93,29 @@ class Sender:
         if isinstance(obj, Player):
             #print("ici")
             property = [obj.get_name(), obj.get_color(), Sender.get_value(obj.get_stock())]
+
         elif isinstance(obj, Unit):
             property = [
                 Sender.get_value(obj.get_position()),
                 Sender.get_value(obj.get_player())
             ]
+            Receiver.dico[obj.id] = {"position": [obj.get_owner(), True],
+                                             "health_points": [obj.get_owner(), True]
+                                             }
         elif isinstance(obj, Building):
             property = [
                 Sender.get_value(obj.get_position()),
                 Sender.get_value(obj.get_player())
             ]
+            Receiver.dico[obj.id] = {"position": [obj.get_owner(), True],
+                                             "health_points": [obj.get_owner(), True]
+                                             }
         elif isinstance(obj, ResourcePoint):
             property = [
                 Sender.get_value(obj.get_position()),
                 Sender.get_value(obj.get_resource())
             ]
+
 
         data = {
             "operation": "add",
@@ -166,23 +175,30 @@ class Sender:
 
             return
 
+
     @staticmethod
-    def ask_property(player,obj):
+    def ask_property(player,obj,attribut):
         data = {
             "operation": "ask_property",
             "type": Sender.get_type(obj),
             "class": obj.__class__.__name__,
+            "attribut" : attribut,
             "id": obj.id,
             "arg" : player.id #joueur voulant obtenir la propriété de l'objet
         }
         Sender.send_to_C(data)
 
     @staticmethod
-    def give_property(obj):
+    def give_property(obj,attribut,id):
+        from network.receiver import Receiver
         data = {
             "operation": "give_property",
             "type": Sender.get_type(obj),
             "class": obj.__class__.__name__,
+            "attribut":attribut,
             "id": obj.id,
+            "owner": id
         }
+        Receiver.dico[obj.id][attribut][0] = id
+
         Sender.send_to_C(data)

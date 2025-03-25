@@ -49,6 +49,9 @@ class Unit:
     def get_health_points(self):
         return self.health_points
 
+    def get_owner(self):
+        return self.owner
+
     def get_max_health_points(self):
         return self.max_health_points
 

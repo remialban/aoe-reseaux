@@ -40,12 +40,14 @@ from network.state import State
 from tests.test_position import position
 from tests.test_resource import resource
 
+from network.sender import Sender
 
 class Receiver:
     ui=None
     sock=None
     objet_present=set()
     data = queue.Queue()
+    dico = dict()
 
     @staticmethod
     def init(ui):
@@ -69,6 +71,7 @@ class Receiver:
     @staticmethod
     def event_manager(ui):
         #if Receiver.sock is None:
+        #    Receiver.init(ui)
         #    Receiver.init(ui)
         while True:
             try:
@@ -144,7 +147,7 @@ class Receiver:
                     else:
                         resources_a_renvoyer = get_resources_by_id(response["id"], ui)
 
-                        # le .player peut poser pb enfin jsp faudra voir
+
                         Sender.send_to_C([{
                             "operation": "add",
                             "type": "resources_point",
@@ -162,14 +165,19 @@ class Receiver:
 
                                 Receiver.objet_present.add(response["id"])
                                 argument = response["args"]
+                                Receiver.dico[str(response["id"])] =[]
                                 print(response)
 
                                 if response["type"] == "resources_point":
                                     position = Position(argument[0][0], argument[0][1])
                                     if class_name == "Mine":
-                                        resources = Mine(position)
+                                        resources = Mine(position,argument[1])
                                     else:
-                                        resources = Wood(position)
+                                        resources = Wood(position,argument[1])
+
+                                    Receiver.dico[response["id"]] ={{"position": [resources.__owner,True]},
+                                                                    {"resources":[resources.__owner,True]}
+                                                                    }
 
                                     resources.id = response["id"]
                                     map.add_resource_point(resources)
@@ -188,6 +196,10 @@ class Receiver:
                                     instance.__owners =argument[1]
                                     print(instance)
                                     instance.id = response["id"]
+
+                                    Receiver.dico[response["id"]] = {{"position": [instance.__owner, True]},
+                                                                    {"health_points": [instance.__owner, True]}
+                                                                     }
 
                                     if response["type"] == "unit":
                                         map.add_unit(instance)
@@ -239,30 +251,22 @@ class Receiver:
                                     for p in local_players :
                                         resource_p = get_resources_by_id(response["id"], ui)
                                         if resource_p.__owner == p.id :
-                                            Sender.give_property(resource_p)
+                                            Sender.give_property(resource_p,response["attribut"],response["args"])
                                 elif response["class"] == "unit":
                                     for p in local_players :
                                         unit_p = get_unit_by_id(response["id"], ui)
                                         if unit_p.__owner == p.id :
-                                            Sender.give_property(unit_p)
+                                            Sender.give_property(unit_p,response["attribut"],response["args"])
                                 elif response["class"] == "building":
                                     for p in local_players :
                                         building_p = get_building_by_id(response["id"], ui)
                                         if building_p.__owner == p.id :
-                                            Sender.give_property(building_p)
+                                            Sender.give_property(building_p,response["attribut"],response["args"])
 
                         elif response["operation"] == "give_property":
                             local_players = list(game.get_local_players())
 
-                            if response["class"] == "resource_point":
-                                get_resources_by_id(response["id"],ui).__owner = local_players[0].id
-
-                            elif response["class"] == "unit":
-                                get_unit_by_id(response["id"], ui).__owner = local_players[0].id
-
-                            elif response["class"] == "building":
-                                get_building_by_id(response["id"], ui).__owner = local_players[0].id
-
+                            Receiver.dico[response["id"]][response['attribut']][0] = response["owner"]
 
 
                         else:
