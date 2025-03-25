@@ -123,7 +123,7 @@ class Receiver:
                     if response["type"] == "building":
                         building_a_renvoyer = get_building_by_id(response["id"], ui)
 
-                        Sender.send_to_C([{
+                        Sender.send_to_C({
                             "operation": "add",
                             "type": "building",
                             "class": class_name,
@@ -131,11 +131,11 @@ class Receiver:
                                      building_a_renvoyer.__player],
                             "id": response["id"],
 
-                        }])
+                        })
                     elif response["type"] == "units":
                         unite_a_renvoyer = get_unit_by_id(response["id"], ui)
 
-                        Sender.send_to_C([{
+                        Sender.send_to_C({
                             "operation": "add",
                             "type": "unit",
                             "class": class_name,
@@ -143,12 +143,12 @@ class Receiver:
                                      unite_a_renvoyer.player],
                             "id": response["id"],
 
-                        }])
+                        })
                     else:
                         resources_a_renvoyer = get_resources_by_id(response["id"], ui)
 
 
-                        Sender.send_to_C([{
+                        Sender.send_to_C({
                             "operation": "add",
                             "type": "resources_point",
                             "class": class_name,
@@ -156,7 +156,7 @@ class Receiver:
                                      resources_a_renvoyer.player],
                             "id": response["id"],
 
-                        }])
+                        })
                 else:
                         if response["operation"] == "add":
                             if response["id"] in Receiver.objet_present:
@@ -210,29 +210,41 @@ class Receiver:
 
 
                         elif response["operation"] == "edit":
+                                print("A")
+                                print(response)
+                                print(response["id"])
+                                print(Receiver.objet_present)
                                 if response["id"] in Receiver.objet_present:
+                                    print("alpha")
                                     if response["type"] == "resources_point":
+                                        print("B")
+
                                         instance = get_resources_by_id(response["id"], ui)
 
                                     elif response["type"] == "unit":
                                         instance = get_unit_by_id(response["id"], ui)
-
+                                        print("C")
 
                                     elif response["type"] == "building":
+                                        print("D")
+
                                         instance = get_building_by_id(response["id"], ui)
+
+                                        print("D bis")
 
                                     elif response["type"] == "player":
                                         instance = get_player_by_id(response["id"], ui)
-
+                                        print("E")
                                 else:
-                                    Sender.send_to_C([{
+                                    print("beta")
+                                    Sender.send_to_C({
                                         "operation": "bug",
                                         "type": response["type"],
                                         "class": response["class"],
                                         "id": response["id"],
 
-                                    }])
-
+                                    })
+                                print("F")
                                 t = type(getattr(instance, response["property"]))
 
                                 value = response["value"]
