@@ -235,6 +235,20 @@ class Receiver:
                                     elif response["type"] == "player":
                                         instance = get_player_by_id(response["id"], ui)
                                         print("E")
+
+                                    print("F")
+                                    t = type(getattr(instance, response["property"]))
+
+                                    value = response["value"]
+
+                                    if t == Resource:
+                                        value = Resource(value[0], value[1], value[2])
+
+                                    elif t == Position:
+                                        value = Position(value[0], value[1])
+
+                                    setattr(instance, response['property'], value)
+
                                 else:
                                     print("beta")
                                     Sender.send_to_C({
@@ -244,18 +258,6 @@ class Receiver:
                                         "id": response["id"],
 
                                     })
-                                print("F")
-                                t = type(getattr(instance, response["property"]))
-
-                                value = response["value"]
-
-                                if t == Resource:
-                                    value = Resource(value[0], value[1], value[2])
-
-                                elif t == Position:
-                                    value = Position(value[0], value[1])
-
-                                setattr(instance, response['property'], value)
 
                         elif response["operation"] == "ask_property" :
 
