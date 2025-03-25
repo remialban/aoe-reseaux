@@ -17,7 +17,7 @@ def generate_id():
     # Combiner toutes les parties
     id_generated = f"{date_part}{seconds_in_minute:02d}{random_part}"
     
-    return id_generated
+    return int(id_generated)
 
 # Exemple d'utilisation
 generated_id = generate_id()
