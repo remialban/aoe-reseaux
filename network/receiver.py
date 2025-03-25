@@ -80,7 +80,7 @@ class Receiver:
                     data, addr = Receiver.sock.recvfrom(1024)  # Taille maximale des données reçues : 1024 octets
                     if data:
                         data = data.decode('utf-8')
-                        print(f"Reçu {data} de {addr}")
+                        # print(f"Reçu {data} de {addr}")
 
                         # Traiter les données reçues (exemple : action du joueur)
                         #threading.Thread(target=message_pick_up, args=(Receiver.ui, data)).start()
@@ -175,8 +175,8 @@ class Receiver:
                                     else:
                                         resources = Wood(position,argument[1])
 
-                                    Receiver.dico[response["id"]] ={{"position": [resources.__owner,True]},
-                                                                    {"resources":[resources.__owner,True]}
+                                    Receiver.dico[response["id"]] ={"position": [resources.__owner,True],
+                                                                    "resources":[resources.__owner,True]
                                                                     }
 
                                     resources.id = response["id"]
@@ -197,8 +197,8 @@ class Receiver:
                                     print(instance)
                                     instance.id = response["id"]
 
-                                    Receiver.dico[response["id"]] = {{"position": [instance.__owner, True]},
-                                                                    {"health_points": [instance.__owner, True]}
+                                    Receiver.dico[response["id"]] = {"position": [instance.__owner, True],
+                                                                    "health_points": [instance.__owner, True]
                                                                      }
 
                                     if response["type"] == "unit":
