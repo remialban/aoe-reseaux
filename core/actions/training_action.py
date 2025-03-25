@@ -118,3 +118,8 @@ class TrainingAction(Action):
 
     def get_type_unit(self):
         return self.__type_unit
+
+
+    def get_list_attributes(self):
+        l = []
+        return l
