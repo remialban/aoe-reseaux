@@ -117,10 +117,6 @@ class Sender:
             ]
 
 
-        owner = None
-
-        if isinstance(obj, Building) or isinstance(obj, Unit):
-            owner = obj
 
         data = {
             "operation": "add",
@@ -128,9 +124,11 @@ class Sender:
             "class": obj.__class__.__name__,
             "id": obj.id,
             "args": property,
-            "owner": owner
-
         }
+
+        if isinstance(obj, Building) or isinstance(obj, Unit):
+            data["owner"] = obj.get_owner()
+
         #pprint(data)
         #print("ici")
         # print(data)
