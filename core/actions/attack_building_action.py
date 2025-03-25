@@ -66,3 +66,7 @@ class AttackBuildingAction(Action):
                 self.after_action()
 
         return self.__attacked_building.get_health_points() <= 0
+
+
+    def get_list_attributes(self):
+        return [[self.__attacked_building.id, "health_points"]]

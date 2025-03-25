@@ -74,3 +74,6 @@ class BuildAction(Action):
         x = min(max(x, x_b), x_b + w)
         y = min(max(y, y_b), y_b + h)
         return x, y
+
+    def get_list_attributes(self):
+        return [[self.building.id, "building_percent"]]

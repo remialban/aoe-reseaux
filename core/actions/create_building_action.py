@@ -96,3 +96,7 @@ class CreateBuildingAction(Action):
             self.__map.add_building(self.__b)
 
         return True
+
+
+    def get_list_attributes(self):
+        return []
