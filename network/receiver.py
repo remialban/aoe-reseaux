@@ -108,7 +108,7 @@ class Receiver:
         game = ui.get_game()
         map = game.get_map()
 
-        for i in range(10000):
+        for i in range(10):
             if Receiver.data.empty():
                 break
             response = Receiver.data.get()
