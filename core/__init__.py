@@ -25,6 +25,9 @@ class Game:
 
     def get_map(self) -> Map:
         return self.__map
+    
+    def get_local_players(self):
+        return self.__local_players
 
     def get_players(self) -> set[Player]:
         return self.__players
