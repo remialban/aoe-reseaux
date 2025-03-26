@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 
-from core import Game, Player, Map
+from core import Game, Map
 from core.buildings.barracks import Barracks
 from core.buildings.house import House
 from core.buildings.stable import Stable
@@ -455,22 +455,6 @@ COLORS = {
     "WHITE": 7
 }
 
-import tkinter as tk
-from tkinter import ttk
-from PIL import Image, ImageTk
-from core import Game, Player, Map, Action  # Assure-toi que ces classes existent et sont importées
-
-# Définir les couleurs
-COLORS = {
-    "RED": 1,
-    "GREEN": 2,
-    "YELLOW": 3,
-    "BLUE": 4,
-    "MAGENTA": 5,
-    "CYAN": 6,
-    "WHITE": 7
-}
-
 class JoinOnlineGameMenu:
     def __init__(self, master, bg_photo):
         self.master = master
@@ -590,11 +574,6 @@ class JoinOnlineGameMenu:
         
 
     def join_game(self):
-        """Crée une partie avec les paramètres prédéfinis et lance la partie."""
-        from core import Game  # Import de la classe Game
-        from core import Player  # Import de la classe Player
-        from core import Map  # Import de la classe Map
-
         # Récupérer le nom du joueur et la couleur sélectionnée
         player_name = self.server_name_entry.get()
         chosen_color = self.color_var.get()
@@ -605,7 +584,7 @@ class JoinOnlineGameMenu:
             return
 
         # Créer un joueur avec la couleur choisie
-        player = Player(name=player_name, color=chosen_color)
+        player = AI(name=player_name, color=chosen_color)
 
         # Générer une carte 50x50 en mode Gold Rush
         game_map = Map(width = 50,height= 50,ressource_mode=RessourceModes.GOLD_RUSH, player_mode =PlayerModes.LEAN, players= {player})
