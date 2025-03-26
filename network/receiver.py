@@ -381,5 +381,3 @@ def get_resources_by_position(position,ui):
     for resources in map.resources :
         if resources.__position ==position:
             return resources
-
-
