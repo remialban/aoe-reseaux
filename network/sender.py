@@ -156,8 +156,11 @@ class Sender:
             Sender.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         n = 1
-        if message["operation"] == "add" and message["type"] == "building":
-            n = 10
+        try:
+            if message["operation"] == "add" and message["type"] == "building":
+                n = 10
+        except:
+            pass
 
         for _ in range(1):
             # print(message)
