@@ -609,6 +609,9 @@ class JoinOnlineGameMenu:
         # Créer un joueur avec la couleur choisie
         player = Player(name=player_name, color=chosen_color)
 
+        State.set_receiving(False)
+        Sender.notify_add(player)
+        State.set_receiving(True)
         # Générer une carte 50x50 en mode Gold Rush
         game_map = Map(width = 50,height= 50,ressource_mode=RessourceModes.GOLD_RUSH, player_mode =PlayerModes.LEAN, players= {player})
 
@@ -616,7 +619,18 @@ class JoinOnlineGameMenu:
         game = Game(players={player}, map=game_map)
 
         # Démarrer la boucle de jeu
+
+        State.set_receiving(True)
+        game_map.get_resources().clear()
+        for b in game_map.buildings:
+            Sender.notify_add(b)
+        for r in game_map.resources_points:
+            Sender.notify_add(r)
+
+        for u in game_map.units:
+            Sender.notify_add(u)
         State.set_receiving(False)
+
 
         UIManager.set_game(game)
         UIManager.get_current_ui().cleanup()
