@@ -127,5 +127,5 @@ class Collect_Action(Action):
         return dist
 
     def get_list_attributes(self):
-        return [[self.__collected.id, "wood"],[self.__collected.id,"gold"],[self.__collected.id,"food"]]
+        return [[self.__collected.id, "wood","Resources_Point"],[self.__collected.id,"gold","Resources_Point"],[self.__collected.id,"food","Resources_Point"]]
 
