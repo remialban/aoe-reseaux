@@ -46,4 +46,4 @@ class AttackUnitByBuildingAction(Action):
         return self.__attacked_unit.get_health_points() <= 0
 
     def get_list_attributes(self):
-        return [[self.__attacked_unit.id, "health_points","Unit"]]
+        return [[self.__attacked_unit.id, "health_points","unit"]]

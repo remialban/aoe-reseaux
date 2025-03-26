@@ -76,4 +76,4 @@ class BuildAction(Action):
         return x, y
 
     def get_list_attributes(self):
-        return [[self.building.id, "building_percent","Building"]]
+        return [[self.building.id, "building_percent","building"]]

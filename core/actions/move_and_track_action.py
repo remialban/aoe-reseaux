@@ -218,5 +218,5 @@ class MoveAndTrackAction(Action):
     def get_list_attributes(self):
         l = []
         for u in self.get_involved_units() :
-            l.append([u.id,"position","Unit"])
+            l.append([u.id,"position","unit"])
         return l
