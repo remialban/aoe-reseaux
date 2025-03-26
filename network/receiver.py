@@ -123,7 +123,7 @@ class Receiver:
                     if response["type"] == "building":
                         building_a_renvoyer = get_building_by_id(response["id"], ui)
 
-                        Sender.send_to_C([{
+                        Sender.send_to_C({
                             "operation": "add",
                             "type": "building",
                             "class": class_name,
@@ -131,11 +131,11 @@ class Receiver:
                                      building_a_renvoyer.__player],
                             "id": response["id"],
 
-                        }])
+                        })
                     elif response["type"] == "units":
                         unite_a_renvoyer = get_unit_by_id(response["id"], ui)
 
-                        Sender.send_to_C([{
+                        Sender.send_to_C({
                             "operation": "add",
                             "type": "unit",
                             "class": class_name,
@@ -143,12 +143,12 @@ class Receiver:
                                      unite_a_renvoyer.player],
                             "id": response["id"],
 
-                        }])
+                        })
                     else:
                         resources_a_renvoyer = get_resources_by_id(response["id"], ui)
 
                         # le .player peut poser pb enfin jsp faudra voir
-                        Sender.send_to_C([{
+                        Sender.send_to_C({
                             "operation": "add",
                             "type": "resources_point",
                             "class": class_name,
@@ -156,7 +156,7 @@ class Receiver:
                                      resources_a_renvoyer.player],
                             "id": response["id"],
 
-                        }])
+                        })
                 else:
                         if response["operation"] == "add":
                             if response["id"] in Receiver.objet_present:
@@ -213,13 +213,13 @@ class Receiver:
                                         instance = get_player_by_id(response["id"], ui)
 
                                 else:
-                                    Sender.send_to_C([{
+                                    Sender.send_to_C({
                                         "operation": "bug",
                                         "type": response["type"],
                                         "class": response["class"],
                                         "id": response["id"],
 
-                                    }])
+                                    })
 
                                 t = type(getattr(instance, response["property"]))
 
@@ -236,11 +236,11 @@ class Receiver:
                         elif response["operation"] == "ask_active_players":
                             players = game.get_local_players()
                             player = list(players)[0]
-                            Sender.send_to_C([{
+                            Sender.send_to_C({
                                 "operation": "answer_active_player",
                                 "color": player.get_color(),
                                 "name": player.get_name(),
-                            }])
+                            })
                         elif response["operation"] == "answer_active_player":
                             color = response["color"]
                             name = response["name"]
@@ -267,9 +267,9 @@ class Receiver:
 @staticmethod
 def get_available_colors():
     Receiver.connected_players.clear()  
-    Sender.send_to_C([{
+    Sender.send_to_C({
         "operation": "ask_active_players"
-    }])
+    })
     time.sleep(3)
     taken_colors = {player["color"] for player in Receiver.connected_players}
     all_colors = {"RED", "BLUE", "GREEN", "YELLOW", "CYAN", "MAGENTA", "WHITE"}
