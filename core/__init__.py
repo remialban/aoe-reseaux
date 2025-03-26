@@ -81,12 +81,18 @@ class Game:
                 #print(type(a).__name__)
                 #if type(a).__name__ == "MoveAction":
                 #    print(next(iter(a.get_involved_units())))
-                if Receiver.verify_properties(a.get_list_attributes(), list(self.__local_players)[0].id):
+                lists = a.get_list_attributes()
+                new_lists = list()
+                for i in lists:
+                    if i[2] in ("unit", "building"):
+                        new_lists.append(i)
+
+                if Receiver.verify_properties(new_lists, list(self.__local_players)[0].id):
                     if a.do_action():
                         #print("Action finished")
                         # print("Action finished")
                         finished_actions.add(a)
-                    Receiver.free_action(a.get_list_attributes())
+                    Receiver.free_action(new_lists)
             State.set_receiving(True)
 
             # print("=====================================================")
