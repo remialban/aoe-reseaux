@@ -176,8 +176,8 @@ class Receiver:
                                     else:
                                         resources = Wood(position,argument[1])
 
-                                    Receiver.dico[response["id"]] ={"position": [resources.__owner,True],
-                                                                    "resources":[resources.__owner,True]
+                                    Receiver.dico[response["id"]] ={"position": [resources.get_owner(),True],
+                                                                    "resources":[resources.get_owner(),True]
                                                                     }
 
                                     resources.id = response["id"]
