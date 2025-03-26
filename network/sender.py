@@ -14,7 +14,6 @@ import json
 
 
 
-
 class Sender:
     data_to_send = list()
     client_socket = None
@@ -188,15 +187,16 @@ class Sender:
 
 
     @staticmethod
-    def ask_property(player,obj,attribut):
+    def ask_property(player_id,obj_id,attribut, type):
         data = {
             "operation": "ask_property",
-            "type": Sender.get_type(obj),
-            "class": obj.__class__.__name__,
+            "type": type,
+            "class": "Building",
             "attribut" : attribut,
-            "id": obj.id,
-            "arg" : player.id #joueur voulant obtenir la propriété de l'objet
+            "id": obj_id,
+            "arg" : player_id #joueur voulant obtenir la propriété de l'objet
         }
+        print(data)
         Sender.send_to_C(data)
 
     @staticmethod

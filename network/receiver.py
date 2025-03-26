@@ -51,6 +51,39 @@ class Receiver:
     connected_players = set()
 
     @staticmethod
+    def free_action(id_lists: list[list]):
+        for id_list in id_lists:
+            obj_id = id_list[0]
+            attribute = id_list[1]
+
+            Receiver.dico[obj_id][attribute][1] = False
+
+    @staticmethod
+    def verify_properties(id_lists: list[list], current_player_id: int) -> bool:
+
+        for id_list in id_lists:
+            obj_id = id_list[0]
+            attribute = id_list[1]
+
+            # Check if object exists
+            if obj_id not in Receiver.dico.keys():
+                return False
+
+            # Get object's attributes
+            obj_attrs = Receiver.dico[obj_id]
+
+            # Check if required attribute exists
+            if attribute not in obj_attrs.keys():
+                return False
+
+            # Check if current player has permission
+            if current_player_id != obj_attrs[attribute][0]:
+                Sender.ask_property(current_player_id, obj_id, attribute, id_list[2])
+
+            obj_attrs[attribute][1] = True
+
+        return True
+    @staticmethod
     def init(ui):
         Receiver.ui =ui
         # Définir l'adresse IP et le port du serveur
@@ -273,17 +306,17 @@ class Receiver:
 
                             if response["id"]  in Receiver.objet_present :
                                 local_players = game.get_local_players()
-                                if response["class"] == "resource_point":
+                                if response["type"] == "resource_point":
                                     for p in local_players :
                                         resource_p = get_resources_by_id(response["id"], ui)
                                         if resource_p.__owner == p.id :
                                             Sender.give_property(resource_p,response["attribut"],response["args"])
-                                elif response["class"] == "unit":
+                                elif response["type"] == "unit":
                                     for p in local_players :
                                         unit_p = get_unit_by_id(response["id"], ui)
                                         if unit_p.__owner == p.id :
                                             Sender.give_property(unit_p,response["attribut"],response["args"])
-                                elif response["class"] == "building":
+                                elif response["type"] == "building":
                                     for p in local_players :
                                         building_p = get_building_by_id(response["id"], ui)
                                         if building_p.__owner == p.id :

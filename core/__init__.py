@@ -7,6 +7,7 @@ from core.buildings.stable import Stable
 from core.buildings.barracks import Barracks
 from core.buildings.archery_range import ArcheryRange
 from core.buildings import Building
+from network.receiver import Receiver
 
 
 class Game:
@@ -62,24 +63,32 @@ class Game:
     """
 
     def party(self):
-
+        from network.state import State
         if not self.__paused:
             finished_actions: set[Action] = set()
             # print("Players:", self.__players)
+            State.set_receiving(True)
+
             for p in self.__local_players:
                 # print("Isinstance AI?", isinstance(p, AI))
                 if isinstance(p, AI):
                     # print("Playing AI for player", p.get_name())
                     p.play(self)
+            State.set_receiving(False)
+
             # print("====================== ACTIONS ======================")
             for a in self.__actions:
                 #print(type(a).__name__)
                 #if type(a).__name__ == "MoveAction":
                 #    print(next(iter(a.get_involved_units())))
-                if a.do_action():
-                    #print("Action finished")
-                    # print("Action finished")
-                    finished_actions.add(a)
+                if Receiver.verify_properties(a.get_list_attributes(), list(self.__local_players)[0].id):
+                    if a.do_action():
+                        #print("Action finished")
+                        # print("Action finished")
+                        finished_actions.add(a)
+                    Receiver.free_action(a.get_list_attributes())
+            State.set_receiving(True)
+
             # print("=====================================================")
 
             for fa in finished_actions:
