@@ -1,5 +1,12 @@
 # Aige of EmpAIre
 
+**Concernant le fichier c_client_optimized.c**
+Ce programme en C est le fruit d’un assemblage. Il met en place un système de communication bidirectionnel entre un processus Python local et un réseau local via UDP.
+1. Réception depuis Python et mise en mémoire (par Mathis Chauviere)
+2. Récupération en mémoire et broadcast sur les interfaces réseau ( par Soufiane Benamar)
+3. Réception réseau et mise en mémoire ( par Charles Bel)
+4. Récupération depuis la mémoire et renvoi à Python ( par Selma Ben Salah)
+
 # Installation guide
 
 **Step 1: Clone the project**
